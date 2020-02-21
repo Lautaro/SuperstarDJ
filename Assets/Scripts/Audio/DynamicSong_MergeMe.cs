@@ -68,10 +68,10 @@ namespace SuperstarDJ.DynamicMusic
         //    throw new Exception("Could not find clip named : " + clipName);
         //}
 
-        List<DynamicSongTrack> GetAllClipsInSong()
+        List<DynamicTrack> GetAllClipsInSong()
         {
-            var allClipsInSongy = new List<DynamicSongTrack>();
-            void AddIfNotNullAndNotDupes(Dictionary<string, DynamicSongTrack> clips)
+            var allClipsInSongy = new List<DynamicTrack>();
+            void AddIfNotNullAndNotDupes(Dictionary<string, DynamicTrack> clips)
             {
                 if (clips != null)
                 {
@@ -103,7 +103,7 @@ namespace SuperstarDJ.DynamicMusic
             }
         }
 
-        private DynamicSongTrack GetTrackByName(string trackName)
+        private DynamicTrack GetTrackByName(string trackName)
         {
             var allClips = GetAllClipsInSong();
             var returnClip = allClips.FirstOrDefault(c => c.ClipName == trackName);
@@ -159,13 +159,13 @@ namespace SuperstarDJ.DynamicMusic
         {
             if (Intro.HasClip())
             {
-                Intro.PlayClipNow();
+                Intro.PlayClipAsap();
                 Loop.PlayClipAfter(Intro);
                 IsPlaying = true;
             }
             else if (Loop.HasClip())
             {
-                Loop.PlayClipNow();
+                Loop.PlayClipAsap();
                 IsPlaying = true;
             }
             else

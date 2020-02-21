@@ -15,7 +15,7 @@ namespace SuperstarDJ.DynamicMusic
     class DynamicSong : MonoBehaviour
     {
         public string TrackName { get; set; }
-        Dictionary<string, DynamicSongTrack> clips;
+        Dictionary<string, DynamicTrack> clips;
         
         bool isPlaying;
         public bool IsPlaying { get { return isPlaying; } }
@@ -28,7 +28,7 @@ namespace SuperstarDJ.DynamicMusic
         {
             return clips != null && clips.Count() > 1;
         }
-        public Dictionary<string, DynamicSongTrack> GetClipsDic()
+        public Dictionary<string, DynamicTrack> GetClipsDic()
         {
             return clips;
         }
@@ -42,7 +42,7 @@ namespace SuperstarDJ.DynamicMusic
         {
             if (clips == null)
             {
-                clips = new Dictionary<string, DynamicSongTrack>();
+                clips = new Dictionary<string, DynamicTrack>();
             }
 
             if (clips.ContainsKey(clipName))
@@ -58,34 +58,28 @@ namespace SuperstarDJ.DynamicMusic
                 throw new Exception($"AudioClip does not exist at given path: {path}");
             }
 
-            var songyClip = new DynamicSongTrack(gameObject.AddComponent<AudioSource>(), clip, clipName);
+            var songyClip = new DynamicTrack(gameObject.AddComponent<AudioSource>(), clip, clipName);
             clips.Add(clipName, songyClip);
 
             return this;
         }
 
-        DynamicSongTrack FirstClip()
-        {
-            return clips.ElementAt(0).Value;
-        }
 
-        public void PlayClipNow()
+        public void PlayClipAsap()
         {
             SchedulePlay(CurrentDspTime() + paddingTime);
         }
 
         void SchedulePlay(double dspTime)
-        {
-            var firstClip = FirstClip();
-            var firstSource = firstClip.source;
-
+        {  
             ScheduledToStartAt = dspTime; ;
             isScheduledToStart = true;
-            EndsPlayingDspTime = ScheduledToStartAt + firstClip.Duration;
+           
 
-            foreach (var source in clips.Values.Select(c => c.source))
-            {   
-                source.PlayScheduled(dspTime);
+            foreach (var track in clips.Values)
+            {
+                EndsPlayingDspTime = ScheduledToStartAt + track.Duration;
+                track.source.PlayScheduled(dspTime);
             }
         }
 
@@ -102,8 +96,6 @@ namespace SuperstarDJ.DynamicMusic
                 isPlaying = false;
                 isScheduledToStart = false;
                 print(TrackName + " STOPPED PLAYING  at " + CurrentDspTime());
-                print("TimeSamples when stopped  = " + FirstClip().source.timeSamples);
-
             }
 
             if (CurrentDspTime() >= ScheduledToStartAt && isScheduledToStart == true && IsPlaying == false)

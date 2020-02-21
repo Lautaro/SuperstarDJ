@@ -8,14 +8,14 @@ using UnityEngine;
 namespace SuperstarDJ.DynamicMusic
 {
  
-    class DynamicSongTrack
+    public class DynamicTrack
     {
         public AudioSource source { get; private set; }
         public double Duration { get { return ( double )source.clip.samples / source.clip.frequency; } }
         public string ClipName { get { return source.clip.name; } }
 
 
-        public DynamicSongTrack(AudioSource _source, AudioClip clip, string clipName)
+        public DynamicTrack(AudioSource _source, AudioClip clip, string clipName)
         {
             source = _source;
             source.clip = clip;
