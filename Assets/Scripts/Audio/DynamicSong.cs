@@ -16,7 +16,7 @@ namespace SuperstarDJ.DynamicMusic
     {
         public string TrackName { get; set; }
         Dictionary<string, DynamicSongTrack> clips;
-        public bool ShouldLoop { get; set; }
+        
         bool isPlaying;
         public bool IsPlaying { get { return isPlaying; } }
         double paddingTime = 0.01;
@@ -84,8 +84,7 @@ namespace SuperstarDJ.DynamicMusic
             EndsPlayingDspTime = ScheduledToStartAt + firstClip.Duration;
 
             foreach (var source in clips.Values.Select(c => c.source))
-            {
-                source.loop = ShouldLoop;
+            {   
                 source.PlayScheduled(dspTime);
             }
         }
@@ -98,7 +97,7 @@ namespace SuperstarDJ.DynamicMusic
 
         public void Update()
         {
-            if (CurrentDspTime() >= EndsPlayingDspTime && IsPlaying == true && !ShouldLoop)
+            if (CurrentDspTime() >= EndsPlayingDspTime && IsPlaying == true)
             {
                 isPlaying = false;
                 isScheduledToStart = false;

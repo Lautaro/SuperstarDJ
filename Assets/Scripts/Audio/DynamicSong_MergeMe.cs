@@ -23,41 +23,6 @@ namespace SuperstarDJ.DynamicMusic
             Intro = gameObject.AddComponent<DynamicSong>();
             Loop = gameObject.AddComponent<DynamicSong>();
             Outro = gameObject.AddComponent<DynamicSong>();
-            Loop.ShouldLoop = true;
-        }
-
-        private void Update()
-        {
-            if (TrackingObject != null)
-            {
-                foreach (var clip in GetAllClipsInSongy())
-                {
-                    var distance = PercentageOfMinimalDistanceToClip(clip) / 100;
-                    clip.source.volume = 1f - distance;
-                }
-            }
-        }
-
-        public void SetTrackingObjectOnClip(string clipName, Transform transform)
-        {
-            var clip = GetTrackByName(clipName);
-
-            if (clip == null)
-            {
-                throw new KeyNotFoundException($"Clip named {clipName} does not exist in SongySong");
-            }
-
-            clip.TrackingObject = transform;
-        }
-
-        float PercentageOfMinimalDistanceToClip(DynamicSongTrack clip)
-        {
-            var clipPosition = clip.TrackingObject.position;
-            var soundPosition = TrackingObject.position;
-
-            var diff = Mathf.Abs(Vector2.Distance(clipPosition, soundPosition));
-
-            return diff / MinimalDistance * 100;
         }
 
         public void SetClipVolume(float volume, string clipName)
@@ -75,7 +40,7 @@ namespace SuperstarDJ.DynamicMusic
         public void SetMainVolume(float volume)
         {
             MainVolume = volume;
-            foreach (var clip in GetAllClipsInSongy())
+            foreach (var clip in GetAllClipsInSong())
             {
                 clip.source.volume = MainVolume;
             }
@@ -84,28 +49,26 @@ namespace SuperstarDJ.DynamicMusic
         /// <summary>
         /// Returns true if sound is muted
         /// </summary>
-        public bool ToggleTrack(string clipName)
-        {
-            var allClips = GetTrackByName(clipName);
+        //public bool ToggleTrack(string clipName)
+        //{
+        //    foreach (var songyClip in GetAllClipsInSong())
+        //    {
+        //        if (songyClip.source.volume > 0)
+        //        {
+        //            songyClip.source.volume = 0f;
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            songyClip.source.volume = 1f;
+        //            return false;
+        //        }
+        //    }
 
-            foreach (var songyClip in GetAllClipsInSongy())
-            {
-                if (songyClip.source.volume > 0)
-                {
-                    songyClip.source.volume = 0f;
-                    return true;
-                }
-                else
-                {
-                    songyClip.source.volume = 1f;
-                    return false;
-                }
-            }
+        //    throw new Exception("Could not find clip named : " + clipName);
+        //}
 
-            throw new Exception("Could not find clip named : " + clipName);
-        }
-
-        List<DynamicSongTrack> GetAllClipsInSongy()
+        List<DynamicSongTrack> GetAllClipsInSong()
         {
             var allClipsInSongy = new List<DynamicSongTrack>();
             void AddIfNotNullAndNotDupes(Dictionary<string, DynamicSongTrack> clips)
@@ -142,27 +105,16 @@ namespace SuperstarDJ.DynamicMusic
 
         private DynamicSongTrack GetTrackByName(string trackName)
         {
-            var allClips = GetAllClipsInSongy();
+            var allClips = GetAllClipsInSong();
             var returnClip = allClips.FirstOrDefault(c => c.ClipName == trackName);
             return returnClip;
         }
-
-        public void SetIntro(params string[] clipNames)
-        {
-            AddClips(clipNames, Intro);
-        }
-
         public void SetLoop(params string[] clipNames)
         {
             AddClips(clipNames, Loop);
         }
 
-        public void SetOutro(params string[] clipNames)
-        {
-            AddClips(clipNames, Outro);
-        }
-
-        void AddClips(string[] clipNames, DynamicSong songyPart)
+        void AddClips(string[] clipNames, DynamicSong dynamicSong)
         {
             foreach (var name in clipNames)
             {
@@ -171,13 +123,13 @@ namespace SuperstarDJ.DynamicMusic
                     Debug.LogWarning($"You are trying to add the SongyClip named {name} twice. Dont do that plz. ");
                     continue;
                 }
-                songyPart.AddClip(FolderPath, name);
+                dynamicSong.AddClip(FolderPath, name);
             }
         }
 
         public Dictionary<string, float> GetPlayingTracks()
         {
-            var clips = GetAllClipsInSongy();
+            var clips = GetAllClipsInSong();
             var dic = new Dictionary<string, float>();
             foreach (var clip in clips)
             {
@@ -193,7 +145,7 @@ namespace SuperstarDJ.DynamicMusic
 
         public Dictionary<string, float> GetAllClipVolume()
         {
-            var clips = GetAllClipsInSongy();
+            var clips = GetAllClipsInSong();
             var dic = new Dictionary<string, float>();
             foreach (var clip in clips)
             {
@@ -221,18 +173,5 @@ namespace SuperstarDJ.DynamicMusic
                 IsPlaying = false;
             }
         }
-
-        public bool KillSong()
-        {
-            if (Loop.IsPlaying && Loop.HasClip())
-            {
-                Loop.StopAndPlayNext(Outro);
-                IsPlaying = false;
-                return true;
-            }
-
-            return false;
-        }
-
     }
 }
