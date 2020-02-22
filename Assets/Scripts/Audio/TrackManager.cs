@@ -38,6 +38,14 @@ namespace SuperstarDJ.DynamicMusic
                 track.Source.volume = startsWithVolume.Contains ( track.TrackName ) ? 1f : 0f;
             }
         }
+
+        void StopAllTracks()
+        {
+            foreach ( var track in Tracks )
+            {
+                track.Source.Stop ();
+            }
+        }
         public TrackNames[] TracksPlaying()
         {
             return Tracks.Where ( t => t.Source.isPlaying && t.Source.volume > 0f ).Select ( t => t.TrackName ).ToArray ();
@@ -65,7 +73,6 @@ namespace SuperstarDJ.DynamicMusic
         }
         public Dictionary<string, float> GetPlayingTracks()
         {
-
             var dic = new Dictionary<string, float> ();
             foreach ( var track in Tracks )
             {
@@ -89,10 +96,19 @@ namespace SuperstarDJ.DynamicMusic
         public void MuteTrack( TrackNames name )
         {
             GetTrackByName ( name ).Source.volume = 0;
+            if ( GetPlayingTracks ().Count () <= 0 )
+            {
+
+            }
         }
 
         public void UnMuteTrack( TrackNames name )
         {
+            if ( GetPlayingTracks ().Count () < 1 )
+            {
+                StartAllTracks ( new List<TrackNames> () { name } );
+            }
+
             GetTrackByName ( name ).Source.volume = 1f;
         }
 

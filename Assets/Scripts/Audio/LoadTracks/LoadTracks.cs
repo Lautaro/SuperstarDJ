@@ -30,7 +30,7 @@ public static class LoadTracks
                 tracks.Add ( track );
             }
        
-            return null;
+            return tracks;
         }
 
         private static void  LoadAudio( List<DynamicTrack> tracks,  string path )

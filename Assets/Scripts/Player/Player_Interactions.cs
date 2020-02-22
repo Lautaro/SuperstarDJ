@@ -109,14 +109,12 @@ public class Player_Interactions : MonoBehaviour
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
-            print ( "Down" );
         }
 
         if ( Input.GetKeyUp ( KeyCode.Space ) )
         {
             BeatMixingIsActive = false;
             ToggleBeatMixing ( false );
-            print ( "Up" );
         }
         #endregion
     }
