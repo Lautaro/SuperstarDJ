@@ -15,17 +15,17 @@ public class CanHoldItem : MonoBehaviour
         HeldItem = objectToPlace;
         HeldItem.transform.position = transform.position;
         ResetRotationOfPlacedObject();
+
+        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<CanBeCarried> ().CarriableName );
+
         if (objectToPlace != null)
-        {
-            var recordName = objectToPlace.GetComponent<CanBeCarried>().CarriableName;
-            MusicManager.Instance.DynamicSong.SetClipVolume(1 ,recordName);
+        {   
+            MusicManager.UnMuteTrack ( trackName );
         }
 
         if (returnObject != null)
         {
-
-            var record = returnObject.CarriableName;
-            MusicManager.Instance.DynamicSong.SetClipVolume(0, record);
+            MusicManager.MuteTrack( trackName );
         }
         return returnObject;
     }
@@ -42,8 +42,8 @@ public class CanHoldItem : MonoBehaviour
         HeldItem = null;
         if (returnObject != null)
         {
-            var record = returnObject.CarriableName;
-            MusicManager.Instance.DynamicSong.SetClipVolume(0, record);
+            var trackName = UnityTools.TrackNameFromString( returnObject.CarriableName);
+            MusicManager.MuteTrack( trackName );
         }
         return returnObject;
     }

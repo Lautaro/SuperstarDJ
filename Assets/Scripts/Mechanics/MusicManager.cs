@@ -2,36 +2,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using SuperstarDJ.UnityTools.Extensions;
+using SuperstarDJ.Audio.Enums;
+using System;
+using SuperstarDJ.Audio.InitialiseAudio;
 
 namespace SuperstarDJ.Audio
 {
     public class MusicManager : MonoBehaviour
     {
-        public DynamicSong_MergeMe DynamicSong;
-        public static MusicManager Instance;
+        #region Static Methods
+        static MusicManager instance;
+
+        public static void UnMuteTrack( TrackNames track )
+        {
+            instance.trackManager.UnMuteTrack ( track );
+        }
+
+        public static void MuteTrack( TrackNames track )
+        {
+            instance.trackManager.MuteTrack( track );
+        }
+        public static bool IsTrackPlaying( string trackName )
+        {
+            return instance.trackManager.IsTrackPlaying ( trackName );
+        }
+
+        public static TrackNames[] TracksPlaying()
+        {
+            return instance.trackManager.TracksPlaying ();
+        }
+        #endregion
+
+        #region Instance
+
+        TrackManager trackManager;
+        public string PathToAudio;
+        public string SettingsFile;
         // Start is called before the first frame update
         void Start()
         {
-            DynamicSong = GetComponent<DynamicSong_MergeMe>();
-
-            if (Instance == null)
+            if ( instance == null )
             {
-                Instance = this;
+                instance = this;
+                Initialize ();
             }
             else
             {
-                throw new System.Exception("Only one music manager allowed");
+                Debug.LogError ( "There can only be one MusicManager. A second one has been instantiated! " );
             }
-
-            DynamicSong.SetLoop("BasicBeat", "Bass", "Chords", "Pads", "Arrpegio", "ExtraBeat");
-            DynamicSong.SetMainVolume(0);
-            DynamicSong.PlayDynamicSong();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void Initialize()
         {
-
+            var tracks = LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<AudioSource> () );
+            trackManager = new TrackManager ( tracks );
         }
+       #endregion
     }
 }
