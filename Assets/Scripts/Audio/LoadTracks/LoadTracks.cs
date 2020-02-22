@@ -1,31 +1,59 @@
-﻿using SuperstarDJ.DynamicMusic;
+﻿using Newtonsoft.Json.Linq;
+using SuperstarDJ.DynamicMusic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SuperstarDJ.Audio.LoadTracks
+namespace SuperstarDJ.Audio.InitialiseAudio
 {
-    public static class LoadTracks
+public static class LoadTracks
     {
-        public static List<DynamicTrack> Load( string path )
+        static List<Dictionary<string, string>> trackMetadata;
+        public static List<DynamicTrack> Load( string path,string musicSettingsFile, Func<AudioSource> AudioSourceFactory )
         {
             // load json
-            var textAsset = Resources.Load ( path ) as TextAsset;
+            var textAsset = Resources.Load ( path + musicSettingsFile) as TextAsset;
             if ( textAsset == null ) Debug.LogError ( "Could not load music settings file. Expected path : " + path );
 
-            //var settingsJson = JObject.Parse ( textAsset.ToString () );
-            //var allSongs = SongParser.Parse ( settingsJson );
+            var tracks = new List<DynamicTrack> ();
 
-            //var settings = new MusicSettings ();
-            //settings.AllSongs = allSongs;
+            var settingsJson = JObject.Parse ( textAsset.ToString () );
+            var metaData = ParseTrackMetadata ( settingsJson );
 
-            //settings.GameSongGroups = GameSongGroupParsing.Parse ( settingsJson, allSongs );
-            //settings.TileSetSongGroups = TilesetSongGroupParsing.Parse ( settingsJson, allSongs );
+            foreach ( var trackInfo  in metaData )
+            {
+                var name = trackInfo["TrackName"];
+                var clip = Resources.Load<AudioClip> ( $"{path}{name}" );
+                var track = new DynamicTrack (AudioSourceFactory() ,clip  );
 
+                tracks.Add ( track );
+            }
+       
             return null;
+        }
+
+        private static void  LoadAudio( List<DynamicTrack> tracks,  string path )
+        {
+      
+        }
+
+        private static List<Dictionary<string, string>> ParseTrackMetadata( JObject settings )
+        {
+            var allMetadata = settings["Tracks"].Children ().Select ( md => ( string )md ).ToList ();
+            var metaDataDics = new List<Dictionary<string, string>> ();
+
+            foreach ( var metaData in allMetadata )
+            {
+                var dic = new Dictionary<string, string> ();
+
+                var split = metaData.Split ( ' ' );
+                dic.Add ( "TrackName", split[0] );
+                dic.Add ( "VolumeModifier", split[0] );
+
+                metaDataDics.Add ( dic );
+            }
+            return metaDataDics;
         }
     }
 }

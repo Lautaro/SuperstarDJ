@@ -9,7 +9,6 @@ using UnityEngine;
 public class GuestManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Dictionary<string, float> ActiveTracks;
     public List<Guest> Guests;
    
     SpawnGuest guestSpawner;
@@ -33,15 +32,13 @@ public class GuestManager : MonoBehaviour
         guestContainer = transform.root.Find("/Game/Guests").gameObject;
         guestSpawner = new SpawnGuest();
 
-        ActiveTracks = new Dictionary<string, float>();
         InvokeRepeating("SlowUpdate", 0, 0.3f);
 
         ResetGuestCooldownTimer();
     }
 
     void SlowUpdate()
-    {
-        ActiveTracks = MusicManager.Instance.DynamicSong.GetPlayingTracks();
+    {   
         Guests = GetAllGuests();
         HandleGuestAmount();
     }
@@ -94,7 +91,7 @@ public class GuestManager : MonoBehaviour
             // Save all active fav track and add satisfaction
             foreach (var favTrack in favouriteTracks)
             {
-                if (ActiveTracks.ContainsKey(favTrack))
+                if ( MusicManager.IsTrackPlaying ( favTrack ));
                 {
                     satisfactionMod += SatisfactionBoost;
                     activeFavTracks.Add(favTrack);
@@ -104,7 +101,7 @@ public class GuestManager : MonoBehaviour
             // Save all active worst track and reduce satisfaction
             foreach (var worstTrack in worstTracks)
             {
-                if (ActiveTracks.ContainsKey(worstTrack))
+                if (MusicManager.IsTrackPlaying(worstTrack))
                 {
                     satisfactionMod -= SatisfactionDamage;
                     activeWorstTracks.Add(worstTrack);
@@ -112,7 +109,7 @@ public class GuestManager : MonoBehaviour
             }
 
             // IF NOTHING IS PLAYING MOD SHOULD BE NEGATIVE
-            if (ActiveTracks.Count == 0)
+            if (MusicManager.TracksPlaying().Length == 0)
             {
                 satisfactionMod = -SatisfactionDamage;
             }
