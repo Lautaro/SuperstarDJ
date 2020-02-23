@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SuperstarDJ.Audio.Enums;
 using SuperstarDJ.DynamicMusic;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,13 @@ namespace SuperstarDJ.Audio.InitialiseAudio
 public static class LoadTracks
     {
         static List<Dictionary<string, string>> trackMetadata;
-        public static List<DynamicTrack> Load( string path,string musicSettingsFile, Func<AudioSource> AudioSourceFactory )
+        public static List<Track> Load( string path,string musicSettingsFile, Func<Track> TrackFactory )
         {
             // load json
             var textAsset = Resources.Load ( path + musicSettingsFile) as TextAsset;
             if ( textAsset == null ) Debug.LogError ( "Could not load music settings file. Expected path : " + path );
 
-            var tracks = new List<DynamicTrack> ();
+            var tracks = new List<Track> ();
 
             var settingsJson = JObject.Parse ( textAsset.ToString () );
             var metaData = ParseTrackMetadata ( settingsJson );
@@ -25,15 +26,17 @@ public static class LoadTracks
             {
                 var name = trackInfo["TrackName"];
                 var clip = Resources.Load<AudioClip> ( $"{path}{name}" );
-                var track = new DynamicTrack (AudioSourceFactory() ,clip  );
-
+                var track = TrackFactory ();
+                track.Source().clip = clip;
+                track.Source ().volume = 0f;
+                track.Source ().loop = true;
                 tracks.Add ( track );
             }
        
             return tracks;
         }
 
-        private static void  LoadAudio( List<DynamicTrack> tracks,  string path )
+        private static void  LoadAudio( List<Track> tracks,  string path )
         {
       
         }
@@ -52,6 +55,13 @@ public static class LoadTracks
                 dic.Add ( "VolumeModifier", split[0] );
 
                 metaDataDics.Add ( dic );
+            }
+
+            var enums = Enum.GetValues ( typeof ( TrackNames ) ).Length;
+            if ( metaDataDics.Count() != enums )
+            {
+                Debug.LogError ( $"The amount of tracks in the TrackName enum is not the same as the amount of tracks specidfied in the settings file. Enums={enums} - Tracks in settings = {metaDataDics.Count () } " );
+
             }
             return metaDataDics;
         }

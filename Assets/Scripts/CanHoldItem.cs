@@ -1,5 +1,6 @@
 ﻿using SuperstarDJ;
 using SuperstarDJ.Audio;
+using SuperstarDJ.DynamicMusic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

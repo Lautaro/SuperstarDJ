@@ -9,7 +9,7 @@ namespace SuperstarDJ.Audio.Enums
     public enum TrackNames
     {
         Arrpegio,
-        BasciBeat,
+        BasicBeat,
         Bass,
         Chords,
         ExtraBeat,

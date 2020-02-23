@@ -1,5 +1,6 @@
 ﻿using SuperstarDJ;
 using SuperstarDJ.Audio;
+using SuperstarDJ.DynamicMusic;
 using SuperstarDJ.Enums;
 using System;
 using System.Collections;

@@ -55,7 +55,7 @@ namespace SuperstarDJ.Audio
 
         private void Initialize()
         {
-            var tracks = LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<AudioSource> () );
+            var tracks = LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
             trackManager = new TrackManager ( tracks );
         }
        #endregion
