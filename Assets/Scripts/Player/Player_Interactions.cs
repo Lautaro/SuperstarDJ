@@ -110,6 +110,7 @@ public class Player_Interactions : MonoBehaviour
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
+            MusicManager.BeatNow ();
         }
 
         if ( Input.GetKeyUp ( KeyCode.Space ) )

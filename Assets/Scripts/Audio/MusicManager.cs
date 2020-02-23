@@ -6,11 +6,22 @@ using SuperstarDJ.UnityTools.Extensions;
 using SuperstarDJ.Audio.Enums;
 using System;
 using SuperstarDJ.Audio.InitialiseAudio;
+using DG.Tweening;
+using SuperstarDJ.Audio.RythmDetection;
 
 namespace SuperstarDJ.Audio
 {
     public class MusicManager : MonoBehaviour
     {
+
+        #region Rythm Settings
+        const int MEASURES_PER_LOOP = 4;
+        const int BEATS_PER_MEASURE = 4;
+        const int TICKS_PER_BEATS = 4;
+
+        #endregion
+
+
         #region Static Methods
         static MusicManager instance;
 
@@ -21,11 +32,15 @@ namespace SuperstarDJ.Audio
 
         public static void MuteTrack( TrackNames track )
         {
-            instance.trackManager.MuteTrack( track );
+            instance.trackManager.MuteTrack ( track );
         }
         public static bool IsTrackPlaying( string trackName )
         {
             return instance.trackManager.IsTrackPlaying ( trackName );
+        }
+        public static void BeatNow()
+        {
+            instance.Beat ();
         }
 
         public static TrackNames[] TracksPlaying()
@@ -39,13 +54,16 @@ namespace SuperstarDJ.Audio
         TrackManager trackManager;
         public string PathToAudio;
         public string SettingsFile;
+        public DOTweenAnimation BeatMark;
+        RythmAnalyzer rythmAnalyzer;
         // Start is called before the first frame update
         void Start()
         {
             if ( instance == null )
             {
                 instance = this;
-                Initialize ();
+                LoadTracks ();
+                InitializeRythmAnalyzer ();
             }
             else
             {
@@ -53,11 +71,33 @@ namespace SuperstarDJ.Audio
             }
         }
 
-        private void Initialize()
+        void InitializeRythmAnalyzer()
         {
-            var tracks = LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
+            var trackDuration = trackManager.Duration / MEASURES_PER_LOOP;
+            rythmAnalyzer = new RythmAnalyzer ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+        }
+
+        void Beat()
+        {
+            BeatMark.DORewindAndPlayNext ();
+
+        }
+        private void LoadTracks()
+        {
+            var tracks = InitialiseAudio.LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
             trackManager = new TrackManager ( tracks );
         }
-       #endregion
+
+        void Update()
+        {
+            if ( trackManager.GetPlayingTracks ().Count > 0 )
+            {
+                int currentMeasure;
+                int currentBeat;
+                int currentTick;
+                trackManager.GetCurrentPosition ();
+                    }
+        }
+        #endregion
     }
 }
