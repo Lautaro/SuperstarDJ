@@ -4,6 +4,7 @@
     "BasicBeat 0.9",
     "Bass 0.9",
     "Chords 0.9",
-    "ExtraBeat 0.9"
+    "ExtraBeat 0.9",
+    "Pads 0.9"
   ]
 }
