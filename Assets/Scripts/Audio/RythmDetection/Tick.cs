@@ -1,6 +1,6 @@
 ﻿
-namespace SuperstarDJ.Audio.RhythmDetection
-{
+namespace SuperstarDJ.Audio.RythmDetection
+    {
     public struct Tick
     {
         public int index;
@@ -13,6 +13,11 @@ namespace SuperstarDJ.Audio.RhythmDetection
             startsAt = ticksDuration * ( index - 1 ) + parentStartsAt;
             endsAt = ( ticksDuration * index ) + parentStartsAt;
             parentBeat = _parentBeat;
+        }
+
+        public bool  HasPosition( double sampleTimePosition )
+        {
+            return sampleTimePosition >= startsAt && sampleTimePosition <= endsAt;
         }
     }
 }

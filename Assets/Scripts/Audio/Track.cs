@@ -14,6 +14,7 @@ namespace SuperstarDJ.DynamicMusic
         [HideInInspector]
         AudioSource source { get; set; }
 
+        //(double)AudioClip.samples / AudioClip.frequency;
         public double Duration { get { return ( double )source.clip.samples / source.clip.frequency; } }
         string clipName { get { return source.clip.name; } }
         float VolumeModification;

@@ -46,7 +46,7 @@ namespace SuperstarDJ.DynamicMusic
                 track.Source ().PlayScheduled ( dspTime );
 
                 // Should start muted or enabled? 
-                track.Source ().volume = playsAtStart.Contains ( track.TrackName ) ? 1f : 0f;
+                    track.Source ().volume = playsAtStart.Contains ( track.TrackName ) ? 1f : 0f;
             }
         }
 
@@ -126,12 +126,17 @@ namespace SuperstarDJ.DynamicMusic
 
         public double GetCurrentPosition()
         {
-
             var track = Tracks[0];
-            Debug.Log ( track.Source ().timeSamples );
 
+            var timeSamples = (double)track.Source ().timeSamples;
+            var frequency = track.Source ().clip.frequency;
 
-            return 0;
+            // This gets how far the clip has played
+            //(double) Source.timeSamples / Clip.Frequency;
+            var currentPosition = timeSamples / frequency;
+            //Debug.Log ( currentPosition );
+
+            return currentPosition;
         }
         public Track GetTrackByName( TrackNames name )
         {

@@ -18,9 +18,7 @@ namespace SuperstarDJ.Audio
         const int MEASURES_PER_LOOP = 4;
         const int BEATS_PER_MEASURE = 4;
         const int TICKS_PER_BEATS = 4;
-
         #endregion
-
 
         #region Static Methods
         static MusicManager instance;
@@ -41,6 +39,7 @@ namespace SuperstarDJ.Audio
         public static void BeatNow()
         {
             instance.Beat ();
+
         }
 
         public static TrackNames[] TracksPlaying()
@@ -55,7 +54,9 @@ namespace SuperstarDJ.Audio
         public string PathToAudio;
         public string SettingsFile;
         public DOTweenAnimation BeatMark;
-        RythmAnalyzer rythmAnalyzer;
+        RythmPositionTracker rythmPositionTracker;
+        RythmPosition rythmPosition;
+        public bool MuteAudio;
         // Start is called before the first frame update
         void Start()
         {
@@ -63,7 +64,7 @@ namespace SuperstarDJ.Audio
             {
                 instance = this;
                 LoadTracks ();
-                InitializeRythmAnalyzer ();
+                InitializeRythmPositionTracker ();
             }
             else
             {
@@ -71,16 +72,17 @@ namespace SuperstarDJ.Audio
             }
         }
 
-        void InitializeRythmAnalyzer()
+        void InitializeRythmPositionTracker()
         {
-            var trackDuration = trackManager.Duration / MEASURES_PER_LOOP;
-            rythmAnalyzer = new RythmAnalyzer ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+            var trackDuration = trackManager.Duration;
+            rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
         }
 
         void Beat()
         {
-            BeatMark.DORewindAndPlayNext ();
-
+        //    BeatMark.DORewindAndPlayNext ();
+          
+            Debug.Log (rythmPosition.ToString() + $"  ({rythmPosition.Position})");
         }
         private void LoadTracks()
         {
@@ -92,11 +94,16 @@ namespace SuperstarDJ.Audio
         {
             if ( trackManager.GetPlayingTracks ().Count > 0 )
             {
-                int currentMeasure;
-                int currentBeat;
-                int currentTick;
-                trackManager.GetCurrentPosition ();
-                    }
+                UpdateRythmPosition ();
+                AudioListener.volume = MuteAudio == true ? 0f : 1f;
+                VisualMetronome.rythmPosition = rythmPosition;
+            }
+        }
+
+        void UpdateRythmPosition()
+        {
+            var currentPositionInClip = trackManager.GetCurrentPosition ();
+            rythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
         }
         #endregion
     }

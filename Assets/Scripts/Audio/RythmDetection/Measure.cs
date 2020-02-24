@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SuperstarDJ.Audio.RhythmDetection
+namespace SuperstarDJ.Audio.RythmDetection
 {
     public class Measure
     {
         public int index;
-        List<Beat> beats;
+        public List<Beat> beats;
         double startsAt;
         double endsAt;
 
