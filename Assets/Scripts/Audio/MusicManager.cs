@@ -8,6 +8,8 @@ using System;
 using SuperstarDJ.Audio.InitialiseAudio;
 using DG.Tweening;
 using SuperstarDJ.Audio.RythmDetection;
+using SuperstarDJ.Mechanics;
+using SuperstarDJ.Enums;
 
 namespace SuperstarDJ.Audio
 {
@@ -63,8 +65,9 @@ namespace SuperstarDJ.Audio
             if ( instance == null )
             {
                 instance = this;
-                LoadTracks ();
+            LoadTracksAndSpawnRecords ();
                 InitializeRythmPositionTracker ();
+          
             }
             else
             {
@@ -84,9 +87,10 @@ namespace SuperstarDJ.Audio
           
             Debug.Log (rythmPosition.ToString() + $"  ({rythmPosition.Position})");
         }
-        private void LoadTracks()
+        private void LoadTracksAndSpawnRecords()
         {
-            var tracks = InitialiseAudio.LoadTracks.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
+            var tracks = TrackAndRecordLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
+            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks );
             trackManager = new TrackManager ( tracks );
         }
 

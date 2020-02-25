@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SuperstarDJ.Audio
 {
-    public class Record
+    public class Record : MonoBehaviour
     {
-        Track track;
+        public Track track;
     }
 }

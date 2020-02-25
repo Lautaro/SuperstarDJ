@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using SuperstarDJ.Audio.Enums;
 using SuperstarDJ.DynamicMusic;
+using SuperstarDJ.Enums;
+using SuperstarDJ.Mechanics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +10,7 @@ using UnityEngine;
 
 namespace SuperstarDJ.Audio.InitialiseAudio
 {
-public static class LoadTracks
+public static class TrackAndRecordLoading
     {
         static List<Dictionary<string, string>> trackMetadata;
         public static List<Track> Load( string path,string musicSettingsFile, Func<Track> TrackFactory )
@@ -36,11 +38,20 @@ public static class LoadTracks
             return tracks;
         }
 
-        private static void  LoadAudio( List<Track> tracks,  string path )
+        public static List<GameObject> GetRecordPrefabs( List<Track> tracks )
         {
-      
+            var recordPrefabs = new List<GameObject> ();
+            foreach ( var track in tracks )
+            {
+                var prefab = SpawnPrefab.Instance.Spawn ( Prefabs.DynamicRecord );
+                var record = prefab.GetComponent<Record> ();
+                record.track = track;
+                recordPrefabs.Add ( prefab );
+            }
+            return recordPrefabs;
         }
 
+        #region Internal private methods
         private static List<Dictionary<string, string>> ParseTrackMetadata( JObject settings )
         {
             var allMetadata = settings["Tracks"].Children ().Select ( md => ( string )md ).ToList ();
@@ -58,12 +69,14 @@ public static class LoadTracks
             }
 
             var enums = Enum.GetValues ( typeof ( TrackNames ) ).Length;
-            if ( metaDataDics.Count() != enums )
+            if ( metaDataDics.Count () != enums )
             {
                 Debug.LogError ( $"The amount of tracks in the TrackName enum is not the same as the amount of tracks specidfied in the settings file. Enums={enums} - Tracks in settings = {metaDataDics.Count () } " );
 
             }
             return metaDataDics;
         }
+        #endregion
+
     }
 }
