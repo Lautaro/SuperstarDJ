@@ -7,11 +7,13 @@ using UnityEngine;
 public class VisualMetronome : MonoBehaviour
 {
     List<Transform> blips;
+    Vector3 blipDefaultSize;
     public static RythmPosition rythmPosition;
     // Start is called before the first frame update
     void Start()
     {
         blips = GetComponentsInChildren<Transform> ().Where ( t => t.name.Length == 1 ).ToList ();
+        blipDefaultSize = blips[0].localScale;
         print ( $"Found {blips.Count} transforms" );
     }
 
@@ -20,8 +22,8 @@ public class VisualMetronome : MonoBehaviour
     {
         if ( rythmPosition.Beat != null )
         {
-            var index = rythmPosition.Beat.index;
-            blips.ForEach ( t => t.localScale *= 1 );
+            var index = rythmPosition.Beat.index -1;
+            blips.ForEach ( t => t.localScale = blipDefaultSize);
             blips[index].localScale *= 2;
         }
     }
