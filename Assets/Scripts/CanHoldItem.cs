@@ -17,7 +17,7 @@ public class CanHoldItem : MonoBehaviour
         HeldItem.transform.position = transform.position;
         ResetRotationOfPlacedObject();
 
-        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<CanBeCarried> ().CarriableName );
+        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<CanBeCarried> ().TrackName.ToString() );
 
         if (objectToPlace != null)
         {   
@@ -43,7 +43,7 @@ public class CanHoldItem : MonoBehaviour
         HeldItem = null;
         if (returnObject != null)
         {
-            var trackName = UnityTools.TrackNameFromString( returnObject.CarriableName);
+            var trackName = UnityTools.TrackNameFromString( returnObject.TrackName.ToString () );
             MusicManager.MuteTrack( trackName );
         }
         return returnObject;

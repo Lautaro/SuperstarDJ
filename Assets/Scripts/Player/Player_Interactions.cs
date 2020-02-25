@@ -110,6 +110,7 @@ public class Player_Interactions : MonoBehaviour
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
+            MusicManager.BeatNow ();
         }
 
         if ( Input.GetKeyUp ( KeyCode.Space ) )
@@ -129,7 +130,7 @@ public class Player_Interactions : MonoBehaviour
         // IF RECORD EXISTS 
         if ( turnTableWithRecord != null )
         {
-            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.name );
+            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.TrackName.ToString());
             if ( play == true )
             {
                 MusicManager.UnMuteTrack ( track );

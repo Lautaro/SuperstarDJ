@@ -15,27 +15,38 @@ namespace SuperstarDJ.DynamicMusic
     /// </summary>
     class TrackManager
     {
-        public string TrackName { get; set; }
+
         List<Track> Tracks;
-        public bool IsPlaying { get {
+        public bool IsPlaying
+        {
+            get
+            {
                 return Tracks.Any ( t => t.IsPlaying );
-            } }
+            }
+        }
         double paddingTime = 0.01;
+        public double Duration
+        {
+            get
+            {
+                return Tracks[0].Duration;
+            }
+        }
         internal double ScheduledToStartAt { get; private set; }
-        internal double EndsPlayingDspTime { get; set; }
+        //  internal double EndsPlayingDspTime { get; set; }
         public TrackManager( List<Track> tracks ) => Tracks = tracks; //CTOR
         void StartAllTracks( List<TrackNames> playsAtStart )
         {
             var dspTime = CurrentDspTime () + paddingTime;
-            ScheduledToStartAt = dspTime; 
+            ScheduledToStartAt = dspTime;
 
             foreach ( var track in Tracks )
             {
-                EndsPlayingDspTime = ScheduledToStartAt + track.Duration;
-                track.Source().PlayScheduled ( dspTime );
+                //EndsPlayingDspTime = ScheduledToStartAt + track.Duration;
+                track.Source ().PlayScheduled ( dspTime );
 
                 // Should start muted or enabled? 
-                track.Source().volume = playsAtStart.Contains ( track.TrackName ) ? 1f : 0f;
+                    track.Source ().volume = playsAtStart.Contains ( track.TrackName ) ? 1f : 0f;
             }
         }
 
@@ -43,18 +54,18 @@ namespace SuperstarDJ.DynamicMusic
         {
             foreach ( var track in Tracks )
             {
-                track.Source().Stop ();
+                track.Source ().Stop ();
             }
         }
         public TrackNames[] TracksPlaying()
         {
-            return Tracks.Where ( t => t.Source().isPlaying && t.Source().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
+            return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
 
         }
         public bool IsTrackPlaying( string trackName )
         {
             var _trackName = UnityTools.TrackNameFromString ( trackName );
-            return Tracks.Any ( t => t.TrackName == _trackName && t.IsPlaying);
+            return Tracks.Any ( t => t.TrackName == _trackName && t.IsPlaying );
 
         }
         public void Update()
@@ -77,9 +88,9 @@ namespace SuperstarDJ.DynamicMusic
             var dic = new Dictionary<TrackNames, float> ();
             foreach ( var track in Tracks )
             {
-                if ( track.Source().volume > 0.1 )
+                if ( track.Source ().volume > 0.1 )
                 {
-                    var volume = track.Source().volume;
+                    var volume = track.Source ().volume;
                     dic.Add ( track.TrackName, volume );
                 }
             }
@@ -96,7 +107,7 @@ namespace SuperstarDJ.DynamicMusic
         }
         public void MuteTrack( TrackNames name )
         {
-            GetTrackByName ( name ).Source().volume = 0;
+            GetTrackByName ( name ).Source ().volume = 0;
             if ( GetPlayingTracks ().Count () <= 0 )
             {
 
@@ -110,9 +121,23 @@ namespace SuperstarDJ.DynamicMusic
                 StartAllTracks ( new List<TrackNames> () { name } );
             }
 
-            GetTrackByName ( name ).Source().volume = 1f;
+            GetTrackByName ( name ).Source ().volume = 1f;
         }
 
+        public double GetCurrentPosition()
+        {
+            var track = Tracks[0];
+
+            var timeSamples = (double)track.Source ().timeSamples;
+            var frequency = track.Source ().clip.frequency;
+
+            // This gets how far the clip has played
+            //(double) Source.timeSamples / Clip.Frequency;
+            var currentPosition = timeSamples / frequency;
+            //Debug.Log ( currentPosition );
+
+            return currentPosition;
+        }
         public Track GetTrackByName( TrackNames name )
         {
             return Tracks.First ( t => t.TrackName == name );

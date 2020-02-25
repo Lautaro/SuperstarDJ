@@ -1079,7 +1079,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1309424872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,9 +1564,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795f4b4a636ea7d428e46036b707696f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsPlaying: 0
-  FolderPath: Audio
-  MinimalDistance: 2
 --- !u!4 &2060683432
 Transform:
   m_ObjectHideFlags: 0
