@@ -29,6 +29,8 @@ public static class TrackAndRecordLoading
                 var name = trackInfo["TrackName"];
                 var clip = Resources.Load<AudioClip> ( $"{path}{name}" );
                 var track = TrackFactory ();
+                track.VolumeModification = float.Parse(trackInfo["VolumeModifier"]);
+                track.Abreviation = trackInfo["Abreviation"];
                 track.Source().clip = clip;
                 track.Source ().volume = 0f;
                 track.Source ().loop = true;
@@ -38,14 +40,16 @@ public static class TrackAndRecordLoading
             return tracks;
         }
 
-        public static List<GameObject> GetRecordPrefabs( List<Track> tracks )
+        public static List<GameObject> GetRecordPrefabs( List<Track> tracks, Transform parent )
         {
             var recordPrefabs = new List<GameObject> ();
             foreach ( var track in tracks )
             {
                 var prefab = SpawnPrefab.Instance.Spawn ( Prefabs.DynamicRecord );
                 var record = prefab.GetComponent<Record> ();
-                record.track = track;
+                record.Track = track;
+                prefab.name = track.TrackName.ToString() + " (Record)";
+                prefab.transform.parent = parent;
                 recordPrefabs.Add ( prefab );
             }
             return recordPrefabs;
@@ -63,7 +67,8 @@ public static class TrackAndRecordLoading
 
                 var split = metaData.Split ( ' ' );
                 dic.Add ( "TrackName", split[0] );
-                dic.Add ( "VolumeModifier", split[0] );
+                dic.Add ( "VolumeModifier", split[1] );
+                dic.Add("Abreviation", split[2]);
 
                 metaDataDics.Add ( dic );
             }

@@ -10,6 +10,7 @@ using DG.Tweening;
 using SuperstarDJ.Audio.RythmDetection;
 using SuperstarDJ.Mechanics;
 using SuperstarDJ.Enums;
+using UnityEngine.SceneManagement;
 
 namespace SuperstarDJ.Audio
 {
@@ -90,7 +91,7 @@ namespace SuperstarDJ.Audio
         private void LoadTracksAndSpawnRecords()
         {
             var tracks = TrackAndRecordLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
-            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks );
+            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks, GameObject.Find("Dynamic Records").transform);
             trackManager = new TrackManager ( tracks );
         }
 
