@@ -10,7 +10,6 @@ namespace SuperstarDJ
     public class CanBeCarried : MonoBehaviour
     {
         public CarriableItemType CarriableType;
-        public TrackNames TrackName;
 
     }
 }
