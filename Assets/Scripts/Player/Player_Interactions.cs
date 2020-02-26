@@ -12,21 +12,21 @@ public class Player_Interactions : MonoBehaviour
 {
     public List<GameObject> RecordsInReach;
     public GameObject Carrying;
-    public List<CanHoldItem> SurfaceInReach;
+    public List<Turntable> SurfaceInReach;
     GameObject Hand;
     public bool BeatMixingIsActive;
 
     // Start is called before the first frame update 
     void Start()
     {
-        SurfaceInReach = new List<CanHoldItem> ();
+        SurfaceInReach = new List<Turntable> ();
         RecordsInReach = new List<GameObject> ();
     }
 
     void OnTriggerEnter2D( Collider2D col )
     {
         var carriable = col.gameObject.GetComponent<CanBeCarried> ();
-        var surfaceInReach = col.gameObject.GetComponent<CanHoldItem> ();
+        var surfaceInReach = col.gameObject.GetComponent<Turntable> ();
         if ( carriable != null )
         {
             RecordsInReach.Add ( col.gameObject );
@@ -41,7 +41,7 @@ public class Player_Interactions : MonoBehaviour
     void OnTriggerExit2D( Collider2D col )
     {
         var carriable = col.gameObject.GetComponent<CanBeCarried> ();
-        var surfaceInReach = col.gameObject.GetComponent<CanHoldItem> ();
+        var surfaceInReach = col.gameObject.GetComponent<Turntable> ();
         if ( carriable != null )
         {
             RecordsInReach.Remove ( col.gameObject );
@@ -130,7 +130,7 @@ public class Player_Interactions : MonoBehaviour
         // IF RECORD EXISTS 
         if ( turnTableWithRecord != null )
         {
-            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.TrackName.ToString());
+            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName.ToString());
             if ( play == true )
             {
                 MusicManager.UnMuteTrack ( track );

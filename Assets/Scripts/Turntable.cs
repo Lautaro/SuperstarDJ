@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CanHoldItem : MonoBehaviour
+public class Turntable : MonoBehaviour
 {
     public  CanBeCarried HeldItem;
     public float RotationSpeed;
@@ -17,7 +17,7 @@ public class CanHoldItem : MonoBehaviour
         HeldItem.transform.position = transform.position;
         ResetRotationOfPlacedObject();
 
-        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<CanBeCarried> ().TrackName.ToString() );
+        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<Record> ().Track.TrackName.ToString() );
 
         if (objectToPlace != null)
         {   
@@ -43,7 +43,7 @@ public class CanHoldItem : MonoBehaviour
         HeldItem = null;
         if (returnObject != null)
         {
-            var trackName = UnityTools.TrackNameFromString( returnObject.TrackName.ToString () );
+            var trackName = UnityTools.TrackNameFromString( returnObject.GetComponent<Record>().Track.TrackName.ToString() );
             MusicManager.MuteTrack( trackName );
         }
         return returnObject;

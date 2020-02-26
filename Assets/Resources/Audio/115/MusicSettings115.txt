@@ -1,15 +1,15 @@
 {
   "Tracks": [
-    "Congas1_115 0.9",
-    "Count1_115 0.9",
-    "Count2_115 0.9",
-    "countBD_115 0.9",
-    "CountHihat_115 0.9",
-    "Cowbell1_115 0.9",
-	"FunkBass1_115 0.9",
-	"FunkBass2_115 0.9",
-	"FunkBeat1_115 0.9",
-	"FunkGuitarr1_115 0.9",
-	"HouseBeat1_115 0.9"
+    "Congas1_115 1 CN1",
+    "Count1_115 1 CO1",
+    "Count2_115 1 CO2",
+    "countBD_115 1 Cbd",
+    "CountHihat_115 1 Chh",
+    "Cowbell1_115 1 CB1",
+	"FunkBass1_115 1 FS1",
+	"FunkBass2_115 1 FS2",
+	"FunkBeat1_115 1 FB1",
+	"FunkGuitarr1_115 1 FG1",
+	"HouseBeat1_115 1 HB1"
   ]
 }
