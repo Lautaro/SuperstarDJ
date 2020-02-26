@@ -59,9 +59,12 @@ namespace SuperstarDJ.Audio
         public DOTweenAnimation BeatMark;
         RythmPositionTracker rythmPositionTracker;
         RythmPosition rythmPosition;
+        static public RythmPosition RythmPosition { get {
+                return instance.rythmPosition;
+            }}
         public bool MuteAudio;
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             if ( instance == null )
             {
@@ -85,7 +88,7 @@ namespace SuperstarDJ.Audio
         void Beat()
         {
             //    BeatMark.DORewindAndPlayNext ();
-            if ( rythmPosition.Measure != null )
+            if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea)
             {
                 Debug.Log ( rythmPosition.ToString () + $"  ({rythmPosition.Position})" );
             }
@@ -103,7 +106,6 @@ namespace SuperstarDJ.Audio
             {
                 UpdateRythmPosition ();
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
-                VisualMetronome.rythmPosition = rythmPosition;
             }
         }
 
