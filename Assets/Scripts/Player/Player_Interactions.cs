@@ -133,11 +133,11 @@ public class Player_Interactions : MonoBehaviour
             var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName.ToString());
             if ( play == true )
             {
-                MusicManager.UnMuteTrack ( track );
+                MusicManager.PlayTrack ( track );
             }
             else
             {
-                MusicManager.MuteTrack ( track );
+                MusicManager.StopTrack ( track );
             };
         }
     }

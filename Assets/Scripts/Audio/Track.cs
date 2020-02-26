@@ -15,7 +15,7 @@ namespace SuperstarDJ.DynamicMusic
         AudioSource source { get; set; }
 
         //(double)AudioClip.samples / AudioClip.frequency;
-        public double Duration { get { return ( double )source.clip.samples / source.clip.frequency; } }
+        public double Duration { get { return ( double )source.clip.samples; } }// / source.clip.frequency; } }
         string clipName { get { return source.clip.name; } }
         public string Abreviation;
         public float VolumeModification;

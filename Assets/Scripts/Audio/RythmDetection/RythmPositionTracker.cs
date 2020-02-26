@@ -44,7 +44,9 @@ namespace SuperstarDJ.Audio.RythmDetection
 
         internal RythmPosition GetPositionInRythm( double currentPositionInClip )
         {
-            var tick = ticks.First ( t => t.HasPosition ( currentPositionInClip ) );
+            var tick = ticks.FirstOrDefault ( t => t.HasPosition ( currentPositionInClip ) );
+            if ( tick.parentBeat == null ) Debug.LogWarning ("RythmPosition update found no matching tick at position :" + currentPositionInClip);
+            
             return new RythmPosition ( tick, tick.parentBeat, tick.parentBeat.parentMeasure, currentPosition );
         }
     }

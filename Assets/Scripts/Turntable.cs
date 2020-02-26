@@ -21,12 +21,12 @@ public class Turntable : MonoBehaviour
 
         if (objectToPlace != null)
         {   
-            MusicManager.UnMuteTrack ( trackName );
+            MusicManager.PlayTrack ( trackName );
         }
 
         if (returnObject != null)
         {
-            MusicManager.MuteTrack( trackName );
+            MusicManager.StopTrack( trackName );
         }
         return returnObject;
     }
@@ -44,7 +44,7 @@ public class Turntable : MonoBehaviour
         if (returnObject != null)
         {
             var trackName = UnityTools.TrackNameFromString( returnObject.GetComponent<Record>().Track.TrackName.ToString() );
-            MusicManager.MuteTrack( trackName );
+            MusicManager.StopTrack( trackName );
         }
         return returnObject;
     }

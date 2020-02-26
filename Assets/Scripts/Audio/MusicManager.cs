@@ -26,14 +26,14 @@ namespace SuperstarDJ.Audio
         #region Static Methods
         static MusicManager instance;
 
-        public static void UnMuteTrack( TrackNames track )
+        public static void PlayTrack( TrackNames track )
         {
-            instance.trackManager.UnMuteTrack ( track );
+            instance.trackManager.PlayTrack ( track );
         }
 
-        public static void MuteTrack( TrackNames track )
+        public static void StopTrack( TrackNames track )
         {
-            instance.trackManager.MuteTrack ( track );
+            instance.trackManager.StopTrack ( track );
         }
         public static bool IsTrackPlaying( string trackName )
         {
@@ -53,7 +53,7 @@ namespace SuperstarDJ.Audio
 
         #region Instance
 
-        TrackManager trackManager;
+        SongManager trackManager;
         public string PathToAudio;
         public string SettingsFile;
         public DOTweenAnimation BeatMark;
@@ -66,9 +66,9 @@ namespace SuperstarDJ.Audio
             if ( instance == null )
             {
                 instance = this;
-            LoadTracksAndSpawnRecords ();
+                LoadTracksAndSpawnRecords ();
                 InitializeRythmPositionTracker ();
-          
+
             }
             else
             {
@@ -84,15 +84,17 @@ namespace SuperstarDJ.Audio
 
         void Beat()
         {
-        //    BeatMark.DORewindAndPlayNext ();
-          
-            Debug.Log (rythmPosition.ToString() + $"  ({rythmPosition.Position})");
+            //    BeatMark.DORewindAndPlayNext ();
+            if ( rythmPosition.Measure != null )
+            {
+                Debug.Log ( rythmPosition.ToString () + $"  ({rythmPosition.Position})" );
+            }
         }
         private void LoadTracksAndSpawnRecords()
         {
             var tracks = TrackAndRecordLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
-            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks, GameObject.Find("Dynamic Records").transform);
-            trackManager = new TrackManager ( tracks );
+            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
+            trackManager = new SongManager ( tracks );
         }
 
         void Update()
@@ -107,7 +109,7 @@ namespace SuperstarDJ.Audio
 
         void UpdateRythmPosition()
         {
-            var currentPositionInClip = trackManager.GetCurrentPosition ();
+            var currentPositionInClip = trackManager.GetCurrentSamplePositionOfSong ();
             rythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
         }
         #endregion
