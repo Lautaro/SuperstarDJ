@@ -354,7 +354,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991739007046248, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}
@@ -427,7 +427,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991738139763893, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}
@@ -1169,7 +1169,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991738139763894, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}
@@ -1498,7 +1498,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991738139763894, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}
@@ -1729,7 +1729,7 @@ PrefabInstance:
     - target: {fileID: 4888615680970338650, guid: 951861b39e0355e4497836ef58462f2a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.44
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4888615680970338650, guid: 951861b39e0355e4497836ef58462f2a,
         type: 3}
@@ -2694,7 +2694,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1982150341}
   m_Layer: 0
-  m_Name: DynamicRecords
+  m_Name: Dynamic Records
   m_TagString: Untagged
   m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2977,7 +2977,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991738139763894, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}
@@ -3246,7 +3246,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1768574656, guid: a38e5e19a69f0f04b96fa588df4b4090, type: 3}
       propertyPath: RotationSpeed
-      value: -10
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 7290991738139763894, guid: a38e5e19a69f0f04b96fa588df4b4090,
         type: 3}

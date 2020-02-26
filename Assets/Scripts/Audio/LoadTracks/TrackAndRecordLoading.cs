@@ -50,7 +50,10 @@ public static class TrackAndRecordLoading
                 record.Track = track;
                 prefab.name = track.TrackName.ToString() + " (Record)";
                 prefab.transform.parent = parent;
+                prefab.transform.position = DynamicMusic.UnityTools.GetRandomPlaceWithinScreen();
                 recordPrefabs.Add ( prefab );
+
+
             }
             return recordPrefabs;
         }
