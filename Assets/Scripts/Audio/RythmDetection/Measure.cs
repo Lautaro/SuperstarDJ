@@ -33,7 +33,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         {
             foreach ( var beat in beats )
             {
-                Debug.Log ( $"  {beat.index}B - {beat.TicksToString()}" );
+                Debug.Log ( $"  {beat.positionInMeasure}B - {beat.TicksToString()}" );
                 
             }
         }

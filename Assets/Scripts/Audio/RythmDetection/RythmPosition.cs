@@ -26,7 +26,7 @@ namespace SuperstarDJ.Audio
 
         public override string ToString()
         {
-            return $"[{Measure.index}]-[{Beat.index}]  ({Tick.index})";
+            return $"[{Measure.index}]-[{Beat.positionInMeasure}]  ({Tick.positionInBeat})";
         }
     }
 }
