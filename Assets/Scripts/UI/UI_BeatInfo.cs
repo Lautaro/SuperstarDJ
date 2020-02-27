@@ -18,10 +18,9 @@ public class UI_BeatInfo : MonoBehaviour
     void Update()
     {
         if ( MusicManager.RythmPosition.Measure != null  && MusicManager.RythmPosition.IsInHitArea == true)
-        {
-            
+        {   
             var measure = MusicManager.RythmPosition.Measure.index;
-            var beat = MusicManager.RythmPosition.Beat.index;
+            var beat = MusicManager.RythmPosition.Beat.positionInMeasure;
             text.text = $"{measure}:{beat}";
         }
         else

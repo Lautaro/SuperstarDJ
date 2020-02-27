@@ -112,7 +112,11 @@ namespace SuperstarDJ.Audio
         void UpdateRythmPosition()
         {
             var currentPositionInClip = trackManager.GetCurrentSamplePositionOfSong ();
-            rythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
+            var newRythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
+            if ( newRythmPosition.Tick.Id  != rythmPosition.Tick.Id )
+            {
+                Debug.Log ( "The beat goes on! " + $"{newRythmPosition.Beat.positionInMeasure}-{newRythmPosition.Tick.positionInBeat}" );
+            }
         }
         #endregion
     }
