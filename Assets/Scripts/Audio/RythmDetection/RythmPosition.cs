@@ -11,15 +11,17 @@ namespace SuperstarDJ.Audio
     {
         public readonly Tick Tick;
         public readonly Beat Beat;
+        public readonly bool IsInHitArea;
         public readonly Measure Measure;
         public readonly Double Position; 
 
-        public RythmPosition(Tick tick, Beat beat, Measure measure, double position)
+        public RythmPosition(Tick tick, Beat beat, Measure measure, double position, bool isInHitArea)
         {
             Tick = tick;
             Beat = beat;
             Measure = measure;
             Position = position;
+            IsInHitArea = isInHitArea;
         }
 
         public override string ToString()

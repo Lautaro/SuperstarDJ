@@ -14,6 +14,11 @@ namespace SuperstarDJ.Audio.RythmDetection
         public List<Tick> ticks;
         double startsAt;
         double endsAt;
+        double hitAreaEndsAt;
+        public bool isInHitArea(double samplePosition)
+        {
+            return samplePosition >= startsAt && samplePosition <= hitAreaEndsAt;
+        }
         public Beat(int _index, Measure parent, int amountOfTicks, double beatDuration, double measureStartsAt )
         {
             index = _index;
@@ -28,6 +33,8 @@ namespace SuperstarDJ.Audio.RythmDetection
             {
                 ticks.Add ( new Tick ( i+1, this, ticksDuration, startsAt ) );
             }
+
+            hitAreaEndsAt = ticks[0].endsAt;
         }
 
         public void DebugTicks()

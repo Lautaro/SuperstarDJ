@@ -6,7 +6,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         public int index;
         public readonly Beat parentBeat;
         double startsAt;
-        double endsAt;
+        internal double endsAt;
         public Tick( int _index, Beat _parentBeat, double ticksDuration, double parentStartsAt )
         {
             index = _index;
