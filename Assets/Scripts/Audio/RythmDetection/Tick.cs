@@ -3,15 +3,18 @@ namespace SuperstarDJ.Audio.RythmDetection
     {
     public struct Tick
     {
-        public int index;
+        static int nextId = 0;
+        public int positionInBeat;
         public readonly Beat parentBeat;
         double startsAt;
-        double endsAt;
+        internal double endsAt;
+        public int Id;
         public Tick( int _index, Beat _parentBeat, double ticksDuration, double parentStartsAt )
         {
-            index = _index;
-            startsAt = ticksDuration * ( index - 1 ) + parentStartsAt;
-            endsAt = ( ticksDuration * index ) + parentStartsAt;
+            Id = nextId++;
+            positionInBeat = _index;
+            startsAt = ticksDuration * ( positionInBeat - 1 ) + parentStartsAt;
+            endsAt = ( ticksDuration * positionInBeat ) + parentStartsAt;
             parentBeat = _parentBeat;
         }
 

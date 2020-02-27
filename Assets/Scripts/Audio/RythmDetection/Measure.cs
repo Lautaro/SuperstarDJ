@@ -13,6 +13,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         public List<Beat> beats;
         double startsAt;
         double endsAt;
+        double hitAreaEndsAt;
 
         public Measure( int _index,  int amountOfBeats, int amountOfTicks, double measureDuration )
         {
@@ -20,7 +21,7 @@ namespace SuperstarDJ.Audio.RythmDetection
             beats = new List<Beat> ();
             startsAt = measureDuration * (index - 1);
             endsAt = (measureDuration * index) ;
-
+            
             var beatsDuration = measureDuration / amountOfBeats;
             for ( int i = 0; i < amountOfBeats; i++ )
             {
@@ -32,7 +33,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         {
             foreach ( var beat in beats )
             {
-                Debug.Log ( $"  {beat.index}B - {beat.TicksToString()}" );
+                Debug.Log ( $"  {beat.positionInMeasure}B - {beat.TicksToString()}" );
                 
             }
         }
