@@ -9,7 +9,7 @@ namespace SuperstarDJ.Audio.RythmDetection
 {
     public class Beat
     {
-        public int positionInMeasure;
+        public int index;
         public readonly Measure parentMeasure;
         public List<Tick> ticks;
         double startsAt;
@@ -21,12 +21,12 @@ namespace SuperstarDJ.Audio.RythmDetection
         }
         public Beat(int _index, Measure parent, int amountOfTicks, double beatDuration, double measureStartsAt )
         {
-            positionInMeasure = _index;
+            index = _index;
             parentMeasure = parent;
             ticks = new List<Tick> ();
 
-            startsAt = beatDuration * ( positionInMeasure - 1 ) + measureStartsAt;
-            endsAt = ( beatDuration * positionInMeasure ) + measureStartsAt;
+            startsAt = beatDuration * ( index - 1 ) + measureStartsAt;
+            endsAt = ( beatDuration * index ) + measureStartsAt;
             var ticksDuration = beatDuration / amountOfTicks;
 
             for ( int i = 0; i < amountOfTicks; i++ )
@@ -39,12 +39,12 @@ namespace SuperstarDJ.Audio.RythmDetection
 
         public void DebugTicks()
         {
-            Debug.Log ( $"         { string.Join(", ", ticks.Select(t => t.positionInBeat))}" );
+            Debug.Log ( $"         { string.Join(", ", ticks.Select(t => t.index))}" );
         }
 
         internal string TicksToString()
         {
-            return  string.Join ( ", ", ticks.Select ( t => t.positionInBeat ) ) ;
+            return  string.Join ( ", ", ticks.Select ( t => t.index ) ) ;
         }
     }
 }

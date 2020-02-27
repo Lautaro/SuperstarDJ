@@ -23,7 +23,7 @@ public class VisualMetronome : MonoBehaviour
     {
         if ( rythmPosition.Beat != null )
         {
-            var index = rythmPosition.Beat.positionInMeasure -1;
+            var index = rythmPosition.Beat.index -1;
             blips.ForEach ( t => t.localScale = blipDefaultSize);
             blips[index].localScale *= 2;
         }
