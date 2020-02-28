@@ -8,8 +8,6 @@ namespace MessageSystem
 {
     public enum MessageTopics
     {
-        SomethingHappened_Vector2,
-        GameOn,
-        GameOver
+        DisplayUI_FX_string
     }
 }

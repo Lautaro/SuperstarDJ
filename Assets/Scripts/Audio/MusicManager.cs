@@ -11,6 +11,8 @@ using SuperstarDJ.Audio.RythmDetection;
 using SuperstarDJ.Mechanics;
 using SuperstarDJ.Enums;
 using UnityEngine.SceneManagement;
+using MessageSystem;
+using Assets.Scripts.Enums;
 
 namespace SuperstarDJ.Audio
 {
@@ -91,6 +93,7 @@ namespace SuperstarDJ.Audio
             if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea)
             {
                 Debug.Log ( rythmPosition.ToString () + $"  ({rythmPosition.Position})" );
+                MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
             }
         }
         private void LoadTracksAndSpawnRecords()
