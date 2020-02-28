@@ -17,7 +17,7 @@ public class UI_BeatInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( MusicManager.RythmPosition.Measure != null  && MusicManager.RythmPosition.IsInHitArea == true)
+        if ( MusicManager.RythmPosition.Measure != null  && MusicManager.RythmPosition.IsInHitArea())
         {
             
             var measure = MusicManager.RythmPosition.Measure.index;

@@ -13,6 +13,7 @@ namespace MessageSystem
     public class MessageHub
     {
         static List<MessageType> messageRegistrations = new List<MessageType> ();
+        static public bool DebugEnabled = false;
 
         public static void SubscribeWithId( MessageTopics messageName, UnityAction<Message> subscriber, string id )
         {
@@ -22,8 +23,6 @@ namespace MessageSystem
                 Debug.LogWarning ( $"subscriber is trying to subsribe to a topic that its already subscribed to! Subscriber ID :{id} Message name :{messageName}  " );
                 return;
             }
-
-            // MAKE SURE ACTION AND T HAS SAME TYPE!
 
             MessageType messageType = messageRegistrations.FirstOrDefault ( s => s.Topic == messageName );
 
@@ -65,9 +64,11 @@ namespace MessageSystem
         public static void PublishNews<T>( MessageTopics topic, T message )
         {
             var registration = messageRegistrations.FirstOrDefault ( s => s.Topic == topic );
-            if ( registration == null )
+            if ( registration == null  )
             {
-                Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
+                if ( DebugEnabled )   Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
+  
+                return; 
             }
             registration.PublishThis<T> ( message );
         }

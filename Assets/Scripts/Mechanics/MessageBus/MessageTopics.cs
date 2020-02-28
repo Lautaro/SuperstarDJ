@@ -8,6 +8,8 @@ namespace MessageSystem
 {
     public enum MessageTopics
     {
-        DisplayUI_FX_string
+        DisplayUI_FX_string, 
+        NextBeat_string,
+        NextMeasure_string
     }
 }

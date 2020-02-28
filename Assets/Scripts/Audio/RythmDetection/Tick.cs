@@ -15,9 +15,11 @@ namespace SuperstarDJ.Audio.RythmDetection
             parentBeat = _parentBeat;
         }
 
-        public bool  HasPosition( double sampleTimePosition )
-        {
-            return sampleTimePosition >= startsAt && sampleTimePosition <= endsAt;
+        public bool  HasPosition( double sampleTimePosition)
+        {  
+            bool checkStartPosition = sampleTimePosition >= startsAt;
+            bool checkEndPosition =  sampleTimePosition  <= endsAt;
+            return checkStartPosition && checkEndPosition;
         }
     }
 }

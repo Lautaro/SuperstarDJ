@@ -61,6 +61,7 @@ namespace SuperstarDJ.Audio
         public DOTweenAnimation BeatMark;
         RythmPositionTracker rythmPositionTracker;
         RythmPosition rythmPosition;
+
         static public RythmPosition RythmPosition { get {
                 return instance.rythmPosition;
             }}
@@ -85,14 +86,15 @@ namespace SuperstarDJ.Audio
         {
             var trackDuration = trackManager.Duration;
             rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+            //rythmPosition = rythmPositionTracker.GetPositionInRythm ();
         }
 
         void Beat()
         {
             //    BeatMark.DORewindAndPlayNext ();
-            if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea)
+            if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea())
             {
-                Debug.Log ( rythmPosition.ToString () + $"  ({rythmPosition.Position})" );
+                Debug.Log ( rythmPosition.ToString ()  );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
             }
         }
@@ -107,16 +109,11 @@ namespace SuperstarDJ.Audio
         {
             if ( trackManager.GetPlayingTracks ().Count > 0 )
             {
-                UpdateRythmPosition ();
+                rythmPosition = rythmPositionTracker.UpdateCurrentRythmPosition ( rythmPosition, trackManager.GetCurrentSamplePositionOfSong());
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
             }
         }
 
-        void UpdateRythmPosition()
-        {
-            var currentPositionInClip = trackManager.GetCurrentSamplePositionOfSong ();
-            rythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
-        }
         #endregion
     }
 }

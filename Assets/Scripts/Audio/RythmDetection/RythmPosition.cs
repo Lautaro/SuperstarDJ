@@ -11,17 +11,20 @@ namespace SuperstarDJ.Audio
     {
         public readonly Tick Tick;
         public readonly Beat Beat;
-        public readonly bool IsInHitArea;
         public readonly Measure Measure;
-        public readonly Double Position; 
-
-        public RythmPosition(Tick tick, Beat beat, Measure measure, double position, bool isInHitArea)
+        public readonly Double Position;
+        
+        public RythmPosition(Tick tick, Beat beat, Measure measure, double position)
         {
             Tick = tick;
             Beat = beat;
             Measure = measure;
             Position = position;
-            IsInHitArea = isInHitArea;
+        }
+
+        public bool IsInHitArea()
+        {
+            return Tick.index == 1  || Tick.index == 3;
         }
 
         public override string ToString()
