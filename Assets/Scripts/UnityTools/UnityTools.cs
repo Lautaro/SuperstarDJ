@@ -37,17 +37,5 @@ namespace SuperstarDJ.DynamicMusic
             return new Vector3 ( size, size, size );
         }
 
-        public static TrackNames TrackNameFromString( string trackName )
-        {
-            TrackNames name;
-            if ( Enum.TryParse ( trackName, out name ) )
-            {
-                return name;
-            }
-            else
-            {   
-                throw new System.InvalidOperationException ( "You are trying to parse a string to a TrackName enum that doesnt exist. Bad boy! Not found: "+ trackName );
-            };
-        }
     }
 }

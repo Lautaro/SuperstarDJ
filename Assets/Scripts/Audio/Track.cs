@@ -20,11 +20,11 @@ namespace SuperstarDJ.DynamicMusic
         public string Abreviation;
         public float VolumeModification;
 
-        public TrackNames TrackName
+        public string TrackName
         {
             get
             {
-                return UnityTools.TrackNameFromString ( clipName );
+                return clipName ;
             }
         }
 

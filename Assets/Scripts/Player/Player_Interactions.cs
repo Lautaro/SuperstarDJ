@@ -130,7 +130,8 @@ public class Player_Interactions : MonoBehaviour
         // IF RECORD EXISTS 
         if ( turnTableWithRecord != null )
         {
-            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName.ToString());
+            var track = 
+                turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName;
             if ( play == true )
             {
                 MusicManager.PlayTrack ( track );

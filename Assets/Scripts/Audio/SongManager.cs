@@ -35,7 +35,7 @@ namespace SuperstarDJ.DynamicMusic
         internal double ScheduledToStartAt { get; private set; }
         //  internal double EndsPlayingDspTime { get; set; }
         public SongManager( List<Track> tracks ) => Tracks = tracks; //CTOR
-        void StartSong( List<TrackNames> playsAtStart )
+        void StartSong( List<string> playsAtStart )
         {
             var dspTime = GetDspTime () + paddingTime;
             ScheduledToStartAt = dspTime;
@@ -69,7 +69,7 @@ namespace SuperstarDJ.DynamicMusic
                 track.Source ().Stop ();
             }
         }
-        public TrackNames[] TracksPlaying()
+        public string[] TracksPlaying()
         {
             return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
 
@@ -96,11 +96,9 @@ namespace SuperstarDJ.DynamicMusic
         //}
         public bool IsTrackPlaying( string trackName )
         {
-            var _trackName = UnityTools.TrackNameFromString ( trackName );
-            return Tracks.Any ( t => t.TrackName == _trackName && t.IsPlaying );
-
+            return Tracks.Any ( t => t.TrackName == trackName && t.IsPlaying );
         }
-        public void DebugSound( TrackNames trackName, int playAtSample = 0, float volume = 1f )
+        public void DebugSound( string trackName, int playAtSample = 0, float volume = 1f )
         {
             var track = GetTrackByName ( trackName );
             track.Source ().timeSamples = 100000;
@@ -113,23 +111,23 @@ namespace SuperstarDJ.DynamicMusic
             return Tracks.Where ( t => t.IsPlaying == true ).ToList ();
         }
 
-        public void StopTrack( TrackNames name )
+        public void StopTrack( string trackName )
         {
-            GetTrackByName ( name ).Source ().Stop ();
+            GetTrackByName ( trackName ).Source ().Stop ();
         }
-        public void PlayTrack( TrackNames name )
+        public void PlayTrack( string trackName )
         {
             if ( GetPlayingTracks ().Count () < 1 )
             {
-                StartSong ( new List<TrackNames> () { name } );
+                StartSong ( new List<string> () { trackName } );
             }
 
-            var track = GetTrackByName ( name );
+            var track = GetTrackByName ( trackName );
             StartTrack ( track, GetCurrentSamplePositionOfSong () );
         }
-        public Track GetTrackByName( TrackNames name )
+        public Track GetTrackByName( string trackName )
         {
-            return Tracks.First ( t => t.TrackName == name );
+            return Tracks.First ( t => t.TrackName == trackName );
         }
     }
 }

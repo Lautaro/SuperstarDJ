@@ -17,7 +17,7 @@ public class Turntable : MonoBehaviour
         HeldItem.transform.position = transform.position;
         ResetRotationOfPlacedObject();
 
-        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<Record> ().Track.TrackName.ToString() );
+        var trackName = objectToPlace.GetComponent<Record> ().Track.TrackName;
 
         if (objectToPlace != null)
         {   
@@ -43,7 +43,7 @@ public class Turntable : MonoBehaviour
         HeldItem = null;
         if (returnObject != null)
         {
-            var trackName = UnityTools.TrackNameFromString( returnObject.GetComponent<Record>().Track.TrackName.ToString() );
+            var trackName = returnObject.GetComponent<Record>().Track.TrackName;
             MusicManager.StopTrack( trackName );
         }
         return returnObject;

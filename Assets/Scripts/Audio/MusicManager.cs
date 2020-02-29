@@ -28,12 +28,12 @@ namespace SuperstarDJ.Audio
         #region Static Methods
         static MusicManager instance;
 
-        public static void PlayTrack( TrackNames track )
+        public static void PlayTrack( string track )
         {
             instance.trackManager.PlayTrack ( track );
         }
 
-        public static void StopTrack( TrackNames track )
+        public static void StopTrack( string track )
         {
             instance.trackManager.StopTrack ( track );
         }
@@ -47,7 +47,7 @@ namespace SuperstarDJ.Audio
 
         }
 
-        public static TrackNames[] TracksPlaying()
+        public static string[] TracksPlaying()
         {
             return instance.trackManager.TracksPlaying ();
         }

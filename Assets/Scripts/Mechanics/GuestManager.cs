@@ -92,7 +92,7 @@ public class GuestManager : MonoBehaviour
             // Save all active fav track and add satisfaction
             foreach (var favTrack in favouriteTracks)
             {
-                if ( MusicManager.IsTrackPlaying ( favTrack ));
+                if ( MusicManager.IsTrackPlaying ( favTrack ))
                 {
                     satisfactionMod += SatisfactionBoost;
                     activeFavTracks.Add(favTrack);

@@ -76,12 +76,6 @@ public static class TrackAndRecordLoading
                 metaDataDics.Add ( dic );
             }
 
-            var enums = Enum.GetValues ( typeof ( TrackNames ) ).Length;
-            if ( metaDataDics.Count () != enums )
-            {
-                Debug.LogError ( $"The amount of tracks in the TrackName enum is not the same as the amount of tracks specidfied in the settings file. Enums={enums} - Tracks in settings = {metaDataDics.Count () } " );
-
-            }
             return metaDataDics;
         }
         #endregion
