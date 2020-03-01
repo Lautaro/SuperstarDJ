@@ -26,7 +26,7 @@ namespace SuperstarDJ.Audio
         #endregion
 
         #region Static Methods
-        static MusicManager instance;
+        public static MusicManager instance;
 
         public static void PlayTrack( string track )
         {
