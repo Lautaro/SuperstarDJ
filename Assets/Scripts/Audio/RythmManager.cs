@@ -15,7 +15,7 @@ using Assets.Scripts.Enums;
 
 namespace SuperstarDJ.Audio
 {
-    public class MusicManager : MonoBehaviour
+    public class RythmManager : MonoBehaviour
     {
 
         #region Rythm Settings
@@ -25,7 +25,7 @@ namespace SuperstarDJ.Audio
         #endregion
 
         #region Static Methods
-        public static MusicManager instance;
+        public static RythmManager instance;
 
         public static void PlayTrack( string track )
         {
@@ -77,7 +77,7 @@ namespace SuperstarDJ.Audio
             }
             else
             {
-                Debug.LogError ( "There can only be one MusicManager. A second one has been instantiated! " );
+                Debug.LogError ( "There can only be one RythmManager. A second one has been instantiated! " );
             }
         }
 
@@ -99,8 +99,8 @@ namespace SuperstarDJ.Audio
         }
         private void LoadTracksAndSpawnRecords()
         {
-            var tracks = TrackAndRecordLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
-            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
+            var tracks = AudioLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
+            var records = AudioLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
             trackManager = new SongManager ( tracks );
         }
 

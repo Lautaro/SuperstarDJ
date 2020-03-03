@@ -17,11 +17,11 @@ public class UI_BeatInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( MusicManager.RythmPosition.Measure != null  && MusicManager.RythmPosition.IsInHitArea())
+        if ( RythmManager.RythmPosition.Measure != null  && RythmManager.RythmPosition.IsInHitArea())
         {
             
-            var measure = MusicManager.RythmPosition.Measure.index;
-            var beat = MusicManager.RythmPosition.Beat.index;
+            var measure = RythmManager.RythmPosition.Measure.index;
+            var beat = RythmManager.RythmPosition.Beat.index;
             text.text = $"{measure}:{beat}";
         }
         else

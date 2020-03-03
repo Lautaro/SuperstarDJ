@@ -69,8 +69,8 @@ namespace SuperstarDJ.Audio.RythmDetection
 
             if ( previousRp.Beat.index != rythmPosition.Beat.index )
             {
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NextBeat_string, rythmPosition );
-             if( DebugEnabled )   Debug.Log ( "NewBeat: " + rythmPosition.Beat.index  + $"({ currentPositionInClip})");
+                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRyhtmPosition, rythmPosition );
+             if( DebugEnabled )   Debug.Log ( "Beat: " + rythmPosition.Beat.index  + $"({ currentPositionInClip})");
             }
             return rythmPosition;
         }

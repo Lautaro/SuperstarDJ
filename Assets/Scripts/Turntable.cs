@@ -21,12 +21,12 @@ public class Turntable : MonoBehaviour
 
         if (objectToPlace != null)
         {   
-            MusicManager.PlayTrack ( trackName );
+            RythmManager.PlayTrack ( trackName );
         }
 
         if (returnObject != null)
         {
-            MusicManager.StopTrack( trackName );
+            RythmManager.StopTrack( trackName );
         }
         return returnObject;
     }
@@ -44,7 +44,7 @@ public class Turntable : MonoBehaviour
         if (returnObject != null)
         {
             var trackName = returnObject.GetComponent<Record>().Track.TrackName;
-            MusicManager.StopTrack( trackName );
+            RythmManager.StopTrack( trackName );
         }
         return returnObject;
     }

@@ -17,7 +17,7 @@ namespace SuperstarDJ.CustomEditors
 
             // Nifty little trick to quickly position the window in the middle of the editor.
             window.position = GUIHelper.GetEditorWindowRect().AlignCenter(700, 700);
-            //MusicManager = MusicManager.instance;
+            //RythmManager = RythmManager.instance;
         }
 
         //protected override object GetTarget()
@@ -29,7 +29,7 @@ namespace SuperstarDJ.CustomEditors
         [InfoBox("Inherit from OdinEditorWindow instead of EditorWindow in order to create editor windows like you would inspectors - by exposing members and using attributes.")]
         public ViewTool SomeField;
 
-        public MusicManager MusicManager = MusicManager.instance;
+        public RythmManager RythmManager = RythmManager.instance;
     }
 }
 #endif

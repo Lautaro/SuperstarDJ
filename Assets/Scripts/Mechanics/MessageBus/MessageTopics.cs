@@ -9,7 +9,7 @@ namespace MessageSystem
     public enum MessageTopics
     {
         DisplayUI_FX_string, 
-        NextBeat_string,
+        NewRyhtmPosition,
         NextMeasure_string
     }
 }

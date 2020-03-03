@@ -92,7 +92,7 @@ public class GuestManager : MonoBehaviour
             // Save all active fav track and add satisfaction
             foreach (var favTrack in favouriteTracks)
             {
-                if ( MusicManager.IsTrackPlaying ( favTrack ))
+                if ( RythmManager.IsTrackPlaying ( favTrack ))
                 {
                     satisfactionMod += SatisfactionBoost;
                     activeFavTracks.Add(favTrack);
@@ -102,7 +102,7 @@ public class GuestManager : MonoBehaviour
             // Save all active worst track and reduce satisfaction
             foreach (var worstTrack in worstTracks)
             {
-                if (MusicManager.IsTrackPlaying(worstTrack))
+                if (RythmManager.IsTrackPlaying(worstTrack))
                 {
                     satisfactionMod -= SatisfactionDamage;
                     activeWorstTracks.Add(worstTrack);
@@ -110,7 +110,7 @@ public class GuestManager : MonoBehaviour
             }
 
             // IF NOTHING IS PLAYING MOD SHOULD BE NEGATIVE
-            if (MusicManager.TracksPlaying().Length == 0)
+            if (RythmManager.TracksPlaying().Length == 0)
             {
                 satisfactionMod = -SatisfactionDamage;
             }

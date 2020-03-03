@@ -110,7 +110,7 @@ public class Player_Interactions : MonoBehaviour
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
-            MusicManager.BeatNow ();
+            RythmManager.BeatNow ();
         }
 
         if ( Input.GetKeyUp ( KeyCode.Space ) )
@@ -134,11 +134,11 @@ public class Player_Interactions : MonoBehaviour
                 turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName;
             if ( play == true )
             {
-                MusicManager.PlayTrack ( track );
+                RythmManager.PlayTrack ( track );
             }
             else
             {
-                MusicManager.StopTrack ( track );
+                RythmManager.StopTrack ( track );
             };
         }
     }

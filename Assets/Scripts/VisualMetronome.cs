@@ -26,10 +26,10 @@ public class VisualMetronome : MonoBehaviour
     void Update()
     {
         text.text = "";
-        if ( MusicManager.RythmPosition.Measure != null )
+        if ( RythmManager.RythmPosition.Measure != null )
         {
             blips.ForEach ( t => t.localScale = blipDefaultSize );
-            rythmPosition = MusicManager.RythmPosition;
+            rythmPosition = RythmManager.RythmPosition;
             text.text = $"[{rythmPosition.Measure.index}] - {rythmPosition.Beat.index}";
             var index = rythmPosition.Beat.index - 1;
             blips[index].localScale *= 2;

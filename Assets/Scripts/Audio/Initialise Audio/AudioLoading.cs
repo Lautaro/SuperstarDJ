@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace SuperstarDJ.Audio.InitialiseAudio
 {
-public static class TrackAndRecordLoading
+public static class AudioLoading
     {
         static List<Dictionary<string, string>> trackMetadata;
         public static List<Track> Load( string path,string musicSettingsFile, Func<Track> TrackFactory )
