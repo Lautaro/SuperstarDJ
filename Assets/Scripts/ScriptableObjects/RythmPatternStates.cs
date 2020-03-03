@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SuperstarDJ.Audio.RythmDetection
 {
-    public enum RythmPatternEvents
+    public enum  RythmPatternStates
     {
-        TrackStarts, 
-        TrackStops
+        None, 
+        Accent,
+        Hold
     }
 }
