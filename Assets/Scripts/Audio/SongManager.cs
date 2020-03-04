@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using MessageSystem;
 
 
 namespace SuperstarDJ.DynamicMusic
 {
-
-    /// <summary>
-    /// Clas Nested in SongySong class
-    /// </summary>
     class SongManager
     {
 
@@ -56,6 +53,9 @@ namespace SuperstarDJ.DynamicMusic
             track.Source ().timeSamples = startFromSamplePosition;
             track.Source ().volume = track.VolumeModification;
             track.Source ().PlayScheduled ( GetDspTime ( true ) );
+
+            MessageHub.PublishNews<Track> ( MessageTopics.TrackStarted_Track, track );
+            
         }
 
         void StopSong()
@@ -109,7 +109,9 @@ namespace SuperstarDJ.DynamicMusic
 
         public void StopTrack( string trackName )
         {
-            GetTrackByName ( trackName ).Source ().Stop ();
+            var track = GetTrackByName ( trackName );
+            track.Source ().Stop ();
+            MessageHub.PublishNews<Track> ( MessageTopics.TrackStopped_Track, track );
         }
         public void PlayTrack( string trackName )
         {

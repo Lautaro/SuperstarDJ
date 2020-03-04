@@ -1,6 +1,6 @@
 ﻿namespace SuperstarDJ.Audio.RythmDetection
 {
-    internal enum SuccesState
+    public enum SuccesState
     {
         Waiting,
         Sucess, 

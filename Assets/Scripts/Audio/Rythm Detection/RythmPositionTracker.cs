@@ -61,17 +61,11 @@ namespace SuperstarDJ.Audio.RythmDetection
 
             if ( previousRp.Measure == null ) return rythmPosition;
 
-            if ( previousRp.Measure.index != rythmPosition.Measure.index )
+            if ( previousRp.Tick.index != rythmPosition.Tick.index )
             {
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NextMeasure_string, rythmPosition );
-                if ( DebugEnabled ) Debug.Log ( $"------ {rythmPosition.Measure.index} ------ ({currentPositionInClip})" );
+                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, rythmPosition );
             }
 
-            if ( previousRp.Beat.index != rythmPosition.Beat.index )
-            {
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRyhtmPosition, rythmPosition );
-             if( DebugEnabled )   Debug.Log ( "Beat: " + rythmPosition.Beat.index  + $"({ currentPositionInClip})");
-            }
             return rythmPosition;
         }
     }
