@@ -1,25 +1,30 @@
 ﻿
 namespace SuperstarDJ.Audio.RythmDetection
-    {
+{
     public struct Tick
     {
-        public int index;
-        public readonly Beat parentBeat;
-        double startsAt;
-        internal double endsAt;
-        public Tick( int _index, Beat _parentBeat, double ticksDuration, double parentStartsAt )
+        public readonly int Index;
+        //public readonly Beat parentBeat;
+        public readonly double TickStartsAt;
+        public readonly int Measure;
+        public readonly  int Beat; 
+        //double _hitRangeStart;
+        //double _hitRangeEnd;
+        public Tick( int _index, double tickStartsAt,int beatIndex, int measureIndex )
         {
-            index = _index;
-            startsAt = ticksDuration * ( index - 1 ) + parentStartsAt;
-            endsAt = ( ticksDuration * index ) + parentStartsAt;
-            parentBeat = _parentBeat;
+            Index = _index;
+            Measure = measureIndex;
+            Beat = beatIndex;
+            TickStartsAt = tickStartsAt;
+
+            //_hitRangeStart = hitRangeStart;
+            //_hitRangeEnd = hitRangeEnd;
         }
 
-        public bool  HasPosition( double sampleTimePosition)
-        {  
-            bool checkStartPosition = sampleTimePosition >= startsAt;
-            bool checkEndPosition =  sampleTimePosition  <= endsAt;
-            return checkStartPosition && checkEndPosition;
-        }
+        //public bool IsWithinHitRange( double sampleTimePosition )
+        //{
+        //    return sampleTimePosition >= _hitRangeStart
+        //        && sampleTimePosition <= _hitRangeEnd;
+        //}
     }
 }
