@@ -43,6 +43,9 @@ public class Player_Movement : MonoBehaviour
                 movement += new Vector3 ( 0,-Speed );
             }
 
+
+
+
             if ( movement.x > 0 && FacesLeft  ) {
                 FacesLeft = false;
                 Hand.transform.localScale = new Vector3 ( 1, 1 );

@@ -65,6 +65,19 @@ public class Player_Interactions : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if ( Input.GetKey ( KeyCode.Return ) )
+        {
+            MusicManager.instance.SlowPitch ();
+        }
+        else if ( Input.GetKey ( KeyCode.RightShift ) )
+        {
+            MusicManager.instance.FasterPitch ();
+        }
+        else
+        {
+            MusicManager.instance.UpdatePicth ();
+        }
+
         if ( Input.GetKeyDown ( KeyCode.U ) )
         {
             if ( Carrying != null )
@@ -130,7 +143,7 @@ public class Player_Interactions : MonoBehaviour
         // IF RECORD EXISTS 
         if ( turnTableWithRecord != null )
         {
-            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName.ToString());
+            var track = UnityTools.TrackNameFromString ( turnTableWithRecord.HeldItem.GetComponent<Record> ().Track.TrackName.ToString () );
             if ( play == true )
             {
                 MusicManager.PlayTrack ( track );

@@ -16,6 +16,8 @@ namespace SuperstarDJ.DynamicMusic
     class SongManager
     {
 
+        float pitchChangeSpeed = 0.3f;
+
         List<Track> Tracks;
         public bool IsPlaying
         {
@@ -24,7 +26,7 @@ namespace SuperstarDJ.DynamicMusic
                 return Tracks.Any ( t => t.IsPlaying );
             }
         }
-        static double paddingTime = 0.01;
+        static double paddingTime = 0.1;
         public double Duration
         {
             get
@@ -82,6 +84,60 @@ namespace SuperstarDJ.DynamicMusic
             if ( referenceTrack == null ) { return 0; }
             return referenceTrack.Source ().timeSamples;
         }
+
+        internal void SlowPitch()
+        {
+            if ( Tracks[0].Source ().pitch > 0.1 )
+            {
+                Tracks.ForEach ( t => t.Source ().pitch -= pitchChangeSpeed );
+            }
+            else
+            {
+                FasterPitch ();
+            }
+        }
+
+        internal void FasterPitch()
+        {
+            if ( Tracks[0].Source ().pitch < 2 )
+            {
+                Tracks.ForEach ( t => t.Source ().pitch += pitchChangeSpeed );
+            }
+            else
+            {
+                SlowPitch ();
+            }
+        }
+
+
+        internal void UpdatePitch()
+        {
+
+            if ( Tracks[0].Source ().pitch == 1 )
+            {
+                return;
+            }
+
+                if ( Tracks[0].Source ().pitch < 1 )
+            {
+                Tracks.ForEach ( t => t.Source ().pitch += pitchChangeSpeed );
+                if ( Tracks[0].Source ().pitch > 1 )
+                {
+                    Tracks.ForEach ( t => t.Source ().pitch = 1f );
+                }
+            }
+
+            if ( Tracks[0].Source ().pitch > 1 )
+            {
+                Tracks.ForEach ( t => t.Source ().pitch -= pitchChangeSpeed );
+                if ( Tracks[0].Source ().pitch <1 )
+                {
+                    Tracks.ForEach ( t => t.Source ().pitch = 1f );
+                }
+            }
+
+        }
+
         //public double GetCurrentSamplePositionOfSong()
         //{
         //    var referenceTrack = Tracks.First ( t => t.IsPlaying == true );

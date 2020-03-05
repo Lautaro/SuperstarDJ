@@ -10,12 +10,12 @@ public class VisualMetronome : MonoBehaviour
     List<Transform> blips;
     Vector3 blipDefaultSize;
     RythmPosition rythmPosition;
-    TextMeshProUGUI text;
+   // TextMeshProUGUI text;
 
     // Start is called before the first frame update
     void Start()
     {
-        text = GetComponentInChildren<TextMeshProUGUI> ();
+    //    text = GetComponentInChildren<TextMeshProUGUI> ();
         blips = GetComponentsInChildren<Transform> ().Where ( t => t.name.Length == 1 ).ToList ();
         blipDefaultSize = blips[0].localScale;
         print ( $"Found {blips.Count} transforms" );
@@ -25,12 +25,12 @@ public class VisualMetronome : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        text.text = "";
+        //text.text = "";
         if ( MusicManager.RythmPosition.Measure != null )
         {
             blips.ForEach ( t => t.localScale = blipDefaultSize );
             rythmPosition = MusicManager.RythmPosition;
-            text.text = $"[{rythmPosition.Measure.index}] - {rythmPosition.Beat.index}";
+       //     text.text = $"[{rythmPosition.Measure.index}] - {rythmPosition.Beat.index}";
             if ( rythmPosition.IsInHitArea )
             {
                 var index = rythmPosition.Beat.index - 1;

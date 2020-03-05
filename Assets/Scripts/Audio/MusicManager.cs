@@ -24,7 +24,7 @@ namespace SuperstarDJ.Audio
         #endregion
 
         #region Static Methods
-        static MusicManager instance;
+       public static MusicManager instance;
 
         public static void PlayTrack( TrackNames track )
         {
@@ -83,6 +83,20 @@ namespace SuperstarDJ.Audio
         {
             var trackDuration = trackManager.Duration;
             rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+        }
+        public void FasterPitch()
+        {
+            trackManager.FasterPitch ();
+        }
+
+        public void SlowPitch()
+        {
+            trackManager.SlowPitch ();
+        }
+
+        public void UpdatePicth()
+        {
+            trackManager.UpdatePitch ();
         }
 
         void Beat()
