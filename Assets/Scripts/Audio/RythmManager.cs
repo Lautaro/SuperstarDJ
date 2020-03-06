@@ -91,7 +91,7 @@ namespace SuperstarDJ.Audio
         void Beat()
         {
             //    BeatMark.DORewindAndPlayNext ();
-            if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea())
+            if (  rythmPosition.WasHit)
             {
                 Debug.Log ( rythmPosition.ToString ()  );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );

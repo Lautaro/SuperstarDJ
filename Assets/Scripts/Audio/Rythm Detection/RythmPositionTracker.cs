@@ -25,47 +25,56 @@ namespace SuperstarDJ.Audio.RythmDetection
             var amountOfTicks = measuresPerLoop * beatsPerMeasure * ticksPerBeat;
             trackDuration = _trackDuration;
             var tickDuration = _trackDuration / amountOfTicks;
-
-            var paddingDuration = tickDuration * ( paddingInPercentage / 100 );
+            double multiplier =(double) paddingInPercentage / 100 ;
+            var paddingDuration = tickDuration * multiplier;
             ticks = new Tick[amountOfTicks];
 
-            for ( int i = 0; i < amountOfTicks; i++ )
+            var tickCounter = 0;
+
+            for ( int mi = 0; mi < measuresPerLoop; mi++ )
             {
-                var tickStartPosition = i * tickDuration;
-                var newTick = new Tick ( i , tickStartPosition, 0, 0 );
-
-                if ( i == 0 )
+                for ( int bi = 0; bi < beatsPerMeasure; bi++ )
                 {
-                    /*
-                     The first tick has a special hit area divided into two ranges.  
-                      1. starts with the padding at the  end of the track and ends with the end of the track
-                      2. starts at the beginning of the track and ends att the range of padding
-                     Both ranges maps to tick index 0 (the first tick)
-                     */
+                    for ( int ti = 0; ti < ticksPerBeat; ti++ )
+                    {
 
-                    double preRangeStart, preRangeEnd, postRangeStart, postRangeEnd;
-                    preRangeStart = trackDuration - paddingDuration;
-                    preRangeEnd = trackDuration;
-                    postRangeStart = 0;
-                    postRangeEnd = paddingDuration;
+                        var tickStartPosition = tickCounter * tickDuration;
+                        var newTick = new Tick ( tickCounter, tickStartPosition, bi, mi, ti );
 
-                    var preRange = new Vector2 ( (float)preRangeStart, ( float )preRangeEnd );
-                    var postRange = new Vector2 ( ( float )postRangeStart, ( float )postRangeEnd );
+                        if ( tickCounter == 0 )
+                        {
+                            /*
+                             The first tick has a special hit area divided into two ranges.  
+                              1.First  starts with the padding at the  end of the track and ends with the end of the track
+                              2. Second  starts at the beginning of the track and ends att the range of padding
+                             Both ranges maps to tick index 0 (the first tick)
+                             */
 
-                    HitRanges.Add ( preRange, 0 );
-                    HitRanges.Add ( postRange, 0 );
+                            double preRangeStart, preRangeEnd, postRangeStart, postRangeEnd;
+                            preRangeStart = trackDuration - paddingDuration;
+                            preRangeEnd = trackDuration;
+                            postRangeStart = 0;
+                            postRangeEnd = paddingDuration;
 
-                }
-                else
-                {
-                    // all Ticks except first will only have one hit range
-                    double hitAreaRangeStart, hitAreaRangeEnd;
-                    hitAreaRangeStart = tickStartPosition - paddingDuration;
-                    hitAreaRangeEnd = tickStartPosition + paddingDuration;
-                    var hitAreaRange = new Vector2 ( ( float )hitAreaRangeStart, ( float )hitAreaRangeEnd );
+                            var preRange = new Vector2 ( ( float )preRangeStart, ( float )preRangeEnd );
+                            var postRange = new Vector2 ( ( float )postRangeStart, ( float )postRangeEnd );
 
-                    HitRanges.Add ( hitAreaRange, i );
+                            HitRanges.Add ( preRange, 0 );
+                            HitRanges.Add ( postRange, 0 );
 
+                        }
+                        else
+                        {
+                            // all Ticks except first will only have one hit range
+                            double hitAreaRangeStart, hitAreaRangeEnd;
+                            hitAreaRangeStart = tickStartPosition - paddingDuration;
+                            hitAreaRangeEnd = tickStartPosition + paddingDuration;
+                            var hitAreaRange = new Vector2 ( ( float )hitAreaRangeStart, ( float )hitAreaRangeEnd );
+
+                            HitRanges.Add ( hitAreaRange, tickCounter );
+                        }
+                        tickCounter++;
+                    }
                 }
             }
 
@@ -104,7 +113,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         internal RythmPosition GetPositionInRythm( double position )
         {
             // Get index of hit tick. Vector X is hit range start and Y is hit range end
-            var isWithinHitRange = HitRanges.Any( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
+            var isWithinHitRange = HitRanges.Any ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
 
             var currentTick = ticks.First ( t => t.TickStartsAt <= position );
             if ( isWithinHitRange )
@@ -113,14 +122,14 @@ namespace SuperstarDJ.Audio.RythmDetection
 
                 if ( hitRangeTickIndex != currentTick.Index )
                 {
-                    throw new Exception ("Indexes of current and hitRange tick should be the same. Something is not right!");
+                    throw new Exception ( "Indexes of current and hitRange tick should be the same. Something is not right!" );
                 }
             }
-   
 
-        //    if ( tick.parentBeat == null ) { Debug.LogWarning ( "RythmPosition update found no matching tick at position :" + position ); };
 
-            return new RythmPosition ( currentTick, position, isWithinHitRange  );
+            //    if ( tick.parentBeat == null ) { Debug.LogWarning ( "RythmPosition update found no matching tick at position :" + position ); };
+
+            return new RythmPosition ( currentTick, position, isWithinHitRange );
         }
 
         internal RythmPosition UpdateCurrentRythmPosition( RythmPosition rythmPosition, int currentPositionInClip )

@@ -7,14 +7,17 @@ namespace SuperstarDJ.Audio.RythmDetection
         //public readonly Beat parentBeat;
         public readonly double TickStartsAt;
         public readonly int Measure;
-        public readonly  int Beat; 
+        public readonly  int Beat;
+        public readonly int IndexInBeat
+            ;
         //double _hitRangeStart;
         //double _hitRangeEnd;
-        public Tick( int _index, double tickStartsAt,int beatIndex, int measureIndex )
+        public Tick( int _index, double tickStartsAt,int beatIndex, int measureIndex, int _IndexInBeat )
         {
             Index = _index;
             Measure = measureIndex;
             Beat = beatIndex;
+            IndexInBeat = _IndexInBeat;
             TickStartsAt = tickStartsAt;
 
             //_hitRangeStart = hitRangeStart;
