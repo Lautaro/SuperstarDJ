@@ -24,30 +24,30 @@ namespace SuperstarDJ.Audio
         #endregion
 
         #region Static Methods
-       public static MusicManager instance;
+        public static MusicManager instance;
 
-        public static void PlayTrack( TrackNames track )
+        public static void PlayTrack(TrackNames track)
         {
-            instance.trackManager.PlayTrack ( track );
+            instance.trackManager.PlayTrack(track);
         }
 
-        public static void StopTrack( TrackNames track )
+        public static void StopTrack(TrackNames track)
         {
-            instance.trackManager.StopTrack ( track );
+            instance.trackManager.StopTrack(track);
         }
-        public static bool IsTrackPlaying( string trackName )
+        public static bool IsTrackPlaying(string trackName)
         {
-            return instance.trackManager.IsTrackPlaying ( trackName );
+            return instance.trackManager.IsTrackPlaying(trackName);
         }
         public static void BeatNow()
         {
-            instance.Beat ();
+            instance.Beat();
 
         }
 
         public static TrackNames[] TracksPlaying()
         {
-            return instance.trackManager.TracksPlaying ();
+            return instance.trackManager.TracksPlaying();
         }
         #endregion
 
@@ -59,75 +59,98 @@ namespace SuperstarDJ.Audio
         public DOTweenAnimation BeatMark;
         RythmPositionTracker rythmPositionTracker;
         RythmPosition rythmPosition;
-        static public RythmPosition RythmPosition { get {
+        static public RythmPosition RythmPosition
+        {
+            get
+            {
                 return instance.rythmPosition;
-            }}
+            }
+        }
         public bool MuteAudio;
         // Start is called before the first frame update
         void Awake()
         {
-            if ( instance == null )
+            if (instance == null)
             {
                 instance = this;
-                LoadTracksAndSpawnRecords ();
-                InitializeRythmPositionTracker ();
+                LoadTracksAndSpawnRecords();
+                InitializeRythmPositionTracker();
 
             }
             else
             {
-                Debug.LogError ( "There can only be one MusicManager. A second one has been instantiated! " );
+                Debug.LogError("There can only be one MusicManager. A second one has been instantiated! ");
             }
         }
 
         void InitializeRythmPositionTracker()
         {
             var trackDuration = trackManager.Duration;
-            rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+            rythmPositionTracker = new RythmPositionTracker(MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration);
         }
         public void FasterPitch()
         {
-            trackManager.FasterPitch ();
+            trackManager.FasterPitch();
         }
 
         public void SlowPitch()
         {
-            trackManager.SlowPitch ();
+            trackManager.SlowPitch();
         }
 
         public void UpdatePicth()
         {
-            trackManager.UpdatePitch ();
+            trackManager.UpdatePitch();
         }
 
         void Beat()
         {
             //    BeatMark.DORewindAndPlayNext ();
-            if ( rythmPosition.Measure != null && rythmPosition.IsInHitArea)
+            if (rythmPosition.Measure != null && rythmPosition.IsInHitArea)
             {
-                Debug.Log ( rythmPosition.ToString () + $"  ({rythmPosition.Position})" );
+                Debug.Log(rythmPosition.ToString() + $"  ({rythmPosition.Position})");
             }
         }
         private void LoadTracksAndSpawnRecords()
         {
-            var tracks = TrackAndRecordLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
-            var records = TrackAndRecordLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
-            trackManager = new SongManager ( tracks );
+            var tracks = TrackAndRecordLoading.Load(PathToAudio, SettingsFile, () => gameObject.AddComponent<Track>());
+            var records = TrackAndRecordLoading.GetRecordPrefabs(tracks, GameObject.Find("Dynamic Records").transform);
+            trackManager = new SongManager(tracks);
         }
 
         void Update()
         {
-            if ( trackManager.GetPlayingTracks ().Count > 0 )
+            if (trackManager.GetPlayingTracks().Count > 0)
             {
-                UpdateRythmPosition ();
+                UpdateRythmPosition();
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
             }
-        }
 
-        void UpdateRythmPosition()
-        {
-            var currentPositionInClip = trackManager.GetCurrentSamplePositionOfSong ();
-            rythmPosition = rythmPositionTracker.GetPositionInRythm ( currentPositionInClip );
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                var cube = transform.Find("DerpCube");
+                //   cube.DOPunchScale(cube.transform.localScale * 2, 0.25f, 2, 1f);
+                var MYvalue = cube.transform.localScale.x;
+                DOTween.To(() => MYvalue, x => MYvalue = x, 1f, 1f)
+                    .OnUpdate(() =>
+                    {
+                        MYvalue = Mathf.Sin(MYvalue * Mathf.Rad2Deg);
+                        cube.transform.localScale = new Vector3(MYvalue, 1, 1);
+                        Debug.Log(MYvalue);
+                    });
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                trackManager.ScratchPitch();
+            }
+
+            void UpdateRythmPosition()
+            {
+                var currentPositionInClip = trackManager.GetCurrentSamplePositionOfSong();
+                rythmPosition = rythmPositionTracker.GetPositionInRythm(currentPositionInClip);
+            }
+            #endregion
         }
-        #endregion
     }
 }

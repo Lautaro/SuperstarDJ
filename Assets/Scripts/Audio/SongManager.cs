@@ -1,4 +1,5 @@
-﻿using SuperstarDJ.Audio.Enums;
+﻿using DG.Tweening;
+using SuperstarDJ.Audio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +17,14 @@ namespace SuperstarDJ.DynamicMusic
     class SongManager
     {
 
-        float pitchChangeSpeed = 0.3f;
+        float pitchChangeSpeed = 0.5f;
 
         List<Track> Tracks;
         public bool IsPlaying
         {
             get
             {
-                return Tracks.Any ( t => t.IsPlaying );
+                return Tracks.Any(t => t.IsPlaying);
             }
         }
         static double paddingTime = 0.1;
@@ -36,103 +37,128 @@ namespace SuperstarDJ.DynamicMusic
         }
         internal double ScheduledToStartAt { get; private set; }
         //  internal double EndsPlayingDspTime { get; set; }
-        public SongManager( List<Track> tracks ) => Tracks = tracks; //CTOR
-        void StartSong( List<TrackNames> playsAtStart )
+        public SongManager(List<Track> tracks) => Tracks = tracks; //CTOR
+        void StartSong(List<TrackNames> playsAtStart)
         {
-            var dspTime = GetDspTime () + paddingTime;
+            var dspTime = GetDspTime() + paddingTime;
             ScheduledToStartAt = dspTime;
 
-            foreach ( var track in Tracks )
+            foreach (var track in Tracks)
             {
-                track.Source ().Stop ();
+                track.Source().Stop();
 
-                if ( playsAtStart.Contains ( track.TrackName ) )
+                if (playsAtStart.Contains(track.TrackName))
                 {
-                    StartTrack ( track );
+                    StartTrack(track);
                 }
             }
         }
-        private static double GetDspTime( bool withPadding = false )
+        private static double GetDspTime(bool withPadding = false)
         {
             var padding = withPadding == true ? paddingTime : 0;
             return AudioSettings.dspTime + padding;
         }
-        private static void StartTrack( Track track, int startFromSamplePosition = 0 )
+        private static void StartTrack(Track track, int startFromSamplePosition = 0)
         {
-            track.Source ().timeSamples = startFromSamplePosition;
-            track.Source ().volume = track.VolumeModification;
-            track.Source ().PlayScheduled ( GetDspTime ( true ) );
+            track.Source().timeSamples = startFromSamplePosition;
+            track.Source().volume = track.VolumeModification;
+            track.Source().PlayScheduled(GetDspTime(true));
         }
 
         void StopSong()
         {
-            foreach ( var track in Tracks )
+            foreach (var track in Tracks)
             {
-                track.Source ().Stop ();
+                track.Source().Stop();
             }
         }
         public TrackNames[] TracksPlaying()
         {
-            return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
+            return Tracks.Where(t => t.Source().isPlaying && t.Source().volume > 0f).Select(t => t.TrackName).ToArray();
 
         }
 
         public int GetCurrentSamplePositionOfSong()
         {
-            var referenceTrack = Tracks.First ( t => t.IsPlaying == true );
+            var referenceTrack = Tracks.First(t => t.IsPlaying == true);
 
-            if ( referenceTrack == null ) { return 0; }
-            return referenceTrack.Source ().timeSamples;
+            if (referenceTrack == null) { return 0; }
+            return referenceTrack.Source().timeSamples;
         }
 
         internal void SlowPitch()
         {
-            if ( Tracks[0].Source ().pitch > 0.1 )
+            if (Tracks[0].Source().pitch > -2f)
             {
-                Tracks.ForEach ( t => t.Source ().pitch -= pitchChangeSpeed );
+                Tracks.ForEach(t => t.Source().pitch -= pitchChangeSpeed);
             }
             else
             {
-                FasterPitch ();
+                FasterPitch();
             }
         }
 
         internal void FasterPitch()
         {
-            if ( Tracks[0].Source ().pitch < 2 )
+            if (Tracks[0].Source().pitch < 4f)
             {
-                Tracks.ForEach ( t => t.Source ().pitch += pitchChangeSpeed );
+                Tracks.ForEach(t => t.Source().pitch += pitchChangeSpeed);
             }
             else
             {
-                SlowPitch ();
+                SlowPitch();
             }
         }
 
 
+        internal void ScratchPitch()
+        {
+            var duration = 0.25f;
+            var pitch = Tracks[0].Source().pitch;
+            DOTween.To(() => pitch, x => pitch = x, -2f, duration / 2).SetEase(Ease.OutSine)
+                .OnUpdate(() => {
+
+                    Debug.Log(pitch);
+                    Tracks.ForEach(t => t.Source().pitch = pitch);
+                })
+
+                .OnComplete(() =>
+
+                                 DOTween.To(() => pitch, x => pitch = x, 1f, duration / 2).SetEase(Ease.InSine)
+                                .OnUpdate(() => {
+
+                                    Debug.Log(pitch);
+                                    Tracks.ForEach(t => t.Source().pitch =  pitch);
+                                })
+
+                );
+
+
+        }
+
         internal void UpdatePitch()
         {
 
-            if ( Tracks[0].Source ().pitch == 1 )
+            if (Tracks[0].Source().pitch == 1)
             {
                 return;
             }
 
-                if ( Tracks[0].Source ().pitch < 1 )
+            if (Tracks[0].Source().pitch < 1)
             {
-                Tracks.ForEach ( t => t.Source ().pitch += pitchChangeSpeed );
-                if ( Tracks[0].Source ().pitch > 1 )
+                Tracks.ForEach(t => t.Source().pitch += pitchChangeSpeed * 2);
+                if (Tracks[0].Source().pitch > 1)
                 {
-                    Tracks.ForEach ( t => t.Source ().pitch = 1f );
+                    Tracks.ForEach(t => t.Source().pitch = 1f);
                 }
             }
 
-            if ( Tracks[0].Source ().pitch > 1 )
+            if (Tracks[0].Source().pitch > 1)
             {
-                Tracks.ForEach ( t => t.Source ().pitch -= pitchChangeSpeed );
-                if ( Tracks[0].Source ().pitch <1 )
+                Tracks.ForEach(t => t.Source().pitch -= pitchChangeSpeed * 2);
+                if (Tracks[0].Source().pitch < 1)
                 {
-                    Tracks.ForEach ( t => t.Source ().pitch = 1f );
+                    Tracks.ForEach(t => t.Source().pitch = 1f);
                 }
             }
 
@@ -150,42 +176,42 @@ namespace SuperstarDJ.DynamicMusic
 
         //    return currentPosition;
         //}
-        public bool IsTrackPlaying( string trackName )
+        public bool IsTrackPlaying(string trackName)
         {
-            var _trackName = UnityTools.TrackNameFromString ( trackName );
-            return Tracks.Any ( t => t.TrackName == _trackName && t.IsPlaying );
+            var _trackName = UnityTools.TrackNameFromString(trackName);
+            return Tracks.Any(t => t.TrackName == _trackName && t.IsPlaying);
 
         }
-        public void DebugSound( TrackNames trackName, int playAtSample = 0, float volume = 1f )
+        public void DebugSound(TrackNames trackName, int playAtSample = 0, float volume = 1f)
         {
-            var track = GetTrackByName ( trackName );
-            track.Source ().timeSamples = 100000;
-            track.Source ().volume = track.VolumeModification;
-            track.Source ().PlayScheduled ( GetDspTime () + paddingTime );
+            var track = GetTrackByName(trackName);
+            track.Source().timeSamples = 100000;
+            track.Source().volume = track.VolumeModification;
+            track.Source().PlayScheduled(GetDspTime() + paddingTime);
 
         }
         public List<Track> GetPlayingTracks()
         {
-            return Tracks.Where ( t => t.IsPlaying == true ).ToList ();
+            return Tracks.Where(t => t.IsPlaying == true).ToList();
         }
 
-        public void StopTrack( TrackNames name )
+        public void StopTrack(TrackNames name)
         {
-            GetTrackByName ( name ).Source ().Stop ();
+            GetTrackByName(name).Source().Stop();
         }
-        public void PlayTrack( TrackNames name )
+        public void PlayTrack(TrackNames name)
         {
-            if ( GetPlayingTracks ().Count () < 1 )
+            if (GetPlayingTracks().Count() < 1)
             {
-                StartSong ( new List<TrackNames> () { name } );
+                StartSong(new List<TrackNames>() { name });
             }
 
-            var track = GetTrackByName ( name );
-            StartTrack ( track, GetCurrentSamplePositionOfSong () );
+            var track = GetTrackByName(name);
+            StartTrack(track, GetCurrentSamplePositionOfSong());
         }
-        public Track GetTrackByName( TrackNames name )
+        public Track GetTrackByName(TrackNames name)
         {
-            return Tracks.First ( t => t.TrackName == name );
+            return Tracks.First(t => t.TrackName == name);
         }
     }
 }
