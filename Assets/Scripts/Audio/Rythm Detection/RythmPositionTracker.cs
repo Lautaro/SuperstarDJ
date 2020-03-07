@@ -1,5 +1,6 @@
 ﻿using MessageSystem;
 using SuperstarDJ.Audio.RythmDetection;
+using SuperstarDJ.UnityTools.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,7 @@ namespace SuperstarDJ.Audio.RythmDetection
 
                             HitRanges.Add ( hitAreaRange, tickCounter );
                         }
+                        ticks[tickCounter] = newTick;
                         tickCounter++;
                     }
                 }
@@ -87,6 +89,20 @@ namespace SuperstarDJ.Audio.RythmDetection
             //beats = measures.SelectMany ( m => m.beats ).ToArray ();
             //ticks = beats.SelectMany ( b => b.ticks ).ToArray ();
         }
+
+
+        private void DebugLogTicks()
+        {
+            var builder = new StringBuilder ();
+            foreach ( var tick in ticks )
+            {
+                builder.AppendLine ( $"{tick.ToString ()}" );
+             }
+
+            this.DebugLog ( builder.ToString () );
+        }
+
+
         //public void DebugMeasures()
         //{
         //    foreach ( var measure in measures )
@@ -120,7 +136,7 @@ namespace SuperstarDJ.Audio.RythmDetection
             {
                 var hitRangeTickIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
 
-                if ( hitRangeTickIndex != currentTick.Index )
+                if ( hitRangeTickIndex != currentTick.Id )
                 {
                     throw new Exception ( "Indexes of current and hitRange tick should be the same. Something is not right!" );
                 }
@@ -137,7 +153,7 @@ namespace SuperstarDJ.Audio.RythmDetection
             var previousRp = rythmPosition;
             rythmPosition = GetPositionInRythm ( currentPositionInClip );
 
-            if ( previousRp.Tick.Index != rythmPosition.Tick.Index )
+            if ( previousRp.Tick.Id != rythmPosition.Tick.Id )
             {
                 MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, rythmPosition );
             }

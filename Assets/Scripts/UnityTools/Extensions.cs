@@ -6,7 +6,7 @@ namespace SuperstarDJ.UnityTools.Extensions
     {
         public static void DebugLog( this object obj , string log)
         {
-            Debug.Log ( log );;
+            Debug.Log ( log );
         }
 
         public static void DebugWarning( this object obj, string log )

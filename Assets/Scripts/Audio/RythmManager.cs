@@ -12,6 +12,7 @@ using SuperstarDJ.Enums;
 using UnityEngine.SceneManagement;
 using MessageSystem;
 using Assets.Scripts.Enums;
+using System.Text;
 
 namespace SuperstarDJ.Audio
 {
@@ -80,6 +81,7 @@ namespace SuperstarDJ.Audio
                 Debug.LogError ( "There can only be one RythmManager. A second one has been instantiated! " );
             }
         }
+
 
         void InitializeRythmPositionTracker()
         {
