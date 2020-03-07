@@ -92,10 +92,11 @@ namespace SuperstarDJ.Audio
 
         void Beat()
         {
+        //    Debug.Log ($"Player Beat @ " + rythmPosition.Position);
             //    BeatMark.DORewindAndPlayNext ();
             if (  rythmPosition.WasHit)
             {
-                Debug.Log ( rythmPosition.ToString ()  );
+                Debug.Log ($"({rythmPosition.Tick.Id})Was hit:  {rythmPosition.Position}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
             }
         }

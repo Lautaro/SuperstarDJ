@@ -14,7 +14,7 @@ namespace SuperstarDJ.Audio
         public readonly bool WasHit;
 
         public RythmPosition(Tick tick, double position, bool wasHit)
-        {
+        {   
             Tick = tick;
             Position = position;
             WasHit = wasHit;

@@ -16,17 +16,17 @@ namespace SuperstarDJ.Audio.RythmDetection
         //Beat[] beats;
         Tick[] ticks;
         Dictionary<Vector2, int> HitRanges = new Dictionary<Vector2, int> (); // KEY: HitRange (x = start, y = end)  VALUE: tickIndex
-                                                                              //    public const int beatTrackingPadding = 2000;
+
         static public bool DebugEnabled = false;
         readonly double trackDuration;
-        readonly int paddingInPercentage = 15; //15%
+        readonly int paddingInPercentage = 15; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
 
         public RythmPositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
         {
             var amountOfTicks = measuresPerLoop * beatsPerMeasure * ticksPerBeat;
             trackDuration = _trackDuration;
             var tickDuration = _trackDuration / amountOfTicks;
-            double multiplier =(double) paddingInPercentage / 100 ;
+            double multiplier = ( double )paddingInPercentage / 100;
             var paddingDuration = tickDuration * multiplier;
             ticks = new Tick[amountOfTicks];
 
@@ -40,7 +40,7 @@ namespace SuperstarDJ.Audio.RythmDetection
                     {
 
                         var tickStartPosition = tickCounter * tickDuration;
-                        var newTick = new Tick ( tickCounter, tickStartPosition, bi, mi, ti );
+                        var newTick = new Tick ( tickCounter, tickStartPosition, tickStartPosition + tickDuration, bi, mi, ti );
 
                         if ( tickCounter == 0 )
                         {
@@ -79,15 +79,11 @@ namespace SuperstarDJ.Audio.RythmDetection
                     }
                 }
             }
+            DebugLogTickHitranges ();
 
-            //measures = new Measure[measuresPerLoop];
 
-            //for ( int i = 0; i < measuresPerLoop; i++ )
-            //{
-            //    measures[i] = new Measure ( i + 1, beatsPerMeasure, ticksPerBeat, measureDuration );
-            //}
-            //beats = measures.SelectMany ( m => m.beats ).ToArray ();
-            //ticks = beats.SelectMany ( b => b.ticks ).ToArray ();
+
+
         }
 
 
@@ -97,49 +93,37 @@ namespace SuperstarDJ.Audio.RythmDetection
             foreach ( var tick in ticks )
             {
                 builder.AppendLine ( $"{tick.ToString ()}" );
-             }
+            }
 
             this.DebugLog ( builder.ToString () );
         }
 
+        private void DebugLogTickHitranges()
+        {
+            var builder = new StringBuilder ();
+            foreach ( var tick in ticks )
+            {
+                var hitRanges = HitRanges.Where ( kvp => kvp.Value == tick.Id ).Select ( kvp => kvp.Key );
 
-        //public void DebugMeasures()
-        //{
-        //    foreach ( var measure in measures )
-        //    {
-        //        Debug.Log ( $"{measure.index}M" );
-        //        measure.DebugBeats ();
-        //        Debug.Log ( "" );
-        //    }
-        //}
-        //internal RythmPosition GetPositionInRythm( double currentPositionInClip )
-        //{
-        //    var paddedPosition = currentPositionInClip + beatTrackingPadding;
-        //    if ( paddedPosition > trackDuration )
-        //    {
-        //        return new RythmPosition ( ticks[0], beats[0], measures[0], 0 );
-        //    }
+                foreach ( var hitRange in hitRanges )
+                {
+                    builder.AppendLine ( $"Tick[{tick.Id}]  @({tick.TickStartsAt})  --- Hit Range:  { hitRange.x} - {hitRange.y} " );
+                }
+            }
 
-        //    var tick = ticks.FirstOrDefault ( t => t.IsWithinHitRange ( paddedPosition ) );
-        //    if ( tick.parentBeat == null ) { Debug.LogWarning ( "RythmPosition update found no matching tick at position :" + currentPositionInClip ); };
-
-        //    return new RythmPosition ( tick, tick.parentBeat, tick.parentBeat.parentMeasure, currentPositionInClip );
-        //}
+            this.DebugLog ( builder.ToString () );
+        }
 
         internal RythmPosition GetPositionInRythm( double position )
         {
             // Get index of hit tick. Vector X is hit range start and Y is hit range end
             var isWithinHitRange = HitRanges.Any ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
 
-            var currentTick = ticks.First ( t => t.TickStartsAt <= position );
+            var currentTick = ticks.First ( t => t.TickStartsAt <= position && t.TickEndsAt >= position);
             if ( isWithinHitRange )
             {
                 var hitRangeTickIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
 
-                if ( hitRangeTickIndex != currentTick.Id )
-                {
-                    throw new Exception ( "Indexes of current and hitRange tick should be the same. Something is not right!" );
-                }
             }
 
 

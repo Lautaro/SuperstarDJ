@@ -33,7 +33,7 @@ namespace SuperstarDJ.DynamicMusic
         {
             var dspTime = GetDspTime () + paddingTime;
             ScheduledToStartAt = dspTime;
-            
+
             foreach ( var track in Tracks )
             {
                 track.Source ().Stop ();
@@ -56,9 +56,8 @@ namespace SuperstarDJ.DynamicMusic
             track.Source ().PlayScheduled ( GetDspTime ( true ) );
 
             MessageHub.PublishNews<Track> ( MessageTopics.TrackStarted_Track, track );
-            
-        }
 
+        }
         void StopSong()
         {
             foreach ( var track in Tracks )
@@ -71,7 +70,6 @@ namespace SuperstarDJ.DynamicMusic
             return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
 
         }
-
         public int GetCurrentSamplePositionOfSong()
         {
             var referenceTrack = Tracks.First ( t => t.IsPlaying == true );
