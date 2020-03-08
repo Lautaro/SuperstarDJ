@@ -19,7 +19,7 @@ namespace SuperstarDJ.Audio.RythmDetection
 
         static public bool DebugEnabled = false;
         readonly double trackDuration;
-        readonly int paddingInPercentage = 15; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
+        readonly int paddingInPercentage = 50; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
 
         public RythmPositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
         {
@@ -114,28 +114,31 @@ namespace SuperstarDJ.Audio.RythmDetection
             this.DebugLog ( builder.ToString () );
         }
 
-        internal RythmPosition GetPositionInRythm( double position )
+        internal RythmPosition CheckIfHit( double position )
         {
+            var inputLagPadding = 10000;
+            var compensatedPositon = position - inputLagPadding;
+        
             // Get index of hit tick. Vector X is hit range start and Y is hit range end
-            var isWithinHitRange = HitRanges.Any ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
+            var isWithinHitRange = HitRanges.Where ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
 
-            var currentTick = ticks.First ( t => t.TickStartsAt <= position && t.TickEndsAt >= position);
-            if ( isWithinHitRange )
+            if ( isWithinHitRange.Count () > 0 )
             {
                 var hitRangeTickIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
-
+                return new RythmPosition ( ticks[hitRangeTickIndex], position );
             }
-
-
-            //    if ( tick.parentBeat == null ) { Debug.LogWarning ( "RythmPosition update found no matching tick at position :" + position ); };
-
-            return new RythmPosition ( currentTick, position, isWithinHitRange );
+            else
+            {
+                return new RythmPosition ( new Tick(-1, -1, -1,-1,-1,-1),-1) ; // No hit
+            }
         }
 
-        internal RythmPosition UpdateCurrentRythmPosition( RythmPosition rythmPosition, int currentPositionInClip )
+        internal RythmPosition UpdateCurrentRythmPosition( RythmPosition rythmPosition, double currentPositionInClip )
         {
             var previousRp = rythmPosition;
-            rythmPosition = GetPositionInRythm ( currentPositionInClip );
+            var tick = GetCurrentTick ( currentPositionInClip );
+
+            rythmPosition = new RythmPosition ( tick, currentPositionInClip );
 
             if ( previousRp.Tick.Id != rythmPosition.Tick.Id )
             {
@@ -143,6 +146,11 @@ namespace SuperstarDJ.Audio.RythmDetection
             }
 
             return rythmPosition;
+        }
+
+        Tick GetCurrentTick( double position )
+        {
+            return ticks.First ( t => t.TickStartsAt <= position && t.TickEndsAt >= position );
         }
     }
 }

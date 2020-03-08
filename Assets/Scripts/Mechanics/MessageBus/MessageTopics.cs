@@ -11,6 +11,7 @@ namespace MessageSystem
         DisplayUI_FX_string, 
         NewRythmPosition,
         TrackStarted_Track,
-        TrackStopped_Track
+        TrackStopped_Track,
+        TickHit_Tick
     }
 }

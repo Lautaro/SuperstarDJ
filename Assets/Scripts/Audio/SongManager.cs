@@ -70,7 +70,7 @@ namespace SuperstarDJ.DynamicMusic
             return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
 
         }
-        public int GetCurrentSamplePositionOfSong()
+        public int GetCurrentSamplePosition()
         {
             var referenceTrack = Tracks.First ( t => t.IsPlaying == true );
 
@@ -120,7 +120,7 @@ namespace SuperstarDJ.DynamicMusic
             }
 
             var track = GetTrackByName ( trackName );
-            StartTrack ( track, GetCurrentSamplePositionOfSong () );
+            StartTrack ( track, GetCurrentSamplePosition () );
         }
         public Track GetTrackByName( string trackName )
         {

@@ -49,7 +49,5 @@ namespace SuperstarDJ.Audio.RythmDetection
             return successTrackers[patternName].Any ( ss => ss != SuccesState.Sucess ); 
 
         }
-
-
     }
 }

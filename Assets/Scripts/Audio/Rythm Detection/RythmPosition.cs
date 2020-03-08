@@ -11,13 +11,11 @@ namespace SuperstarDJ.Audio
     {
         public readonly Tick Tick;
         public readonly Double Position;
-        public readonly bool WasHit;
 
-        public RythmPosition(Tick tick, double position, bool wasHit)
+        public RythmPosition(Tick tick, double position)
         {   
             Tick = tick;
             Position = position;
-            WasHit = wasHit;
         }
     }
 }

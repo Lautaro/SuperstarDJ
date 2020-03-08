@@ -106,7 +106,7 @@ public class Player_Interactions : MonoBehaviour
 
         #region BeatMixing
 
-        if ( Input.GetKeyDown ( KeyCode.Space ) )
+        if ( Input.GetKeyDown ( KeyCode.Space )|| Input.GetKeyDown ( KeyCode.Mouse1 ) )
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
