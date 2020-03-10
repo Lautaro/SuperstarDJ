@@ -26,17 +26,11 @@ public class VisualMetronome : MonoBehaviour
     void Update()
     {
         text.text = "";
-        if ( MusicManager.RythmPosition.Measure != null )
-        {
+   
             blips.ForEach ( t => t.localScale = blipDefaultSize );
-            rythmPosition = MusicManager.RythmPosition;
-            text.text = $"[{rythmPosition.Measure.index}] - {rythmPosition.Beat.index}";
-            if ( rythmPosition.IsInHitArea )
-            {
-                var index = rythmPosition.Beat.index - 1;
-                blips[index].localScale *= 2;
-              
-            }
-        }
+            rythmPosition = RythmManager.RythmPosition;
+            text.text = $"[{rythmPosition.Tick.Measure}] - {rythmPosition.Tick.Beat}";
+            var index = rythmPosition.Tick.Beat;
+            blips[index].localScale *= 2;
     }
 }
