@@ -1,15 +1,9 @@
-﻿using SuperstarDJ.Audio.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SuperstarDJ.DynamicMusic
+namespace SuperstarDJ
 {
-    public static class UnityTools
+    public static class ProjectTools
     {
         public static Vector3 GetRandomWithinBounds( Bounds bounds )
         {
@@ -37,17 +31,5 @@ namespace SuperstarDJ.DynamicMusic
             return new Vector3 ( size, size, size );
         }
 
-        public static TrackNames TrackNameFromString( string trackName )
-        {
-            TrackNames name;
-            if ( Enum.TryParse ( trackName, out name ) )
-            {
-                return name;
-            }
-            else
-            {   
-                throw new System.InvalidOperationException ( "You are trying to parse a string to a TrackName enum that doesnt exist. Bad boy! Not found: "+ trackName );
-            };
-        }
     }
 }

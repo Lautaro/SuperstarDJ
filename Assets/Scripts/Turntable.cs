@@ -1,6 +1,6 @@
 ﻿using SuperstarDJ;
 using SuperstarDJ.Audio;
-using SuperstarDJ.DynamicMusic;
+using SuperstarDJ.Audio.DynamicTracks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,16 +17,16 @@ public class Turntable : MonoBehaviour
         HeldItem.transform.position = transform.position;
         ResetRotationOfPlacedObject();
 
-        var trackName = UnityTools.TrackNameFromString ( objectToPlace.GetComponent<Record> ().Track.TrackName.ToString() );
+        var trackName = objectToPlace.GetComponent<Record> ().Track.TrackName;
 
         if (objectToPlace != null)
         {   
-            MusicManager.PlayTrack ( trackName );
+            RythmManager.PlayTrack ( trackName );
         }
 
         if (returnObject != null)
         {
-            MusicManager.StopTrack( trackName );
+            RythmManager.StopTrack( trackName );
         }
         return returnObject;
     }
@@ -43,8 +43,8 @@ public class Turntable : MonoBehaviour
         HeldItem = null;
         if (returnObject != null)
         {
-            var trackName = UnityTools.TrackNameFromString( returnObject.GetComponent<Record>().Track.TrackName.ToString() );
-            MusicManager.StopTrack( trackName );
+            var trackName = returnObject.GetComponent<Record>().Track.TrackName;
+            RythmManager.StopTrack( trackName );
         }
         return returnObject;
     }

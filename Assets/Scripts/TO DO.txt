@@ -1,0 +1,5 @@
+﻿Pattern Detection 
+
+1. Load Patterns
+2. Create PatternAnalyzer that holds Patterns
+3. PA also has dictioary key: patternName Value
