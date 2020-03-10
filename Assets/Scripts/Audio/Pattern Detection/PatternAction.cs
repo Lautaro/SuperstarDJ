@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SuperstarDJ.Audio.PatternDetection
 {
-    public enum  RythmPatternStates
+    public enum  PatternAction
     {
         None, 
-        Accent,
+        Hit,
         Hold
     }
 }

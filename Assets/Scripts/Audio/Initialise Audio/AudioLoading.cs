@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SuperstarDJ.Audio.DynamicTracks;
 using SuperstarDJ.Audio.DynamicTracks;
+using SuperstarDJ.Audio.PatternDetection;
 using SuperstarDJ.Enums;
 using SuperstarDJ.Mechanics;
 using System;
@@ -13,7 +14,7 @@ namespace SuperstarDJ.Audio.InitialiseAudio
 public static class AudioLoading
     {
         static List<Dictionary<string, string>> trackMetadata;
-        public static List<Track> Load( string path,string musicSettingsFile, Func<Track> TrackFactory )
+        public static List<Track> LoadAllTracks( string path,string musicSettingsFile, Func<Track> TrackFactory )
         {
             // load json
             var textAsset = Resources.Load ( path + musicSettingsFile) as TextAsset;
@@ -56,6 +57,11 @@ public static class AudioLoading
 
             }
             return recordPrefabs;
+        }
+
+        public static List<Pattern> LoadAllPatterns( string path)
+        {
+            return Resources.LoadAll<Pattern> ( path ).ToList();
         }
 
         #region Internal private methods

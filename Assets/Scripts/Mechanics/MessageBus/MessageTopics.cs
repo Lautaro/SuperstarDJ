@@ -12,6 +12,7 @@ namespace MessageSystem
         NewRythmPosition,
         TrackStarted_Track,
         TrackStopped_Track,
-        TickHit_Tick
+        TickHit_Tick,
+        TrackStartsFromZero_string
     }
 }

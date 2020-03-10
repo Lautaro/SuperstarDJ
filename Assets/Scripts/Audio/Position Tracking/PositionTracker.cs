@@ -11,14 +11,13 @@ namespace SuperstarDJ.Audio.PositionTracking
 {
     class PositionTracker
     {
-        //Measure[] measures;
-        //Beat[] beats;
         Tick[] ticks;
         Dictionary<Vector2, int> HitRanges = new Dictionary<Vector2, int> (); // KEY: HitRange (x = start, y = end)  VALUE: tickIndex
-
         static public bool DebugEnabled = false;
         readonly double trackDuration;
         readonly int paddingInPercentage = 50; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
+        RythmPosition currentPosition;
+        public RythmPosition CurrentPosition { get; }
 
         public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
         {
@@ -84,8 +83,6 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-
-
         private void DebugLogTicks()
         {
             var builder = new StringBuilder ();
@@ -96,7 +93,6 @@ namespace SuperstarDJ.Audio.PositionTracking
 
             this.DebugLog ( builder.ToString () );
         }
-
         private void DebugLogTickHitranges()
         {
             var builder = new StringBuilder ();
@@ -112,12 +108,11 @@ namespace SuperstarDJ.Audio.PositionTracking
 
             this.DebugLog ( builder.ToString () );
         }
-
         internal RythmPosition CheckIfHit( double position )
         {
             var inputLagPadding = 10000;
             var compensatedPositon = position - inputLagPadding;
-        
+
             // Get index of hit tick. Vector X is hit range start and Y is hit range end
             var isWithinHitRange = HitRanges.Where ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
 
@@ -128,28 +123,26 @@ namespace SuperstarDJ.Audio.PositionTracking
             }
             else
             {
-                return new RythmPosition ( new Tick(-1, -1, -1,-1,-1,-1),-1) ; // No hit
+                return new RythmPosition ( new Tick ( -1, -1, -1, -1, -1, -1 ), -1 ); // No hit
             }
         }
-
-        internal RythmPosition UpdateCurrentRythmPosition( RythmPosition rythmPosition, double currentPositionInClip )
+        internal void UpdateCurrentRythmPosition( double currentPositionInClip )
         {
-            var previousRp = rythmPosition;
-            var tick = GetCurrentTick ( currentPositionInClip );
+            var tick = ticks.First ( t => t.TickStartsAt <= currentPositionInClip && t.TickEndsAt >= currentPositionInClip );
 
-            rythmPosition = new RythmPosition ( tick, currentPositionInClip );
+            if ( tick.Id == currentPosition.Tick.Id )
+                return;
 
-            if ( previousRp.Tick.Id != rythmPosition.Tick.Id )
+            if ( currentPosition.Tick.Id == ticks.Length && tick.Id == 0 )
             {
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, rythmPosition );
+                // new loop. Reset.
+                MessageHub.PublishNews<string> ( MessageTopics.TrackStartsFromZero_string, "Track start from zero" );
             }
 
-            return rythmPosition;
-        }
+            currentPosition = new RythmPosition ( tick, currentPositionInClip );
 
-        Tick GetCurrentTick( double position )
-        {
-            return ticks.First ( t => t.TickStartsAt <= position && t.TickEndsAt >= position );
+            MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
+       //     Debug.Log ( $"[{currentPosition.Tick.Measure}][{currentPosition.Tick.Beat}][{currentPosition.Tick.Index}]" );
         }
     }
 }

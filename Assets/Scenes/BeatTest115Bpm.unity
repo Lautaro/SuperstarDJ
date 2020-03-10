@@ -3349,6 +3349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PathToAudio: Audio\115\
+  PathToPatterns: RythmPatterns\
   SettingsFile: MusicSettings115
   BeatMark: {fileID: 0}
   MuteAudio: 0

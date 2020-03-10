@@ -1,7 +1,5 @@
 ﻿using Sirenix.OdinInspector;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SuperstarDJ.Audio.PatternDetection
@@ -16,7 +14,7 @@ namespace SuperstarDJ.Audio.PatternDetection
         [ListDrawerSettings ( IsReadOnly = true, ShowItemCount = true, ShowIndexLabels = true, NumberOfItemsPerPage = 32, OnBeginListElementGUI = "OnBeginListElementGUI", OnEndListElementGUI = "OnAfterEnumisGUI" )]
         [EnumToggleButtons]
         [LabelWidth ( 50 )]
-        public RythmPatternStates[] PatternStates { get; set; } = new RythmPatternStates[64];
+        public PatternAction[] PatternStates { get; set; } = new PatternAction[64];
 
         private void OnBeginListElementGUI( int index )
         {

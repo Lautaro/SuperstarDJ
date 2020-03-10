@@ -106,6 +106,11 @@ namespace SuperstarDJ.Audio.DynamicTracks
             return Tracks.Where ( t => t.IsPlaying == true ).ToList ();
         }
 
+        public bool IsAnyTrackPlaying()
+        {
+            return Tracks.Any ( t => t.IsPlaying == true );
+        }
+
         public void StopTrack( string trackName )
         {
             var track = GetTrackByName ( trackName );

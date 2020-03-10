@@ -17,5 +17,10 @@ namespace SuperstarDJ.Audio
             Tick = tick;
             Position = position;
         }
+
+        public override string ToString()
+        {
+            return $"({Tick.Id.ToString("D2")})  [{Tick.Measure}][{Tick.Beat}][{Tick.Index}]";
+        }
     }
 }

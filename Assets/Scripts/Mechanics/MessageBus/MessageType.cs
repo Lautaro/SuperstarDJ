@@ -16,7 +16,6 @@ namespace MessageSystem
 
         public MessageType(MessageTopics topic, string subscriberId, UnityAction<Message> subscriber)
         {
-    
             Topic = topic;
             Subscribers.Add(subscriberId, subscriber);
             Debug.Log($"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count()}");
