@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SuperstarDJ.Audio.RythmDetection
+namespace SuperstarDJ.Audio.PatternDetection
 {
     public enum  RythmPatternStates
     {

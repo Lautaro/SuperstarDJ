@@ -1,4 +1,4 @@
-﻿namespace SuperstarDJ.Audio.RythmDetection
+﻿namespace SuperstarDJ.Audio.PositionTracking
 {
     public enum SuccesState
     {

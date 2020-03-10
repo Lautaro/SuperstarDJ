@@ -4,10 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SuperstarDJ.Audio.RythmDetection
+namespace SuperstarDJ.Audio.PatternDetection
 {
     [CreateAssetMenu ( menuName = "SUPERSTAR_DJ/RythmPattern" )]
-    public class RythmPattern : SerializedScriptableObject
+    public class Pattern : SerializedScriptableObject
     {
         [ShowInInspector]
         public string PatternName { get; set; }
@@ -16,7 +16,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         [ListDrawerSettings ( IsReadOnly = true, ShowItemCount = true, ShowIndexLabels = true, NumberOfItemsPerPage = 32, OnBeginListElementGUI = "OnBeginListElementGUI", OnEndListElementGUI = "OnAfterEnumisGUI" )]
         [EnumToggleButtons]
         [LabelWidth ( 50 )]
-        public RythmPatternStates[] Pattern { get; set; } = new RythmPatternStates[64];
+        public RythmPatternStates[] PatternStates { get; set; } = new RythmPatternStates[64];
 
         private void OnBeginListElementGUI( int index )
         {

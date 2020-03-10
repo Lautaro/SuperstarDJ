@@ -6,13 +6,13 @@ using SuperstarDJ.UnityTools.Extensions;
 using System;
 using SuperstarDJ.Audio.InitialiseAudio;
 using DG.Tweening;
-using SuperstarDJ.Audio.RythmDetection;
 using SuperstarDJ.Mechanics;
 using SuperstarDJ.Enums;
 using UnityEngine.SceneManagement;
 using MessageSystem;
 using Assets.Scripts.Enums;
 using System.Text;
+using SuperstarDJ.Audio.PositionTracking;
 
 namespace SuperstarDJ.Audio
 {
@@ -59,7 +59,7 @@ namespace SuperstarDJ.Audio
         public string PathToAudio;
         public string SettingsFile;
         public DOTweenAnimation BeatMark;
-        RythmPositionTracker rythmPositionTracker;
+        PositionTracker rythmPositionTracker;
         RythmPosition rythmPosition;
 
         static public RythmPosition RythmPosition { get {
@@ -86,7 +86,7 @@ namespace SuperstarDJ.Audio
         void InitializeRythmPositionTracker()
         {
             var trackDuration = trackManager.Duration;
-            rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
+            rythmPositionTracker = new PositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
             //rythmPosition = rythmPositionTracker.GetPositionInRythm ();
         }
 

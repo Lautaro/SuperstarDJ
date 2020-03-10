@@ -1,19 +1,20 @@
 ﻿using MessageSystem;
 using Sirenix.Utilities;
+using SuperstarDJ.Audio.PositionTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SuperstarDJ.Audio.RythmDetection
+namespace SuperstarDJ.Audio.PatternDetection
 {
     public class PatternAnalyzer
     {
-        List<RythmPattern> patterns = new List<RythmPattern> ();
+        List<Pattern> patterns = new List<Pattern> ();
         Dictionary<string, SuccesState[]> successTrackers = new Dictionary<string, SuccesState[]>();
 
-        public void Initialise(List<RythmPattern> patterns_)
+        public void Initialise(List<Pattern> patterns_)
         {
             patterns = patterns_;
             successTrackers.Clear ();

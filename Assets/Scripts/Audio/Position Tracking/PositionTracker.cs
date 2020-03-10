@@ -1,5 +1,4 @@
 ﻿using MessageSystem;
-using SuperstarDJ.Audio.RythmDetection;
 using SuperstarDJ.UnityTools.Extensions;
 using System;
 using System.Collections.Generic;
@@ -8,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SuperstarDJ.Audio.RythmDetection
+namespace SuperstarDJ.Audio.PositionTracking
 {
-    class RythmPositionTracker
+    class PositionTracker
     {
         //Measure[] measures;
         //Beat[] beats;
@@ -21,7 +20,7 @@ namespace SuperstarDJ.Audio.RythmDetection
         readonly double trackDuration;
         readonly int paddingInPercentage = 50; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
 
-        public RythmPositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
+        public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
         {
             var amountOfTicks = measuresPerLoop * beatsPerMeasure * ticksPerBeat;
             trackDuration = _trackDuration;
