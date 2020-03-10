@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SuperstarDJ.DynamicMusic
+namespace SuperstarDJ.Audio.DynamicTracks
 {
 
     public class Track : MonoBehaviour

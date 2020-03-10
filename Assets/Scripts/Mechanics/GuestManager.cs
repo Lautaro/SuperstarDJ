@@ -1,5 +1,6 @@
-﻿using SuperstarDJ.Audio;
-using SuperstarDJ.DynamicMusic;
+﻿using SuperstarDJ;
+using SuperstarDJ.Audio;
+using SuperstarDJ.Audio.DynamicTracks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,7 +72,7 @@ public class GuestManager : MonoBehaviour
 
     void AddGuest()
     {
-        var randomSpawnPoint = UnityTools.GetRandomWithinBounds(new Bounds(guestContainer.transform.position,UnityTools.GetSymmetricalVector( danceFlorSize)));
+        var randomSpawnPoint = ProjectTools.GetRandomWithinBounds(new Bounds(guestContainer.transform.position, ProjectTools.GetSymmetricalVector( danceFlorSize)));
         guestSpawner.SpawnGuests(1, guestContainer.transform, randomSpawnPoint);
         plannedNewGuests--;
     }

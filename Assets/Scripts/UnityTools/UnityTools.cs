@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SuperstarDJ.DynamicMusic
+namespace SuperstarDJ
 {
-    public static class UnityTools
+    public static class ProjectTools
     {
         public static Vector3 GetRandomWithinBounds( Bounds bounds )
         {

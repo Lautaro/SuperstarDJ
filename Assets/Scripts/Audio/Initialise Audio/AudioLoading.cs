@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using SuperstarDJ.DynamicMusic;
+using SuperstarDJ.Audio.DynamicTracks;
+using SuperstarDJ.Audio.DynamicTracks;
 using SuperstarDJ.Enums;
 using SuperstarDJ.Mechanics;
 using System;
@@ -49,7 +50,7 @@ public static class AudioLoading
                 record.Track = track;
                 prefab.name = track.TrackName.ToString() + " (Record)";
                 prefab.transform.parent = parent;
-                prefab.transform.position = DynamicMusic.UnityTools.GetRandomPlaceWithinScreen();
+                prefab.transform.position = ProjectTools.GetRandomPlaceWithinScreen ();
                 recordPrefabs.Add ( prefab );
 
 

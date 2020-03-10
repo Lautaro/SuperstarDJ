@@ -5,9 +5,9 @@ using MessageSystem;
 using SuperstarDJ.UnityTools.Extensions;
 
 
-namespace SuperstarDJ.DynamicMusic
+namespace SuperstarDJ.Audio.DynamicTracks
 {
-    class SongManager
+    class TrackManager
     {
 
         List<Track> Tracks;
@@ -28,7 +28,7 @@ namespace SuperstarDJ.DynamicMusic
         }
         internal double ScheduledToStartAt { get; private set; }
         //  internal double EndsPlayingDspTime { get; set; }
-        public SongManager( List<Track> tracks ) => Tracks = tracks; //CTOR
+        public TrackManager( List<Track> tracks ) => Tracks = tracks; //CTOR
         void StartSong( List<string> playsAtStart )
         {
             var dspTime = GetDspTime () + paddingTime;

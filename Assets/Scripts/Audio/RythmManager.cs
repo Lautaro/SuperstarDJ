@@ -1,4 +1,4 @@
-﻿using SuperstarDJ.DynamicMusic;
+﻿using SuperstarDJ.Audio.DynamicTracks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,7 +55,7 @@ namespace SuperstarDJ.Audio
 
         #region Instance
 
-        SongManager trackManager;
+        TrackManager trackManager;
         public string PathToAudio;
         public string SettingsFile;
         public DOTweenAnimation BeatMark;
@@ -108,7 +108,7 @@ namespace SuperstarDJ.Audio
         {
             var tracks = AudioLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
             var records = AudioLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
-            trackManager = new SongManager ( tracks );
+            trackManager = new TrackManager ( tracks );
         }
 
         void Update()
