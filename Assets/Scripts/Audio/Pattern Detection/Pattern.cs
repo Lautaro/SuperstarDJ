@@ -18,7 +18,7 @@ namespace SuperstarDJ.Audio.PatternDetection
 
         private void OnBeginListElementGUI( int index )
         {
-            Sirenix.Utilities.Editor.GUIHelper.PushContentColor ( Color.red,true );
+            Sirenix.Utilities.Editor.GUIHelper.PushContentColor ( Color.red, true );
 
             if ( ( index % 4 ) == 0 )
                 Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.cyan, true );
@@ -26,11 +26,10 @@ namespace SuperstarDJ.Audio.PatternDetection
             if ( ( index % 16 ) == 0 )
                 Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.magenta, true );
 
-            if ( index == DateTime.Now.Second )
+            if ( index == RythmManager.RythmPosition.Tick.Id )
             {
                 Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.yellow, true );
             }
-
         }
 
         private void OnAfterEnumisGUI( int index )
@@ -41,10 +40,10 @@ namespace SuperstarDJ.Audio.PatternDetection
             if ( ( index % 16 ) == 0 )
                 Sirenix.Utilities.Editor.GUIHelper.PopColor ();
 
-            if ( index == DateTime.Now.Second )
+            if ( index == RythmManager.RythmPosition.Tick.Id )
             {
                 Sirenix.Utilities.Editor.GUIHelper.PopColor ();
-           
+
             }
             Sirenix.Utilities.Editor.GUIHelper.PopContentColor ();
 

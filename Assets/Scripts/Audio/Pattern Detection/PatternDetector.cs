@@ -1,4 +1,4 @@
-﻿using MessageSystem;
+﻿using SuperstarDJ.MessageSystem;
 using Sirenix.Utilities;
 using SuperstarDJ.Audio.PositionTracking;
 using System;
@@ -30,7 +30,6 @@ namespace SuperstarDJ.Audio.PatternDetection
             MessageHub.Subscribe ( MessageTopics.TickHit_Tick, CheckHitTickForSuccess );
             MessageHub.Subscribe ( MessageTopics.TrackStartsFromZero_string, ResetPatterns );
         }
-
         void ResetPatterns( Message message )
         {
 
@@ -46,24 +45,27 @@ namespace SuperstarDJ.Audio.PatternDetection
                 }
             }
         }
-
         private void DebugPatternSuccessAtEndOfLoop()
         {
-            foreach ( var pattern in patterns )
+            foreach ( var tracker in successTrackers )
             {
-                var builder = new StringBuilder ();
-                builder.AppendLine ( $" *** PATTERN REPORT " );
-                builder.AppendLine ( $"   *** {pattern.PatternName} " );
-                for ( int i = 0; i < pattern.PatternStates.Length; i++ )
-                {
-                    var step = pattern.PatternStates[i];
-                    builder.AppendLine ( $"[i] State: {step.ToString()}" );
-                }
+                var name = tracker.Key;
+                var successStates = tracker.Value;
 
+                var builder = new StringBuilder ();
+                builder.AppendLine ( $"   *** PATTERN REPORT " );
+                builder.AppendLine ( $"   *** {name} " );
+
+
+                for ( int i = 0; i < successStates.Length; i++ )
+                {
+                    var step = successStates[i];
+                    builder.AppendLine ( $"[{i}] State: {step.ToString()}" );
+                }
+                Debug.Log ( builder.ToString () );
                 builder.AppendLine ( $" " );
             }
         }
-
         void EvaluatePreviousStepForSilentTick( Message rythmPositionMessage )
         {
             var newPosition = rythmPositionMessage.Open<RythmPosition> ();
@@ -73,10 +75,7 @@ namespace SuperstarDJ.Audio.PatternDetection
             foreach ( var pattern in patterns )
             {
                 var successStates = successTrackers[pattern.PatternName];
-                if ( index > successStates.Length || index < 0 )
-                 {
-                    //DoWhooop
-                }
+
                 if ( successStates[index] != SuccesState.Waiting )
                 {
                     return;// This tick has already been checked. Exit.
@@ -93,7 +92,6 @@ namespace SuperstarDJ.Audio.PatternDetection
                 }
             }
         }
-
         public void CheckHitTickForSuccess( Message rythmPositionOfHitTick )
         {
             var rythmPosition = rythmPositionOfHitTick.Open<RythmPosition> ();
@@ -125,7 +123,6 @@ namespace SuperstarDJ.Audio.PatternDetection
                 successTrackers[pattern.PatternName][tickWasHit.Id] = result;
             }
         }
-
         void SetSuccessForStep( string patternName, int index, SuccesState success )
         {
             successTrackers[patternName][index] = success;
@@ -137,7 +134,6 @@ namespace SuperstarDJ.Audio.PatternDetection
                 dic.Value.ForEach ( ( ss ) => ss = SuccesState.Waiting );
             }
         }
-
         public bool IsPatternSuccessfull( string patternName )
         {
             return successTrackers[patternName].Any ( ss => ss != SuccesState.Sucess );

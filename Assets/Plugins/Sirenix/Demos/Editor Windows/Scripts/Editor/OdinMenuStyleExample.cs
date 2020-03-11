@@ -26,10 +26,10 @@ namespace Sirenix.OdinInspector.Demos
             {
                 BorderPadding = 0f,
                 AlignTriangleLeft = true,
-                TriangleSize = 16f,
+                TriangleSize = 26f,
                 TrianglePadding = 0f,
                 Offset = 20f,
-                Height = 23,
+                Height = 43,
                 IconPadding = 0f,
                 BorderAlpha = 0.323f
             };

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace MessageSystem
+namespace SuperstarDJ.MessageSystem
 {
     public class MessageType { 
     
@@ -63,6 +63,7 @@ namespace MessageSystem
             {
                 sub.Invoke(callbackMessage);
             });
+            Debug.Log ( $"*** Message posted: {callbackMessage.Topic.ToString()} to  {Subscribers.Count} subs" );
         }
     }
 }

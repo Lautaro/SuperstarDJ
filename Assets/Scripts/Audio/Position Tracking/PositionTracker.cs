@@ -1,4 +1,4 @@
-﻿using MessageSystem;
+﻿using SuperstarDJ.MessageSystem;
 using SuperstarDJ.UnityTools.Extensions;
 using System;
 using System.Collections.Generic;

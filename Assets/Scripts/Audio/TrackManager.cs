@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using MessageSystem;
+using SuperstarDJ.MessageSystem;
 using SuperstarDJ.UnityTools.Extensions;
 
 

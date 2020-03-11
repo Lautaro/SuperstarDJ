@@ -4,10 +4,11 @@ using System.Collections;
 using UnityEngine;
 using SuperstarDJ.Audio.InitialiseAudio;
 using DG.Tweening;
-using MessageSystem;
+using SuperstarDJ.MessageSystem;
 using Assets.Scripts.Enums;
 using SuperstarDJ.Audio.PositionTracking;
 using SuperstarDJ.Audio.PatternDetection;
+using Sirenix.OdinInspector;
 
 namespace SuperstarDJ.Audio
 {
@@ -58,10 +59,17 @@ namespace SuperstarDJ.Audio
         {
             get
             {
-                return instance.rythmPositionTracker.CurrentPosition;
+                if ( instance != null )
+                {
+                    return instance.rythmPositionTracker.CurrentPosition;
+                }
+                return new RythmPosition();
             }
         }
-        public bool MuteAudio;
+    
+        [ShowInInspector]
+        public bool MuteAudio { get => GameSettings.Instance.MuteAudio; set => GameSettings.Instance.MuteAudio = value; }
+     
         // Start is called before the first frame update
         void Awake()
         {
