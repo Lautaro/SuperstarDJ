@@ -11,12 +11,12 @@ namespace SuperstarDJ.CustomEditors
     using System.Linq;
     using SuperstarDJ.Audio.PatternDetection;
 
-    public class GameMonitorWindow : OdinMenuEditorWindow
+    public class GameControlCenter : OdinMenuEditorWindow
     {
-        [MenuItem ( "Tools/SuperstarDJ/Monitor" )]
+        [MenuItem ( "Tools/SuperstarDJ/ControlCenter" )]
         private static void OpenWindow()
         {
-            var window = GetWindow<GameMonitorWindow> ();
+            var window = GetWindow<GameControlCenter> ();
 
             window.position = GUIHelper.GetEditorWindowRect ().AlignCenter ( 700, 700 );
         }

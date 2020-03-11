@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using SuperstarDJ.Audio.DynamicTracks;
-using SuperstarDJ.Audio.DynamicTracks;
 using SuperstarDJ.Audio.PatternDetection;
 using SuperstarDJ.Enums;
 using SuperstarDJ.Mechanics;

@@ -1,5 +1,9 @@
 ﻿using Sirenix.OdinInspector;
+using Sirenix.Utilities.Editor;
+using SuperstarDJ.Audio.PositionTracking;
+using SuperstarDJ.CustomEditors.CompositeAttributes;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace SuperstarDJ.Audio.PatternDetection
@@ -7,46 +11,57 @@ namespace SuperstarDJ.Audio.PatternDetection
     [CreateAssetMenu ( menuName = "SUPERSTAR_DJ/RythmPattern" )]
     public class Pattern : SerializedScriptableObject
     {
+        [BoxGroup ( ShowLabel = false )]
+        [Title ( "NAME" )]
+        [HideLabel]
         [ShowInInspector]
         public string PatternName { get; set; }
 
+        [BoxGroup ( ShowLabel = false )]
+        [Title ( "STEPS" )]
+        [HideLabel]
         [ShowInInspector]
-        [ListDrawerSettings ( IsReadOnly = true, ShowItemCount = true, ShowIndexLabels = true, NumberOfItemsPerPage = 32, OnBeginListElementGUI = "OnBeginListElementGUI", OnEndListElementGUI = "OnAfterEnumisGUI" )]
-        [EnumToggleButtons]
-        [LabelWidth ( 50 )]
-        public PatternAction[] PatternStates { get; set; } = new PatternAction[64];
-
-        private void OnBeginListElementGUI( int index )
+        [TableList (
+            HideToolbar = true,
+            AlwaysExpanded = true,
+            IsReadOnly = true,
+            NumberOfItemsPerPage = 64,
+            ShowIndexLabels = true )]
+        public PatternStep[] Steps { get; set; } = new PatternStep[64];
+        public void ResetStepStatus()
         {
-            Sirenix.Utilities.Editor.GUIHelper.PushContentColor ( Color.red, true );
-
-            if ( ( index % 4 ) == 0 )
-                Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.cyan, true );
-
-            if ( ( index % 16 ) == 0 )
-                Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.magenta, true );
-
-            if ( index == RythmManager.RythmPosition.Tick.Id )
+            for ( int i = 0; i < Steps.Length; i++ )
             {
-                Sirenix.Utilities.Editor.GUIHelper.PushColor ( Color.yellow, true );
+               Steps[i].Status = PatternStepStatus.Waiting;
+            }
+        }
+        public PatternStepStatus[] StepStatuses
+        {
+            get
+            {
+                return Steps.Select ( s => s.Status ).ToArray ();
             }
         }
 
-        private void OnAfterEnumisGUI( int index )
+       internal void SetCurrentStepIndex(int index)
         {
-            if ( ( index % 4 ) == 0 )
-                Sirenix.Utilities.Editor.GUIHelper.PopColor ();
-
-            if ( ( index % 16 ) == 0 )
-                Sirenix.Utilities.Editor.GUIHelper.PopColor ();
-
-            if ( index == RythmManager.RythmPosition.Tick.Id )
+            for ( int i = 0; i < Steps.Length; i++ )
             {
-                Sirenix.Utilities.Editor.GUIHelper.PopColor ();
-
+                Steps[i].IsCurrent = i == index;
             }
-            Sirenix.Utilities.Editor.GUIHelper.PopContentColor ();
+        }
 
+
+        public PatternStepAction[] StepActions
+        {
+            get
+            {
+                return Steps.Select ( s => s.Action ).ToArray ();
+            }
+        }
+        public void SetStatusOfStep( int index, PatternStepStatus Status )
+        {
+            Steps[index].Status = Status;
         }
     }
 }

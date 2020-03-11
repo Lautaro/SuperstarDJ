@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SuperstarDJ.Audio.PatternDetection
 {
-    public enum  PatternAction
+    public enum  PatternStepAction
     {
         None, 
         Hit,

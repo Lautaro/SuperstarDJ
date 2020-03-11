@@ -1,6 +1,6 @@
 ﻿namespace SuperstarDJ.Audio.PositionTracking
 {
-    public enum SuccesState
+    public enum PatternStepStatus
     {
         Waiting,
         Sucess, 

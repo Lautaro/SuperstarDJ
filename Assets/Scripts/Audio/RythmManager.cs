@@ -35,6 +35,10 @@ namespace SuperstarDJ.Audio
         {
             return instance.trackManager.IsTrackPlaying ( trackName );
         }
+        public static bool IsAllTracksStopped( )
+        {
+            return !instance.trackManager.IsAnyTrackPlaying();
+        }
         public static void BeatNow()
         {
             instance.CheckForBeatHit ();

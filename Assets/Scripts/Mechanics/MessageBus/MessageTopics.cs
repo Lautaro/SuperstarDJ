@@ -10,6 +10,7 @@ namespace SuperstarDJ.MessageSystem
     {
         DisplayUI_FX_string, 
         NewRythmPosition,
+        SongStarted_string,
         TrackStarted_Track,
         TrackStopped_Track,
         TickHit_Tick,

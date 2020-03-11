@@ -43,6 +43,8 @@ namespace SuperstarDJ.Audio.DynamicTracks
                     StartTrack ( track );
                 }
             }
+
+            MessageHub.PublishNews ( MessageTopics.SongStarted_string, "") ;
         }
         private static double GetDspTime( bool withPadding = false )
         {
@@ -123,9 +125,13 @@ namespace SuperstarDJ.Audio.DynamicTracks
             {
                 StartSong ( new List<string> () { trackName } );
             }
+            else
+            {
+                var track = GetTrackByName ( trackName );
+                StartTrack ( track, GetCurrentSamplePosition () );
+            }
 
-            var track = GetTrackByName ( trackName );
-            StartTrack ( track, GetCurrentSamplePosition () );
+
         }
         public Track GetTrackByName( string trackName )
         {
