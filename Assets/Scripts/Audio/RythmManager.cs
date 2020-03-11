@@ -36,7 +36,7 @@ namespace SuperstarDJ.Audio
         }
         public static void BeatNow()
         {
-            instance.Beat ();
+            instance.CheckForBeatHit ();
 
         }
         public static string[] TracksPlaying()
@@ -90,7 +90,7 @@ namespace SuperstarDJ.Audio
             rythmPositionTracker = new PositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
         }
 
-        void Beat()
+        void CheckForBeatHit()
         {
             var hitTick = rythmPositionTracker.CheckIfHit ( trackManager.GetCurrentSamplePosition () );
 

@@ -17,7 +17,13 @@ namespace SuperstarDJ.Audio.PositionTracking
         readonly double trackDuration;
         readonly int paddingInPercentage = 50; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
         RythmPosition currentPosition;
-        public RythmPosition CurrentPosition { get; }
+        public RythmPosition CurrentPosition
+        {
+            get
+            {
+                return currentPosition;
+            }
+        }
 
         public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
         {
@@ -133,16 +139,18 @@ namespace SuperstarDJ.Audio.PositionTracking
             if ( tick.Id == currentPosition.Tick.Id )
                 return;
 
-            if ( currentPosition.Tick.Id == ticks.Length && tick.Id == 0 )
+            currentPosition = new RythmPosition ( tick, currentPositionInClip );
+
+            MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
+            //     Debug.Log ( $"[{currentPosition.Tick.Measure}][{currentPosition.Tick.Beat}][{currentPosition.Tick.Index}]" );
+
+            //            if ( currentPosition.Tick.Id == ticks.Length && tick.Id == 0 )
+            if ( tick.Id == 0 )
             {
                 // new loop. Reset.
                 MessageHub.PublishNews<string> ( MessageTopics.TrackStartsFromZero_string, "Track start from zero" );
             }
 
-            currentPosition = new RythmPosition ( tick, currentPositionInClip );
-
-            MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
-       //     Debug.Log ( $"[{currentPosition.Tick.Measure}][{currentPosition.Tick.Beat}][{currentPosition.Tick.Index}]" );
         }
     }
 }

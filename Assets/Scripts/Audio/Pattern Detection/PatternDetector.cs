@@ -26,15 +26,20 @@ namespace SuperstarDJ.Audio.PatternDetection
                 successTrackers.Add ( pattern.PatternName, new SuccesState[64] );
             }
 
-            MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluateSuccessForSilentTick );
+            MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentTick );
             MessageHub.Subscribe ( MessageTopics.TickHit_Tick, CheckHitTickForSuccess );
             MessageHub.Subscribe ( MessageTopics.TrackStartsFromZero_string, ResetPatterns );
         }
 
         void ResetPatterns( Message message )
         {
+
+            DebugPatternSuccessAtEndOfLoop ();
             foreach ( var tracker in successTrackers )
             {
+                if ( tracker.Value.Any ( ss => ss == SuccesState.Waiting ) ) 
+                    Debug.LogError ( "Patterns cant reset while there is still a step that has not been evaluated" );
+                
                 for ( int i = 0; i < tracker.Value.Length; i++ )
                 {
                     tracker.Value[i] = SuccesState.Waiting;
@@ -42,13 +47,36 @@ namespace SuperstarDJ.Audio.PatternDetection
             }
         }
 
-        void EvaluateSuccessForSilentTick( Message rythmPositionMessage )
+        private void DebugPatternSuccessAtEndOfLoop()
+        {
+            foreach ( var pattern in patterns )
+            {
+                var builder = new StringBuilder ();
+                builder.AppendLine ( $" *** PATTERN REPORT " );
+                builder.AppendLine ( $"   *** {pattern.PatternName} " );
+                for ( int i = 0; i < pattern.PatternStates.Length; i++ )
+                {
+                    var step = pattern.PatternStates[i];
+                    builder.AppendLine ( $"[i] State: {step.ToString()}" );
+                }
+
+                builder.AppendLine ( $" " );
+            }
+        }
+
+        void EvaluatePreviousStepForSilentTick( Message rythmPositionMessage )
         {
             var newPosition = rythmPositionMessage.Open<RythmPosition> ();
-            var index = newPosition.Tick.Id - 1; ;
+            var newId = newPosition.Tick.Id;
+            var index = newId > 0 ? newId - 1 : 63;
+            
             foreach ( var pattern in patterns )
             {
                 var successStates = successTrackers[pattern.PatternName];
+                if ( index > successStates.Length || index < 0 )
+                 {
+                    //DoWhooop
+                }
                 if ( successStates[index] != SuccesState.Waiting )
                 {
                     return;// This tick has already been checked. Exit.
