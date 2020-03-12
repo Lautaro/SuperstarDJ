@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using MessageSystem;
+using SuperstarDJ.MessageSystem;
 using SuperstarDJ.UnityTools.Extensions;
 
 
@@ -43,6 +43,8 @@ namespace SuperstarDJ.Audio.DynamicTracks
                     StartTrack ( track );
                 }
             }
+
+            MessageHub.PublishNews ( MessageTopics.SongStarted_string, "") ;
         }
         private static double GetDspTime( bool withPadding = false )
         {
@@ -106,6 +108,11 @@ namespace SuperstarDJ.Audio.DynamicTracks
             return Tracks.Where ( t => t.IsPlaying == true ).ToList ();
         }
 
+        public bool IsAnyTrackPlaying()
+        {
+            return Tracks.Any ( t => t.IsPlaying == true );
+        }
+
         public void StopTrack( string trackName )
         {
             var track = GetTrackByName ( trackName );
@@ -118,9 +125,13 @@ namespace SuperstarDJ.Audio.DynamicTracks
             {
                 StartSong ( new List<string> () { trackName } );
             }
+            else
+            {
+                var track = GetTrackByName ( trackName );
+                StartTrack ( track, GetCurrentSamplePosition () );
+            }
 
-            var track = GetTrackByName ( trackName );
-            StartTrack ( track, GetCurrentSamplePosition () );
+
         }
         public Track GetTrackByName( string trackName )
         {

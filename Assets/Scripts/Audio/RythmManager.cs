@@ -1,18 +1,14 @@
 ﻿using SuperstarDJ.Audio.DynamicTracks;
 using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-using SuperstarDJ.UnityTools.Extensions;
-using System;
 using SuperstarDJ.Audio.InitialiseAudio;
 using DG.Tweening;
-using SuperstarDJ.Audio.RythmDetection;
-using SuperstarDJ.Mechanics;
-using SuperstarDJ.Enums;
-using UnityEngine.SceneManagement;
-using MessageSystem;
+using SuperstarDJ.MessageSystem;
 using Assets.Scripts.Enums;
-using System.Text;
+using SuperstarDJ.Audio.PositionTracking;
+using SuperstarDJ.Audio.PatternDetection;
+using Sirenix.OdinInspector;
 
 namespace SuperstarDJ.Audio
 {
@@ -27,12 +23,10 @@ namespace SuperstarDJ.Audio
 
         #region Static Methods
         public static RythmManager instance;
-
         public static void PlayTrack( string track )
         {
             instance.trackManager.PlayTrack ( track );
         }
-
         public static void StopTrack( string track )
         {
             instance.trackManager.StopTrack ( track );
@@ -41,12 +35,15 @@ namespace SuperstarDJ.Audio
         {
             return instance.trackManager.IsTrackPlaying ( trackName );
         }
+        public static bool IsAllTracksStopped( )
+        {
+            return !instance.trackManager.IsAnyTrackPlaying();
+        }
         public static void BeatNow()
         {
-            instance.Beat ();
+            instance.CheckForBeatHit ();
 
         }
-
         public static string[] TracksPlaying()
         {
             return instance.trackManager.TracksPlaying ();
@@ -54,18 +51,29 @@ namespace SuperstarDJ.Audio
         #endregion
 
         #region Instance
-
         TrackManager trackManager;
         public string PathToAudio;
+        public string PathToPatterns;
         public string SettingsFile;
         public DOTweenAnimation BeatMark;
-        RythmPositionTracker rythmPositionTracker;
-        RythmPosition rythmPosition;
+        PositionTracker rythmPositionTracker;
+        PatternDetector patternDetector;
 
-        static public RythmPosition RythmPosition { get {
-                return instance.rythmPosition;
-            }}
-        public bool MuteAudio;
+        static public RythmPosition RythmPosition
+        {
+            get
+            {
+                if ( instance != null )
+                {
+                    return instance.rythmPositionTracker.CurrentPosition;
+                }
+                return new RythmPosition();
+            }
+        }
+    
+        [ShowInInspector]
+        public bool MuteAudio { get => GameSettings.Instance.MuteAudio; set => GameSettings.Instance.MuteAudio = value; }
+     
         // Start is called before the first frame update
         void Awake()
         {
@@ -74,7 +82,7 @@ namespace SuperstarDJ.Audio
                 instance = this;
                 LoadTracksAndSpawnRecords ();
                 InitializeRythmPositionTracker ();
-
+                InitializePatternDetector ();
             }
             else
             {
@@ -82,22 +90,27 @@ namespace SuperstarDJ.Audio
             }
         }
 
+        private void InitializePatternDetector()
+        {
+            var patterns = AudioLoading.LoadAllPatterns ( PathToPatterns );
+            patternDetector = new PatternDetector ( patterns );
+        }
 
         void InitializeRythmPositionTracker()
         {
             var trackDuration = trackManager.Duration;
-            rythmPositionTracker = new RythmPositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
-            //rythmPosition = rythmPositionTracker.GetPositionInRythm ();
+            rythmPositionTracker = new PositionTracker ( MEASURES_PER_LOOP, BEATS_PER_MEASURE, TICKS_PER_BEATS, trackDuration );
         }
 
-        void Beat()
+        void CheckForBeatHit()
         {
             var hitTick = rythmPositionTracker.CheckIfHit ( trackManager.GetCurrentSamplePosition () );
 
             if ( hitTick.Position >= 0 )
             {
-                Debug.Log ($"(!!! {hitTick.Tick.Id})Was hit:  {hitTick.Position}  " );
+                Debug.Log ( $"(!!! {hitTick.Tick.Id})Was hit:  {hitTick.Position}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
+                MessageHub.PublishNews<RythmPosition> ( MessageTopics.TickHit_Tick,hitTick  );
             }
             else
             {
@@ -106,17 +119,19 @@ namespace SuperstarDJ.Audio
         }
         private void LoadTracksAndSpawnRecords()
         {
-            var tracks = AudioLoading.Load ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
+            var tracks = AudioLoading.LoadAllTracks ( PathToAudio, SettingsFile, () => gameObject.AddComponent<Track> () );
             var records = AudioLoading.GetRecordPrefabs ( tracks, GameObject.Find ( "Dynamic Records" ).transform );
             trackManager = new TrackManager ( tracks );
         }
 
         void Update()
         {
-            if ( trackManager.GetPlayingTracks ().Count > 0 )
+            if ( trackManager.IsAnyTrackPlaying ())
             {
-                rythmPosition = rythmPositionTracker.UpdateCurrentRythmPosition ( rythmPosition, trackManager.GetCurrentSamplePosition());
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
+
+                rythmPositionTracker.UpdateCurrentRythmPosition (  trackManager.GetCurrentSamplePosition () );
+                
             }
         }
 

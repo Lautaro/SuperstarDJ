@@ -18,8 +18,6 @@ public class VisualMetronome : MonoBehaviour
         text = GetComponentInChildren<TextMeshProUGUI> ();
         blips = GetComponentsInChildren<Transform> ().Where ( t => t.name.Length == 1 ).ToList ();
         blipDefaultSize = blips[0].localScale;
-        print ( $"Found {blips.Count} transforms" );
-
     }
 
     // Update is called once per frame

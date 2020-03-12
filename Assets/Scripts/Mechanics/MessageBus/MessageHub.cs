@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 
-namespace MessageSystem
+namespace SuperstarDJ.MessageSystem
 {
     public class MessageHub
     {
@@ -66,10 +66,11 @@ namespace MessageSystem
             var registration = messageRegistrations.FirstOrDefault ( s => s.Topic == topic );
             if ( registration == null  )
             {
-                if ( DebugEnabled )   Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
-  
+                 Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
                 return; 
             }
+        
+
             registration.PublishThis<T> ( message );
         }
     }

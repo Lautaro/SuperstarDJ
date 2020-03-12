@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace MessageSystem
+namespace SuperstarDJ.MessageSystem
 {
     public class MessageType { 
     
@@ -16,7 +16,6 @@ namespace MessageSystem
 
         public MessageType(MessageTopics topic, string subscriberId, UnityAction<Message> subscriber)
         {
-    
             Topic = topic;
             Subscribers.Add(subscriberId, subscriber);
             Debug.Log($"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count()}");
@@ -64,6 +63,7 @@ namespace MessageSystem
             {
                 sub.Invoke(callbackMessage);
             });
+            Debug.Log ( $"*** Message posted: {callbackMessage.Topic.ToString()} to  {Subscribers.Count} subs" );
         }
     }
 }

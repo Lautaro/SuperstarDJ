@@ -20,7 +20,7 @@ public class GuestManager : MonoBehaviour
     #region variables
     float guestSpawnCooldownSpanInSeconds = 1f;
     DateTime guestSpawnCooldownTimer;
-    int minAmountOfGuests = 1;
+    //int minAmountOfGuests = 1;
     int maxAmountOfGuests = 3;
 
     float danceFlorSize = 6f;
