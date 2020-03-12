@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MessageSystem
+namespace SuperstarDJ.MessageSystem
 {
     public enum MessageTopics
     {
         DisplayUI_FX_string, 
         NewRythmPosition,
+        SongStarted_string,
         TrackStarted_Track,
         TrackStopped_Track,
-        TickHit_Tick
+        TickHit_Tick,
+        TrackStartsFromZero_string
     }
 }
