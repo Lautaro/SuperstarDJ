@@ -18,7 +18,7 @@ namespace SuperstarDJ.Audio.PatternDetection
         public PatternDetector( List<Pattern> patterns_ )
         {
             patterns = patterns_;
-   
+
             //  Debug.Log ( $"Loaded {patterns.Count} patterns : {string.Join ( " * ", patterns.Select ( p => p.PatternName ).ToArray () ) }" );
 
             MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentTick );
@@ -28,14 +28,14 @@ namespace SuperstarDJ.Audio.PatternDetection
         }
         void ResetPatterns( Message message )
         {
-            DebugPatternSuccessAtEndOfLoop ();
-
             foreach ( var pattern in patterns )
             {
                 if ( pattern.StepStatuses.Any ( ss => ss == PatternStepStatus.Waiting ) )
                     Debug.LogError ( "Patterns cant reset while there is still a step that has not been evaluated" );
                 pattern.ResetStepStatus ();
             }
+
+            DebugPatternSuccessAtEndOfLoop ();
         }
         private void DebugPatternSuccessAtEndOfLoop()
         {

@@ -21,6 +21,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  MuteAudio: 1
+  MuteAudio: 0
   DoThis: 0
   DoThat: 0
