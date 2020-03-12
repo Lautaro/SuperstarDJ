@@ -33,6 +33,7 @@ namespace SuperstarDJ.Audio.PatternDetection
             for ( int i = 0; i < Steps.Length; i++ )
             {
                Steps[i].Status = PatternStepStatus.Waiting;
+                Steps[i].StepWasHit = false;
             }
         }
         public PatternStepStatus[] StepStatuses
@@ -49,6 +50,14 @@ namespace SuperstarDJ.Audio.PatternDetection
             {
                 Steps[i].IsCurrent = i == index;
             }
+        }
+
+        /// <summary>
+        /// register hit for easier debugging in editor window
+        /// </summary>
+        internal void SetHitStepIndex( int index )
+        {
+                Steps[index].StepWasHit = true;
         }
 
 

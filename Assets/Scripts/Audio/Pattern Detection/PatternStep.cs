@@ -36,13 +36,16 @@ namespace SuperstarDJ.Audio.PatternDetection
         [HorizontalGroup ( " " )]
         [HideLabel]
         [ShowInInspector]
-        public Color TrackerColor
+        public Color PlayerHitTrackerColor
         {
             get
             {
-                return ( !Application.isPlaying || !IsCurrent || RythmManager.IsAllTracksStopped () ) ? Color.grey : Color.white;
+                return ( !Application.isPlaying || !StepWasHit || RythmManager.IsAllTracksStopped () ) ? Color.grey : Color.white;
             }
         }
+
+
+        internal bool StepWasHit;
 
         internal bool IsCurrent;
 

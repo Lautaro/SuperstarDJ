@@ -88,9 +88,12 @@ namespace SuperstarDJ.Audio.PatternDetection
         {
             var rythmPosition = rythmPositionOfHitTick.Open<RythmPosition> ();
             var tickWasHit = rythmPosition.Tick;
+
             foreach ( var pattern in patterns )
             {
-                if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting )
+                pattern.SetHitStepIndex ( tickWasHit.Id );
+
+                if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting && tickWasHit.Id != 0)
                 {
                     // This tick has already been set. Exit.
                     return;
@@ -100,11 +103,12 @@ namespace SuperstarDJ.Audio.PatternDetection
                 switch ( patternAction )
                 {
                     case PatternStepAction.None:
-                        Debug.Log ( $"Pattern has failed at tick {tickWasHit.Id} because *{patternAction.ToString ()}* was expected but tick *HIT*" );
+                   //     Debug.Log ( $"Pattern has failed at tick {tickWasHit.Id} because *{patternAction.ToString ()}* was expected but tick *HIT*" );
                         result = PatternStepStatus.Failed;
                         break;
                     case PatternStepAction.Hit:
-                        result = PatternStepStatus.Sucess; // Not yet implemented
+                        result = PatternStepStatus.Sucess;
+                 
                         break;
                     case PatternStepAction.Hold:
                         result = PatternStepStatus.Failed; // Not yet implemented
@@ -112,7 +116,7 @@ namespace SuperstarDJ.Audio.PatternDetection
                     default:
                         break;
                 }
-                pattern.StepStatuses[tickWasHit.Id] = result;
+                pattern.SetStatusOfStep(tickWasHit.Id, result);
             }
         }
     }
