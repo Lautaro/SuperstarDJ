@@ -1,15 +1,12 @@
 #if UNITY_EDITOR
 namespace SuperstarDJ.CustomEditors
 {
-    using UnityEditor;
     using Sirenix.OdinInspector.Editor;
-    using Sirenix.OdinInspector;
-    using Sirenix.Utilities.Editor;
     using Sirenix.Utilities;
-    using SuperstarDJ.Audio;
-    using UnityEngine;
-    using System.Linq;
+    using Sirenix.Utilities.Editor;
     using SuperstarDJ.Audio.PatternDetection;
+    using UnityEditor;
+    using UnityEngine;
 
     public class GameControlCenter : OdinMenuEditorWindow
     {

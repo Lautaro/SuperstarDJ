@@ -14,16 +14,16 @@ namespace SuperstarDJ
              );
         }
 
-        public static Vector2 GetRandomPlaceWithinScreen(float limitToCenter = 1f)
+        public static Vector2 GetRandomPlaceWithinScreen( float limitToCenter = 1f )
         {
             float randomY = Random.Range
-                 (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+                 ( Camera.main.ScreenToWorldPoint ( new Vector2 ( 0, 0 ) ).y, Camera.main.ScreenToWorldPoint ( new Vector2 ( 0, Screen.height ) ).y );
             float spawnX = Random.Range
-                (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+                ( Camera.main.ScreenToWorldPoint ( new Vector2 ( 0, 0 ) ).x, Camera.main.ScreenToWorldPoint ( new Vector2 ( Screen.width, 0 ) ).x );
 
             spawnX *= limitToCenter;
             randomY *= limitToCenter;
-            return new Vector2(spawnX, randomY);
+            return new Vector2 ( spawnX, randomY );
         }
 
         public static Vector3 GetSymmetricalVector( float size )

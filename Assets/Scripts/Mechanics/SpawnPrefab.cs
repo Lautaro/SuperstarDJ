@@ -1,10 +1,4 @@
-﻿using SuperstarDJ.Audio;
-using SuperstarDJ.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SuperstarDJ.Enums;
 using UnityEngine;
 
 namespace SuperstarDJ.Mechanics
@@ -16,18 +10,18 @@ namespace SuperstarDJ.Mechanics
         {
             get
             {
-                if (instance == null)
+                if ( instance == null )
                 {
-                    instance = new SpawnPrefab();
+                    instance = new SpawnPrefab ();
                 };
                 return instance;
             }
         }
 
-        public GameObject Spawn(string PrefabName)
+        public GameObject Spawn( string PrefabName )
         {
-            var prefab = Resources.Load<GameObject>(Prefabs.PathToPrefabsFolder + PrefabName);
-            var returnObject = GameObject.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+            var prefab = Resources.Load<GameObject> ( Prefabs.PathToPrefabsFolder + PrefabName );
+            var returnObject = GameObject.Instantiate ( prefab, new Vector3 ( 0, 0, 0 ), Quaternion.identity );
 
             return returnObject;
         }

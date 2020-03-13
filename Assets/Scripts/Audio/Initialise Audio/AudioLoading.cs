@@ -10,13 +10,13 @@ using UnityEngine;
 
 namespace SuperstarDJ.Audio.InitialiseAudio
 {
-public static class AudioLoading
+    public static class AudioLoading
     {
         static List<Dictionary<string, string>> trackMetadata;
-        public static List<Track> LoadAllTracks( string path,string musicSettingsFile, Func<Track> TrackFactory )
+        public static List<Track> LoadAllTracks( string path, string musicSettingsFile, Func<Track> TrackFactory )
         {
             // load json
-            var textAsset = Resources.Load ( path + musicSettingsFile) as TextAsset;
+            var textAsset = Resources.Load ( path + musicSettingsFile ) as TextAsset;
             if ( textAsset == null ) Debug.LogError ( "Could not load music settings file. Expected path : " + path );
 
             var tracks = new List<Track> ();
@@ -24,19 +24,19 @@ public static class AudioLoading
             var settingsJson = JObject.Parse ( textAsset.ToString () );
             var metaData = ParseTrackMetadata ( settingsJson );
 
-            foreach ( var trackInfo  in metaData )
+            foreach ( var trackInfo in metaData )
             {
                 var name = trackInfo["TrackName"];
                 var clip = Resources.Load<AudioClip> ( $"{path}{name}" );
                 var track = TrackFactory ();
-                track.VolumeModification = float.Parse(trackInfo["VolumeModifier"]);
+                track.VolumeModification = float.Parse ( trackInfo["VolumeModifier"] );
                 track.Abreviation = trackInfo["Abreviation"];
-                track.Source().clip = clip;
+                track.Source ().clip = clip;
                 track.Source ().volume = 0f;
                 track.Source ().loop = true;
                 tracks.Add ( track );
             }
-       
+
             return tracks;
         }
 
@@ -48,7 +48,7 @@ public static class AudioLoading
                 var prefab = SpawnPrefab.Instance.Spawn ( Prefabs.DynamicRecord );
                 var record = prefab.GetComponent<Record> ();
                 record.Track = track;
-                prefab.name = track.TrackName.ToString() + " (Record)";
+                prefab.name = track.TrackName.ToString () + " (Record)";
                 prefab.transform.parent = parent;
                 prefab.transform.position = ProjectTools.GetRandomPlaceWithinScreen ();
                 recordPrefabs.Add ( prefab );
@@ -58,9 +58,9 @@ public static class AudioLoading
             return recordPrefabs;
         }
 
-        public static List<Pattern> LoadAllPatterns( string path)
+        public static List<Pattern> LoadAllPatterns( string path )
         {
-            return Resources.LoadAll<Pattern> ( path ).ToList();
+            return Resources.LoadAll<Pattern> ( path ).ToList ();
         }
 
         #region Internal private methods
@@ -76,7 +76,7 @@ public static class AudioLoading
                 var split = metaData.Split ( ' ' );
                 dic.Add ( "TrackName", split[0] );
                 dic.Add ( "VolumeModifier", split[1] );
-                dic.Add("Abreviation", split[2]);
+                dic.Add ( "Abreviation", split[2] );
 
                 metaDataDics.Add ( dic );
             }

@@ -1,69 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace SuperstarDJ.MessageSystem
 {
-    public class MessageType { 
-    
-        public MessageTopics Topic;
-        
-        Dictionary<string, UnityAction<Message>> Subscribers = new Dictionary<string, UnityAction<Message>>();
+    public class MessageType
+    {
 
-        public MessageType(MessageTopics topic, string subscriberId, UnityAction<Message> subscriber)
+        public MessageTopics Topic;
+
+        Dictionary<string, UnityAction<Message>> Subscribers = new Dictionary<string, UnityAction<Message>> ();
+
+        public MessageType( MessageTopics topic, string subscriberId, UnityAction<Message> subscriber )
         {
             Topic = topic;
-            Subscribers.Add(subscriberId, subscriber);
-            Debug.Log($"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count()}");
+            Subscribers.Add ( subscriberId, subscriber );
+            Debug.Log ( $"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count ()}" );
         }
 
-        public void AddSubscriber(string subscriberId, UnityAction<Message> subscriber)
+        public void AddSubscriber( string subscriberId, UnityAction<Message> subscriber )
         {
-            Subscribers.Add(subscriberId, subscriber);
-            Debug.Log($"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count()}");
+            Subscribers.Add ( subscriberId, subscriber );
+            Debug.Log ( $"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count ()}" );
         }
 
-        public bool CheckForId(string id)
+        public bool CheckForId( string id )
         {
-            return Subscribers.ContainsKey(id);
+            return Subscribers.ContainsKey ( id );
         }
 
-        public bool CheckForSubscriber(UnityAction<Message> subscriber)
+        public bool CheckForSubscriber( UnityAction<Message> subscriber )
         {
-            return Subscribers.ContainsValue(subscriber);
+            return Subscribers.ContainsValue ( subscriber );
         }
 
-        public void RemoveSubscriberByKey(string id)
+        public void RemoveSubscriberByKey( string id )
         {
-            Subscribers.Remove(id);
+            Subscribers.Remove ( id );
         }
 
-        public void RemoveSubscriberBysubscriber(UnityAction<Message> subscriber)
+        public void RemoveSubscriberBysubscriber( UnityAction<Message> subscriber )
         {
-            foreach (var item in Subscribers.Where(kvp => kvp.Value == subscriber).ToList())
+            foreach ( var item in Subscribers.Where ( kvp => kvp.Value == subscriber ).ToList () )
             {
-                Subscribers.Remove(item.Key);
+                Subscribers.Remove ( item.Key );
             }
         }
 
-        public void PublishThis<T>(T message)
+        public void PublishThis<T>( T message )
         {
 
-            var callbackMessage = new Message()
+            var callbackMessage = new Message ()
             {
                 Topic = Topic,
                 Attachment = message
             };
 
-            Subscribers.Values.ToList().ForEach(sub =>
-            {
-                sub.Invoke(callbackMessage);
-            });
-            Debug.Log ( $"*** Message posted: {callbackMessage.Topic.ToString()} to  {Subscribers.Count} subs" );
+            Subscribers.Values.ToList ().ForEach ( sub =>
+               {
+                   sub.Invoke ( callbackMessage );
+               } );
+            var gameSettings = GameSettings.Instance;
+            // exit if solo list has any && if current topic is not included
+            if ( gameSettings.SoloTopics > 0 
+                && !gameSettings.SoloTopics.HasFlag ( callbackMessage.Topic ) )
+                return;
+
+            //Log if not muted OR  on solo list
+            if ( !gameSettings.MutedTopics.HasFlag ( callbackMessage.Topic )
+                ||gameSettings.SoloTopics.HasFlag(callbackMessage.Topic)) 
+                Debug.Log ( $"*** Message posted: {callbackMessage.Topic.ToString ()} to  {Subscribers.Count} subs" );
         }
     }
 }
