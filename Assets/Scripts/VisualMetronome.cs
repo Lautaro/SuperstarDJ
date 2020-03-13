@@ -1,5 +1,4 @@
 ﻿using SuperstarDJ.Audio;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -24,11 +23,11 @@ public class VisualMetronome : MonoBehaviour
     void Update()
     {
         text.text = "";
-   
-            blips.ForEach ( t => t.localScale = blipDefaultSize );
-            rythmPosition = RythmManager.RythmPosition;
-            text.text = $"[{rythmPosition.Tick.Measure}] - {rythmPosition.Tick.Beat}";
-            var index = rythmPosition.Tick.Beat;
-            blips[index].localScale *= 2;
+
+        blips.ForEach ( t => t.localScale = blipDefaultSize );
+        rythmPosition = RythmManager.RythmPosition;
+        text.text = $"[{rythmPosition.Tick.Measure}] - {rythmPosition.Tick.Beat}";
+        var index = rythmPosition.Tick.Beat;
+        blips[index].localScale *= 2;
     }
 }

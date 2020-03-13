@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SuperstarDJ.MessageSystem
+﻿namespace SuperstarDJ.MessageSystem
 {
     public class Message
     {
         public MessageTopics Topic;
         public object Attachment;
 
-        public T Open<T>() 
+        public T Open<T>()
         {
-            return (T)Attachment ;
+            return ( T )Attachment;
         }
 
         public override string ToString()
         {
-            return Topic.ToString();
+            return Topic.ToString ();
 
         }
     }

@@ -1,8 +1,5 @@
 ﻿using Sirenix.OdinInspector;
-using Sirenix.Utilities.Editor;
 using SuperstarDJ.Audio.PositionTracking;
-using SuperstarDJ.CustomEditors.CompositeAttributes;
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -32,7 +29,7 @@ namespace SuperstarDJ.Audio.PatternDetection
         {
             for ( int i = 0; i < Steps.Length; i++ )
             {
-               Steps[i].Status = PatternStepStatus.Waiting;
+                Steps[i].Status = PatternStepStatus.Waiting;
                 Steps[i].StepWasHit = false;
             }
         }
@@ -44,7 +41,7 @@ namespace SuperstarDJ.Audio.PatternDetection
             }
         }
 
-       internal void SetCurrentStepIndex(int index)
+        internal void SetCurrentStepIndex( int index )
         {
             for ( int i = 0; i < Steps.Length; i++ )
             {
@@ -57,7 +54,7 @@ namespace SuperstarDJ.Audio.PatternDetection
         /// </summary>
         internal void SetHitStepIndex( int index )
         {
-                Steps[index].StepWasHit = true;
+            Steps[index].StepWasHit = true;
         }
 
 

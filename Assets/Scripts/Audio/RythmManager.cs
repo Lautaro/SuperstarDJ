@@ -1,14 +1,12 @@
-﻿using SuperstarDJ.Audio.DynamicTracks;
-using System.Collections;
-
-using UnityEngine;
-using SuperstarDJ.Audio.InitialiseAudio;
+﻿using Assets.Scripts.Enums;
 using DG.Tweening;
-using SuperstarDJ.MessageSystem;
-using Assets.Scripts.Enums;
-using SuperstarDJ.Audio.PositionTracking;
-using SuperstarDJ.Audio.PatternDetection;
 using Sirenix.OdinInspector;
+using SuperstarDJ.Audio.DynamicTracks;
+using SuperstarDJ.Audio.InitialiseAudio;
+using SuperstarDJ.Audio.PatternDetection;
+using SuperstarDJ.Audio.PositionTracking;
+using SuperstarDJ.MessageSystem;
+using UnityEngine;
 
 namespace SuperstarDJ.Audio
 {
@@ -35,9 +33,9 @@ namespace SuperstarDJ.Audio
         {
             return instance.trackManager.IsTrackPlaying ( trackName );
         }
-        public static bool IsAllTracksStopped( )
+        public static bool IsAllTracksStopped()
         {
-            return !instance.trackManager.IsAnyTrackPlaying();
+            return !instance.trackManager.IsAnyTrackPlaying ();
         }
         public static void BeatNow()
         {
@@ -67,13 +65,13 @@ namespace SuperstarDJ.Audio
                 {
                     return instance.rythmPositionTracker.CurrentPosition;
                 }
-                return new RythmPosition();
+                return new RythmPosition ();
             }
         }
-    
+
         [ShowInInspector]
         public bool MuteAudio { get => GameSettings.Instance.MuteAudio; set => GameSettings.Instance.MuteAudio = value; }
-     
+
         // Start is called before the first frame update
         void Awake()
         {
@@ -110,7 +108,7 @@ namespace SuperstarDJ.Audio
             {
                 Debug.Log ( $"(!!! {hitTick.Tick.Id})Was hit:  {hitTick.Position}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.TickHit_Tick,hitTick  );
+                MessageHub.PublishNews<RythmPosition> ( MessageTopics.TickHit_Tick, hitTick );
             }
             else
             {
@@ -126,12 +124,12 @@ namespace SuperstarDJ.Audio
 
         void Update()
         {
-            if ( trackManager.IsAnyTrackPlaying ())
+            if ( trackManager.IsAnyTrackPlaying () )
             {
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
 
-                rythmPositionTracker.UpdateCurrentRythmPosition (  trackManager.GetCurrentSamplePosition () );
-                
+                rythmPositionTracker.UpdateCurrentRythmPosition ( trackManager.GetCurrentSamplePosition () );
+
             }
         }
 

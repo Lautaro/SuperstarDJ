@@ -1,9 +1,6 @@
 ﻿using SuperstarDJ;
 using SuperstarDJ.Audio;
-using SuperstarDJ.Audio.DynamicTracks;
 using SuperstarDJ.Enums;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -106,7 +103,7 @@ public class Player_Interactions : MonoBehaviour
 
         #region BeatMixing
 
-        if ( Input.GetKeyDown ( KeyCode.Space )|| Input.GetKeyDown ( KeyCode.Mouse1 ) )
+        if ( Input.GetKeyDown ( KeyCode.Space ) || Input.GetKeyDown ( KeyCode.Mouse1 ) )
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
@@ -130,8 +127,8 @@ public class Player_Interactions : MonoBehaviour
         // IF RECORD EXISTS 
         if ( turnTableWithRecord != null )
         {
-            var track = 
-                turnTableWithRecord.HeldItem.GetComponent<Record>().Track.TrackName;
+            var track =
+                turnTableWithRecord.HeldItem.GetComponent<Record> ().Track.TrackName;
             if ( play == true )
             {
                 RythmManager.PlayTrack ( track );
