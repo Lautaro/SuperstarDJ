@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 
 namespace SuperstarDJ.MessageSystem
@@ -64,12 +61,15 @@ namespace SuperstarDJ.MessageSystem
         public static void PublishNews<T>( MessageTopics topic, T message )
         {
             var registration = messageRegistrations.FirstOrDefault ( s => s.Topic == topic );
-            if ( registration == null  )
+            if ( registration == null )
             {
-                 Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
-                return; 
+                if ( !GameSettings.Instance.MutedTopics.HasFlag ( topic ) )
+                {
+                    Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
+                    return;
+                }
             }
-        
+
 
             registration.PublishThis<T> ( message );
         }

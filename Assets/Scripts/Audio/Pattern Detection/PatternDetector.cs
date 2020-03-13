@@ -1,11 +1,8 @@
-﻿using SuperstarDJ.MessageSystem;
-using Sirenix.Utilities;
-using SuperstarDJ.Audio.PositionTracking;
-using System;
+﻿using SuperstarDJ.Audio.PositionTracking;
+using SuperstarDJ.MessageSystem;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SuperstarDJ.Audio.PatternDetection
@@ -62,7 +59,7 @@ namespace SuperstarDJ.Audio.PatternDetection
             var newPosition = rythmPositionMessage.Open<RythmPosition> ();
             var newId = newPosition.Tick.Id;
             var index = newId > 0 ? newId - 1 : 63;
-            patterns.ForEach ( p => p.SetCurrentStepIndex ( newId ) ); 
+            patterns.ForEach ( p => p.SetCurrentStepIndex ( newId ) );
 
             foreach ( var pattern in patterns )
             {
@@ -93,7 +90,7 @@ namespace SuperstarDJ.Audio.PatternDetection
             {
                 pattern.SetHitStepIndex ( tickWasHit.Id );
 
-                if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting && tickWasHit.Id != 0)
+                if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting && tickWasHit.Id != 0 )
                 {
                     // This tick has already been set. Exit.
                     return;
@@ -103,12 +100,12 @@ namespace SuperstarDJ.Audio.PatternDetection
                 switch ( patternAction )
                 {
                     case PatternStepAction.None:
-                   //     Debug.Log ( $"Pattern has failed at tick {tickWasHit.Id} because *{patternAction.ToString ()}* was expected but tick *HIT*" );
+                        //     Debug.Log ( $"Pattern has failed at tick {tickWasHit.Id} because *{patternAction.ToString ()}* was expected but tick *HIT*" );
                         result = PatternStepStatus.Failed;
                         break;
                     case PatternStepAction.Hit:
                         result = PatternStepStatus.Sucess;
-                 
+
                         break;
                     case PatternStepAction.Hold:
                         result = PatternStepStatus.Failed; // Not yet implemented
@@ -116,7 +113,7 @@ namespace SuperstarDJ.Audio.PatternDetection
                     default:
                         break;
                 }
-                pattern.SetStatusOfStep(tickWasHit.Id, result);
+                pattern.SetStatusOfStep ( tickWasHit.Id, result );
             }
         }
     }

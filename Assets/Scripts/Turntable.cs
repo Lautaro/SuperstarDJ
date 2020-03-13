@@ -1,32 +1,29 @@
 ﻿using SuperstarDJ;
 using SuperstarDJ.Audio;
-using SuperstarDJ.Audio.DynamicTracks;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Turntable : MonoBehaviour
 {
-    public  CanBeCarried HeldItem;
+    public CanBeCarried HeldItem;
     public float RotationSpeed;
 
-    public CanBeCarried Place(CanBeCarried objectToPlace)
+    public CanBeCarried Place( CanBeCarried objectToPlace )
     {
         var returnObject = HeldItem;
         HeldItem = objectToPlace;
         HeldItem.transform.position = transform.position;
-        ResetRotationOfPlacedObject();
+        ResetRotationOfPlacedObject ();
 
         var trackName = objectToPlace.GetComponent<Record> ().Track.TrackName;
 
-        if (objectToPlace != null)
-        {   
+        if ( objectToPlace != null )
+        {
             RythmManager.PlayTrack ( trackName );
         }
 
-        if (returnObject != null)
+        if ( returnObject != null )
         {
-            RythmManager.StopTrack( trackName );
+            RythmManager.StopTrack ( trackName );
         }
         return returnObject;
     }
@@ -39,27 +36,27 @@ public class Turntable : MonoBehaviour
     public CanBeCarried Take()
     {
         var returnObject = HeldItem;
-        ResetRotationOfPlacedObject();
+        ResetRotationOfPlacedObject ();
         HeldItem = null;
-        if (returnObject != null)
+        if ( returnObject != null )
         {
-            var trackName = returnObject.GetComponent<Record>().Track.TrackName;
-            RythmManager.StopTrack( trackName );
+            var trackName = returnObject.GetComponent<Record> ().Track.TrackName;
+            RythmManager.StopTrack ( trackName );
         }
         return returnObject;
     }
 
     private void ResetRotationOfPlacedObject()
     {
-        HeldItem.transform.eulerAngles = new Vector3(0, 0, 0);
+        HeldItem.transform.eulerAngles = new Vector3 ( 0, 0, 0 );
     }
 
     public void Update()
     {
-        if (HeldItem)
+        if ( HeldItem )
         {
-            HeldItem.transform.eulerAngles += new Vector3(0, 0, RotationSpeed);
-            
+            HeldItem.transform.eulerAngles += new Vector3 ( 0, 0, RotationSpeed );
+
         }
     }
 

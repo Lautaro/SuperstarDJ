@@ -18,7 +18,7 @@ namespace SuperstarDJ.Audio.DynamicTracks
         {
             get
             {
-                return clipName ;
+                return clipName;
             }
         }
 

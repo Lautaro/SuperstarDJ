@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player_Movement : MonoBehaviour
 {
@@ -23,7 +21,7 @@ public class Player_Movement : MonoBehaviour
         {
             var movement = Vector3.zero;
 
-            if ( Input.GetKey(KeyCode.A))
+            if ( Input.GetKey ( KeyCode.A ) )
             {
                 movement = new Vector3 ( -Speed, 0 );
             }
@@ -35,15 +33,16 @@ public class Player_Movement : MonoBehaviour
 
             if ( Input.GetKey ( KeyCode.W ) )
             {
-                movement += new Vector3 ( 0,Speed );
+                movement += new Vector3 ( 0, Speed );
             }
 
-            if ( Input.GetKey ( KeyCode.S) )
+            if ( Input.GetKey ( KeyCode.S ) )
             {
-                movement += new Vector3 ( 0,-Speed );
+                movement += new Vector3 ( 0, -Speed );
             }
 
-            if ( movement.x > 0 && FacesLeft  ) {
+            if ( movement.x > 0 && FacesLeft )
+            {
                 FacesLeft = false;
                 Hand.transform.localScale = new Vector3 ( 1, 1 );
             };
@@ -51,7 +50,7 @@ public class Player_Movement : MonoBehaviour
             if ( movement.x < 0 && !FacesLeft )
             {
                 FacesLeft = true;
-                Hand.transform.localScale = new Vector3 ( -1,1 );
+                Hand.transform.localScale = new Vector3 ( -1, 1 );
             };
 
             //Flip sprite
@@ -60,7 +59,7 @@ public class Player_Movement : MonoBehaviour
             // Change player position
             transform.position += movement;
 
-            SendMessage ( "OnPlayerMoving" , FacesLeft);
+            SendMessage ( "OnPlayerMoving", FacesLeft );
 
         }
     }

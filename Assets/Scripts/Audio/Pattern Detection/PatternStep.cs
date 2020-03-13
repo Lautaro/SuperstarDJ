@@ -16,8 +16,8 @@ namespace SuperstarDJ.Audio.PatternDetection
         public Color StateColor
         {
             get
-            {   
-                if ( !Application.isPlaying || RythmManager.IsAllTracksStopped() ) return Color.gray;
+            {
+                if ( !Application.isPlaying || RythmManager.IsAllTracksStopped () ) return Color.gray;
 
                 switch ( Status )
                 {

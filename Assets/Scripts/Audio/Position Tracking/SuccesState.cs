@@ -3,7 +3,7 @@
     public enum PatternStepStatus
     {
         Waiting,
-        Sucess, 
+        Sucess,
         Failed
     }
 }

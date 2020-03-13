@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -16,22 +14,22 @@ public class Guest : MonoBehaviour
 
     void Start()
     {
-        satisfactionUI = transform.Find("SatisfactionUI").GetComponent<TextMeshPro>();
-        favTracksUI = transform.Find("FavTracksUI").GetComponent<TextMeshPro>();
-        dislikedTracksUI = transform.Find("DislikedTracksUI").GetComponent<TextMeshPro>();
+        satisfactionUI = transform.Find ( "SatisfactionUI" ).GetComponent<TextMeshPro> ();
+        favTracksUI = transform.Find ( "FavTracksUI" ).GetComponent<TextMeshPro> ();
+        dislikedTracksUI = transform.Find ( "DislikedTracksUI" ).GetComponent<TextMeshPro> ();
 
-        favTracksUI.text = string.Join(" \n", FavouriteTracks.ToArray());
-        dislikedTracksUI.text = string.Join(" \n", DislikedTracks.ToArray());
+        favTracksUI.text = string.Join ( " \n", FavouriteTracks.ToArray () );
+        dislikedTracksUI.text = string.Join ( " \n", DislikedTracks.ToArray () );
     }
 
     public void OnSatisfiedSuccess()
     {
-        this.gameObject.SetActive(false);
+        this.gameObject.SetActive ( false );
     }
 
     public void OnSatisfiedFail()
     {
-        this.gameObject.SetActive(false);
+        this.gameObject.SetActive ( false );
 
     }
 }
