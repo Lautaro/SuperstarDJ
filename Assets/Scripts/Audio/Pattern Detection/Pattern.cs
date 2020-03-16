@@ -52,9 +52,10 @@ namespace SuperstarDJ.Audio.PatternDetection
         /// <summary>
         /// register hit for easier debugging in editor window
         /// </summary>
-        internal void SetHitStepIndex( int index )
+        internal void SetHitStepIndex( int index, RythmPosition position )
         {
             Steps[index].StepWasHit = true;
+            Steps[index].HitAtPosition = position;
         }
 
 

@@ -1,5 +1,9 @@
 ﻿using Sirenix.OdinInspector;
+using SuperstarDJ.Audio;
 using SuperstarDJ.MessageSystem;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace SuperstarDJ
@@ -16,63 +20,92 @@ namespace SuperstarDJ
                 return instance;
             }
         }
+
+        [PropertySpace ( 10, 0 )]
+        [Title ( "Mute Audio" )]
+        [HideLabel]
+        [PropertyOrder ( 0 )]
+        public bool MuteAudio;
+
+        [PropertySpace ( 30, 0 )]
+        [ShowInInspector]
+        [Range ( 0, 50000 )]
+        [Title ( "Pattern Detection" )]
+        [LabelText ( "Input Padding" )]
+        [PropertyOrder ( 1 )]
+        public double PatternDetectionInputLagPadding;
+
+        [Button]
+        [PropertyOrder ( 1 )]
+        private void DebugLogTickHitranges()
+        {
+            RythmManager.CreateHitRangeTable ();
+        }
+
+        [ShowInInspector]
+        [Range ( 0, 49 )]
+        [LabelText ( "Hit Range Padding" )]
+        [PropertyOrder ( 1 )]
+        public int HitRangePaddingInPercentage = 20; //15 = 15%  Amount of padding to make it more forgiving to hit a ticks HitArea
+
+
+        [Button]
+        [PropertyOrder ( 5 )]
+        private void UpdatePositionTrackingInfo()
+        {
+            var positionTrackingInfo = RythmManager.GetPositionTrackingInfo ();
+            if ( positionTrackingInfo != null )
+            {
+                PositionTrackingInfo.Clear ();
+                foreach ( var item in positionTrackingInfo )
+                {
+                    PositionTrackingInfo.Add ( $"{item.Key} : {item.Value}" );
+                }
+            }
+        }
+
+
+        [Title( "Position Tracker Info" )]
+        [PropertySpace ( 30, 0 )]
+        [PropertyOrder ( 5 )]
+        [ListDrawerSettings ( Expanded = true, IsReadOnly = true )]
+        [DisplayAsString]
+        [ShowInInspector]
+        List<string> PositionTrackingInfo = new List<string> ();
+
         public static GameSettings LoadGameSettings()
         {
             instance = Resources.Load<GameSettings> ( "Settings/GameSettings" );
             return instance;
         }
 
-
-        [Title ( "MuteAudio" )]
+        [PropertySpace ( 30, 0 )]
+        [Title ( "MESSAGE LOGGING" )]
         [HideLabel]
-        [PropertySpace ( SpaceAfter = 10 )]
-        [PropertyOrder ( 0)]
-        public bool MuteAudio;
+        [EnumToggleButtons]
+        [Title ( "Muted Topics", horizontalLine: false )]
+        [PropertyOrder ( 10 )]
+        public MessageTopics MutedTopics;
 
-        [Button( ButtonSizes.Large,Name = "Clear" ), GUIColor(1f, 0.6f, 0.6f)]
-        [PropertyOrder ( 1 )]
-        [PropertySpace ( 0, 10 )]
-        [BoxGroup ( "MESSAGE LOGGING" )]
+        [Button ( ButtonSizes.Large, Name = "Clear" ), GUIColor ( 1f, 0.6f, 0.6f )]
+        [PropertyOrder ( 10 )]
         public void ClearMuted()
         {
             MutedTopics = 0;
         }
 
-        [Title ( "MESSAGE LOGGING" )]
-        [BoxGroup ( "MESSAGE LOGGING", ShowLabel = false )]
-        [HideLabel]
-        [EnumToggleButtons]
-        [PropertyOrder ( 1)]
-        [Title("Muted Topics",horizontalLine:false)]
-        public MessageTopics MutedTopics;
-
-
-
         [EnumToggleButtons]
         [HideLabel]
-        [PropertyOrder ( 2 )]
-        [BoxGroup ( "MESSAGE LOGGING" )]
         [InfoBox ( "If any topic is on this list then all topics not on list will be muted. Clear list to return to normal configuration." )]
-        [Title ( "Muted Topics", horizontalLine: false )]
+        [Title ( "Solo  Topics", horizontalLine: false )]
+        [PropertyOrder ( 20 )]
         public MessageTopics SoloTopics;
 
-        [PropertySpace ( 0, 10 )]
-        [PropertyOrder(2)]
-        [BoxGroup ( "MESSAGE LOGGING" )]
+        [PropertyOrder ( 20 )]
         [Button ( ButtonSizes.Large, Name = "Clear" ), GUIColor ( 1f, 0.6f, 0.6f )]
         public void ClearSolo()
         {
             SoloTopics = 0;
         }
-
-
-
-
-
-
-
-
-
-
     }
 }

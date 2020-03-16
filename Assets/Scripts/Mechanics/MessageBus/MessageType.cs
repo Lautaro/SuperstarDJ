@@ -16,7 +16,7 @@ namespace SuperstarDJ.MessageSystem
         {
             Topic = topic;
             Subscribers.Add ( subscriberId, subscriber );
-            Debug.Log ( $"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count ()}" );
+            //Debug.Log ( $"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count ()}" );
         }
 
         public void AddSubscriber( string subscriberId, UnityAction<Message> subscriber )

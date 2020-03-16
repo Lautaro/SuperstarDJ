@@ -88,7 +88,7 @@ namespace SuperstarDJ.Audio.PatternDetection
 
             foreach ( var pattern in patterns )
             {
-                pattern.SetHitStepIndex ( tickWasHit.Id );
+                pattern.SetHitStepIndex ( tickWasHit.Id, rythmPosition );
 
                 if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting && tickWasHit.Id != 0 )
                 {

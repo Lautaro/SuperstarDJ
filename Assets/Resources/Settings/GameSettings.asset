@@ -21,6 +21,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  MuteAudio: 1
+  MuteAudio: 0
+  PatternDetectionInputLagPadding: 0
+  HitRangePaddingInPercentage: 49
   MutedTopics: 0
-  SoloTopics: 0
+  SoloTopics: 32

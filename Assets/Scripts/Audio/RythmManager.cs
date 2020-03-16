@@ -6,6 +6,8 @@ using SuperstarDJ.Audio.InitialiseAudio;
 using SuperstarDJ.Audio.PatternDetection;
 using SuperstarDJ.Audio.PositionTracking;
 using SuperstarDJ.MessageSystem;
+using System.Collections.Generic;
+using System.Dynamic;
 using UnityEngine;
 
 namespace SuperstarDJ.Audio
@@ -102,17 +104,17 @@ namespace SuperstarDJ.Audio
 
         void CheckForBeatHit()
         {
-            var hitTick = rythmPositionTracker.CheckIfHit ( trackManager.GetCurrentSamplePosition () );
+            var hitTick = rythmPositionTracker.CheckIfTickWasHit ( trackManager.GetCurrentSamplePosition () );
 
-            if ( hitTick.Position >= 0 )
+            if ( hitTick.RawPosition >= 0 )
             {
-                Debug.Log ( $"(!!! {hitTick.Tick.Id})Was hit:  {hitTick.Position}  " );
+                Debug.Log ( $"(!!! {hitTick.Tick.Id})Was hit:  {hitTick.RawPosition}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
                 MessageHub.PublishNews<RythmPosition> ( MessageTopics.TickHit_Tick, hitTick );
             }
             else
             {
-                Debug.LogWarning ( $"({hitTick.Tick.Id})FAIL! Position:  {hitTick.Position}" );
+                Debug.LogWarning ( $"No ticks hitrange was hit Position:  {hitTick.RawPosition}" );
             }
         }
         private void LoadTracksAndSpawnRecords()
@@ -133,6 +135,37 @@ namespace SuperstarDJ.Audio
             }
         }
 
+
+        #region static help methods
+        public static void CreateHitRangeTable()
+        {
+            if ( instance == null )
+            {
+                Debug.LogWarning ( "You cant create a hit range table atm. RythmPositionTracker is not awake. Run game and try again. " );
+                return;
+            }
+            instance.rythmPositionTracker.CreateHitRangeTable ();
+        }
+
+        public static Dictionary<string, string> GetPositionTrackingInfo()
+        {
+            if ( instance == null || instance.rythmPositionTracker == null )
+            {
+                Debug.LogWarning ( "RythmPositionTracker is not awake. Run game and try again. " ); 
+                return null; 
+            }
+            var tracker = instance.rythmPositionTracker;
+
+            var info = new Dictionary<string, string> ();
+            info.Add ( "Padding multiplier", tracker.paddingMultiplier.ToString () );
+            info.Add ( "Track duration", tracker.trackDuration.ToString ("N0") );
+            info.Add ( "Tick  duration", tracker.tickDuration.ToString ( "N0" ) );
+            info.Add ( "Padding duration", tracker.paddingDuration.ToString ( "N0" ) );
+
+            return info;
+        }
+
+        #endregion
         #endregion
     }
 }
