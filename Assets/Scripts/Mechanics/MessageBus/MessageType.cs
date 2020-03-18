@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SuperstarDJ.Audio;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -61,7 +62,7 @@ namespace SuperstarDJ.MessageSystem
                {
                    sub.Invoke ( callbackMessage );
                } );
-            var gameSettings = GameSettings.Instance;
+            var gameSettings = RythmManager.Settings;
             // exit if solo list has any && if current topic is not included
             if ( gameSettings.SoloTopics > 0 
                 && !gameSettings.SoloTopics.HasFlag ( callbackMessage.Topic ) )

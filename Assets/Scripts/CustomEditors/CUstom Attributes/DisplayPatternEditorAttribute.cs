@@ -1,7 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using System;
 
-namespace SuperstarDJ.CustomEditors.CompositeAttributes
+namespace SuperstarDJ.CustomEditors.CustomAttributes
 {
     [IncludeMyAttributes]
     [ShowInInspector]

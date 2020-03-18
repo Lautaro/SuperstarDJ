@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SuperstarDJ.Audio;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -63,7 +64,7 @@ namespace SuperstarDJ.MessageSystem
             var registration = messageRegistrations.FirstOrDefault ( s => s.Topic == topic );
             if ( registration == null )
             {
-                if ( !GameSettings.Instance.MutedTopics.HasFlag ( topic ) )
+                if ( !RythmManager.Settings.MutedTopics.HasFlag ( topic ) )
                 {
                     Debug.LogWarning ( $"Message has been posted but no one is listening! MessageName{topic}" );
                     return;

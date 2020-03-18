@@ -4,13 +4,14 @@ namespace SuperstarDJ.CustomEditors
     using Sirenix.OdinInspector.Editor;
     using Sirenix.Utilities;
     using Sirenix.Utilities.Editor;
+    using SuperstarDJ.Audio;
     using SuperstarDJ.Audio.PatternDetection;
     using UnityEditor;
     using UnityEngine;
 
     public class GameControlCenter : OdinMenuEditorWindow
     {
-        [MenuItem ( "Tools/SuperstarDJ/ControlCenter" )]
+        [MenuItem ( "SuperStarDJ/ControlCenter" )]
         private static void OpenWindow()
         {
             var window = GetWindow<GameControlCenter> ();
@@ -22,7 +23,7 @@ namespace SuperstarDJ.CustomEditors
         {
             var tree = new OdinMenuTree ( true );
 
-            tree.AddObjectAtPath ( "Game Settings", GameSettings.Instance );
+            tree.AddObjectAtPath ( "Game Settings", RythmManager.Settings );
 
             var patterns = Resources.LoadAll<Pattern> ( "RythmPatterns" );
 

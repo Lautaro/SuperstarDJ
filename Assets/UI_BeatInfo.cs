@@ -16,8 +16,8 @@ public class UI_BeatInfo : MonoBehaviour
     {
         //if (  RythmManager.RythmPosition.WasHit)
         //{
-        //    var measure = RythmManager.RythmPosition.Tick.Measure;
-        //    var beat = RythmManager.RythmPosition.Tick.Beat;
+        //    var measure = RythmManager.RythmPosition.Step.Measure;
+        //    var beat = RythmManager.RythmPosition.Step.Beat;
         //    text.text = $"{measure}:{beat}";
         //}
         //else

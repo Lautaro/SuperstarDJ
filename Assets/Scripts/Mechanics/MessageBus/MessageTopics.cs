@@ -6,11 +6,12 @@ namespace SuperstarDJ.MessageSystem
     public enum MessageTopics
     {
         DisplayUI_FX_string = 1 << 1,
-        NewRythmPosition = 1 << 2,
-        SongStarted_string = 1 << 3,
-        TrackStarted_Track = 1 << 4,
-        TrackStopped_Track = 1 << 5,
-        TickHit_Tick = 1 << 6,
-        TrackStartsFromZero_string = 1 << 7
+        NewRythmPosition = 1 << 20,
+        SongStarted_string = 1 << 30,
+        TrackStarted_Track = 1 << 40,
+        TrackStopped_Track = 1 << 50,
+        StepHit_Step = 1 << 60,
+        HitMissed_Step = 1 << 60,
+        TrackStartsFromZero_string = 1 << 70
     }
 }
