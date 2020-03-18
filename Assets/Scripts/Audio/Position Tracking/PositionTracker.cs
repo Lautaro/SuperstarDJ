@@ -11,16 +11,21 @@ namespace SuperstarDJ.Audio.PositionTracking
     class PositionTracker
     {
 
-
-        Tick[] ticks;
-        Dictionary<Vector2, int> HitRanges = new Dictionary<Vector2, int> (); // KEY: HitRange (x = start, y = end)  VALUE: tickIndex
+        internal List<double> AllMissedHits = new List<double> ();
+        public bool WasHitButMissedThisFrame;
+        Step[] steps;
+        Dictionary<Vector2, int> HitRanges = new Dictionary<Vector2, int> (); // KEY: HitRange (x = start, y = end)  VALUE: stepIndex
         static public bool DebugEnabled = false;
         internal readonly double trackDuration;
-        internal double tickDuration;
+        internal double stepDuration;
         internal double paddingMultiplier;
         internal double paddingDuration;
         int paddingInPercentage { get {
-                return GameSettings.Instance.HitRangePaddingInPercentage;
+                if ( RythmManager.Settings != null )
+                {
+                    return RythmManager.Settings.HitRangePaddingInPercentage;
+                }
+                return 0;
             } }
 
         RythmPosition currentPosition;
@@ -32,33 +37,38 @@ namespace SuperstarDJ.Audio.PositionTracking
             }
         }
 
-        public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int ticksPerBeat, double _trackDuration )
+        public float PositionInPercentage()
         {
-            var amountOfTicks = measuresPerLoop * beatsPerMeasure * ticksPerBeat;
-            trackDuration = _trackDuration;
-            tickDuration = _trackDuration / amountOfTicks;
-             paddingMultiplier = ( double )paddingInPercentage / 100;
-            paddingDuration = (tickDuration * paddingMultiplier);
-            ticks = new Tick[amountOfTicks];
+            return ( float )( CurrentPosition.RawPosition / trackDuration ) * 100;
+        }
 
-            var tickCounter = 0;
+        public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int stepsPerBeat, double _trackDuration )
+        {
+            var amountOfSteps = measuresPerLoop * beatsPerMeasure * stepsPerBeat;
+            trackDuration = _trackDuration;
+            stepDuration = _trackDuration / amountOfSteps;
+             paddingMultiplier = ( double )paddingInPercentage / 100;
+            paddingDuration = (stepDuration * paddingMultiplier);
+            steps = new Step[amountOfSteps];
+
+            var stepCounter = 0;
 
             for ( int mi = 0; mi < measuresPerLoop; mi++ )
             {
                 for ( int bi = 0; bi < beatsPerMeasure; bi++ )
                 {
-                    for ( int ti = 0; ti < ticksPerBeat; ti++ )
+                    for ( int ti = 0; ti < stepsPerBeat; ti++ )
                     {
-                        var tickStartPosition = tickCounter * tickDuration;
-                        var newTick = new Tick ( tickCounter, tickStartPosition, tickStartPosition + tickDuration, bi, mi, ti );
+                        var stepStartPosition = stepCounter * stepDuration;
+                        var newStep = new Step ( stepCounter, stepStartPosition, stepStartPosition + stepDuration, bi, mi, ti );
 
-                        if ( tickCounter == 0 )
+                        if ( stepCounter == 0 )
                         {
                             /*
-                             The first tick has a special hit area divided into two ranges.  
+                             The first step has a special hit area divided into two ranges.  
                               1.First  starts with the padding at the  end of the track and ends with the end of the track
                               2. Second  starts at the beginning of the track and ends att the range of padding
-                             Both ranges maps to tick index 0 (the first tick)
+                             Both ranges maps to step index 0 (the first step)
                              */
 
                             double preRangeStart, preRangeEnd, postRangeStart, postRangeEnd;
@@ -76,16 +86,16 @@ namespace SuperstarDJ.Audio.PositionTracking
                         }
                         else
                         {
-                            // all Ticks except first will only have one hit range
+                            // all Steps except first will only have one hit range
                             double hitAreaRangeStart, hitAreaRangeEnd;
-                            hitAreaRangeStart = tickStartPosition - paddingDuration;
-                            hitAreaRangeEnd = tickStartPosition + paddingDuration;
+                            hitAreaRangeStart = stepStartPosition - paddingDuration;
+                            hitAreaRangeEnd = stepStartPosition + paddingDuration;
                             var hitAreaRange = new Vector2 ( ( float )hitAreaRangeStart, ( float )hitAreaRangeEnd );
 
-                            HitRanges.Add ( hitAreaRange, tickCounter );
+                            HitRanges.Add ( hitAreaRange, stepCounter );
                         }
-                        ticks[tickCounter] = newTick;
-                        tickCounter++;
+                        steps[stepCounter] = newStep;
+                        stepCounter++;
                     }
                 }
             }
@@ -95,42 +105,40 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-        private void DebugLogTicks()
+        private void DebugLogSteps()
         {
             var builder = new StringBuilder ();
-            foreach ( var tick in ticks )
+            foreach ( var step in steps )
             {
-                builder.AppendLine ( $"{tick.ToString ()}" );
+                builder.AppendLine ( $"{step.ToString ()}" );
             }
 
             this.DebugLog ( builder.ToString () );
         }
-
-  
         internal void CreateHitRangeTable()
         {
             var builder = new StringBuilder ();
             builder.AppendLine ( $"[HIT RANGES] [Table created: {DateTime.Now.ToShortDateString ()} -{DateTime.Now.ToShortTimeString ()}]" );
             builder.AppendLine ( $"[Padding percentage : {paddingInPercentage}% ] [Padding in duration  : {paddingInPercentage}% ] " );
-            foreach ( var tick in ticks )
+            foreach ( var step in steps )
             {
-                var hitRanges = HitRanges.Where ( kvp => kvp.Value == tick.Id ).Select ( kvp => kvp.Key );
+                var hitRanges = HitRanges.Where ( kvp => kvp.Value == step.Id ).Select ( kvp => kvp.Key );
 
                 foreach ( var hitRange in hitRanges )
                 {
-                    builder.AppendLine ( $"Tick[{tick.Id.ToString("D2")}]  @({tick.TickStartsAt.ToString("N0")})  --- " +
+                    builder.AppendLine ( $"Step[{step.Id.ToString("D2")}]  @({step.StepStartsAt.ToString("N0")})  --- " +
                         $"Hit Range:  { hitRange.x.ToString ( "N0" )} - {hitRange.y.ToString ( "N0" )} " );
                 }
             }
 
             this.DebugLog ( builder.ToString () );
         }
-        internal RythmPosition CheckIfTickWasHit( double position )
+        internal RythmPosition CheckIfStepWasHit( double position )
         {
-            var inputLagPadding = GameSettings.Instance.PatternDetectionInputLagPadding;
+            var inputLagPadding = RythmManager.Settings.PatternDetectionInputLagPadding;
             var matchPosition = position - inputLagPadding;
 
-            // Get index of hit tick. Vector X is hit range start and Y is hit range end
+            // Get index of hit step. Vector X is hit range start and Y is hit range end
             List<int> positionWithinRange = new List<int> ();
             foreach ( var hitrange in HitRanges )
             {
@@ -144,41 +152,42 @@ namespace SuperstarDJ.Audio.PositionTracking
                 // Sanity check!
                 if ( positionWithinRange.Distinct ().Count () > 1 )
                 {
-                    Debug.LogError ("There are more than one tick marked as hit. Something is wrong!");
+                    Debug.LogError ("There are more than one step marked as hit. Something is wrong!");
                 }
             }
             //      var isWithinHitRange = HitRanges.Where ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
 
             if ( positionWithinRange.Count () > 0 )
             {
-                //     var hitRangeTickIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
-                var hitTick = ticks[positionWithinRange[0]];
-                return new RythmPosition ( hitTick, position,matchPosition );
+                //     var hitRangeStepIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
+                var hitStep = steps[positionWithinRange[0]];
+                return new RythmPosition ( hitStep, position,matchPosition,false  );
             }
             else
             {
-                return new RythmPosition ( new Tick ( -1, -1, -1,-1, -1, -1 ), position ); // No hit
+                AllMissedHits.Add ( position );
+                WasHitButMissedThisFrame = true;
+                return new RythmPosition ( new Step ( -1, -1, -1,-1, -1, -1 ), position,true ); // No hit
             }
         }
         internal void UpdateCurrentRythmPosition( double currentPositionInClip )
         {
-            var tick = ticks.First ( t => t.TickStartsAt <= currentPositionInClip && t.TickEndsAt >= currentPositionInClip );
-
-            if ( tick.Id == currentPosition.Tick.Id )
-                return;
-
-            currentPosition = new RythmPosition ( tick, currentPositionInClip );
+  
+            var step = steps.First ( t => t.StepStartsAt <= currentPositionInClip && t.StepEndsAt >= currentPositionInClip );
+            var positionWasHit = AllMissedHits.Contains ( currentPositionInClip );
+            currentPosition = new RythmPosition ( step, currentPositionInClip, positionWasHit );
 
             MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
-            //     Debug.Log ( $"[{currentPosition.Tick.Measure}][{currentPosition.Tick.Beat}][{currentPosition.Tick.Index}]" );
+            //     Debug.Log ( $"[{currentPosition.Step.Measure}][{currentPosition.Step.Beat}][{currentPosition.Step.Index}]" );
 
-            //            if ( currentPosition.Tick.Id == ticks.Length && tick.Id == 0 )
-            if ( tick.Id == 0 )
+            //            if ( currentPosition.Step.Id == steps.Length && step.Id == 0 )
+            if ( step.Id == 0 )
             {
                 // new loop. Reset.
                 MessageHub.PublishNews<string> ( MessageTopics.TrackStartsFromZero_string, "Track start from zero" );
+                AllMissedHits.Clear ();
             }
-
+            WasHitButMissedThisFrame = false;
         }
     }
 }

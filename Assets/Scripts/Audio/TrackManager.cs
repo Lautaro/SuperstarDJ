@@ -21,7 +21,7 @@ namespace SuperstarDJ.Audio.DynamicTracks
         public double Duration
         {
             get
-            {
+            {   
                 return Tracks[0].Duration;
             }
         }

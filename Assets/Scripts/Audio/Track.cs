@@ -9,7 +9,15 @@ namespace SuperstarDJ.Audio.DynamicTracks
         AudioSource source { get; set; }
 
         //(double)AudioClip.samples / AudioClip.frequency;
-        public double Duration { get { return ( double )source.clip.samples; } }// / source.clip.frequency; } }
+        public double Duration
+        {
+            get
+            {
+                if ( source== null ) return 0;
+                RythmManager.Settings.PatternLengthInSamples = source.clip.samples;// / source.clip.frequency; } }
+                return RythmManager.Settings.PatternLengthInSamples;
+            }
+        }
         string clipName { get { return source.clip.name; } }
         public string Abreviation;
         public float VolumeModification;

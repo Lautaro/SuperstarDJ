@@ -5,27 +5,30 @@ namespace SuperstarDJ.Audio
 {
     public struct RythmPosition
     {
-        public readonly Tick Tick;
+        public readonly Step Step;
         public readonly Double RawPosition;
         public readonly Double PaddedPosition;
+        public readonly bool WasHitButMissed;
 
-        public RythmPosition( Tick tick, double rawPosition, double paddedPosition )
+        public RythmPosition( Step step, double rawPosition, double paddedPosition, bool wasHitButMissed )
         {
-            Tick = tick;
+            Step = step;
             RawPosition = rawPosition;
             PaddedPosition = paddedPosition;
+            WasHitButMissed = wasHitButMissed;
         }
 
 
-        public RythmPosition( Tick tick, double rawPosition )
+        public RythmPosition( Step step, double rawPosition,  bool wasHit )
         {
-            Tick = tick;
+            Step = step;
             RawPosition = rawPosition;
             PaddedPosition = rawPosition;
+            WasHitButMissed = wasHit;
         }
         public override string ToString()
         {
-            return $"({Tick.Id.ToString ( "D2" )})  [{Tick.Measure}][{Tick.Beat}][{Tick.Index}]";
+            return $"({Step.Id.ToString ( "D2" )})  [{Step.Measure}][{Step.Beat}][{Step.Index}]";
         }
     }
 }

@@ -11,15 +11,15 @@ namespace SuperstarDJ.Audio.PatternDetection
     {
         List<Pattern> patterns = new List<Pattern> ();
         //    Dictionary<string, SuccesState[]> successTrackers = new Dictionary<string, SuccesState[]> ();
-        Tick latestCompletedTick;
+   
         public PatternDetector( List<Pattern> patterns_ )
         {
             patterns = patterns_;
 
             //  Debug.Log ( $"Loaded {patterns.Count} patterns : {string.Join ( " * ", patterns.Select ( p => p.PatternName ).ToArray () ) }" );
 
-            MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentTick );
-            MessageHub.Subscribe ( MessageTopics.TickHit_Tick, CheckHitTickForSuccess );
+            MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentStep );
+            MessageHub.Subscribe ( MessageTopics.StepHit_Step, CheckHitStepForSuccess );
             MessageHub.Subscribe ( MessageTopics.TrackStartsFromZero_string, ResetPatterns );
             MessageHub.Subscribe ( MessageTopics.SongStarted_string, ResetPatterns );
         }
@@ -54,10 +54,10 @@ namespace SuperstarDJ.Audio.PatternDetection
                 builder.AppendLine ( $" " );
             }
         }
-        void EvaluatePreviousStepForSilentTick( Message rythmPositionMessage )
+        void EvaluatePreviousStepForSilentStep( Message rythmPositionMessage )
         {
             var newPosition = rythmPositionMessage.Open<RythmPosition> ();
-            var newId = newPosition.Tick.Id;
+            var newId = newPosition.Step.Id;
             var index = newId > 0 ? newId - 1 : 63;
             patterns.ForEach ( p => p.SetCurrentStepIndex ( newId ) );
 
@@ -67,13 +67,13 @@ namespace SuperstarDJ.Audio.PatternDetection
 
                 if ( successStates[index] != PatternStepStatus.Waiting )
                 {
-                    return;// This tick has already been checked. Exit.
+                    return;// This step has already been checked. Exit.
                 }
                 var patternAction = pattern.Steps[index].Action;
                 if ( patternAction != PatternStepAction.None )
                 {
                     pattern.SetStatusOfStep ( index, PatternStepStatus.Failed );
-                    //   Debug.Log ( $"Pattern '{pattern.PatternName}' has failed at tick {tick.Id} because *{patternAction.ToString ()}* was expected but tick was silent" );
+                    //   Debug.Log ( $"Pattern '{pattern.PatternName}' has failed at step {step.Id} because *{patternAction.ToString ()}* was expected but step was silent" );
                 }
                 else
                 {
@@ -81,26 +81,26 @@ namespace SuperstarDJ.Audio.PatternDetection
                 }
             }
         }
-        public void CheckHitTickForSuccess( Message rythmPositionOfHitTick )
+        public void CheckHitStepForSuccess( Message rythmPositionOfHitStep )
         {
-            var rythmPosition = rythmPositionOfHitTick.Open<RythmPosition> ();
-            var tickWasHit = rythmPosition.Tick;
+            var rythmPosition = rythmPositionOfHitStep.Open<RythmPosition> ();
+            var stepWasHit = rythmPosition.Step;
 
             foreach ( var pattern in patterns )
             {
-                pattern.SetHitStepIndex ( tickWasHit.Id, rythmPosition );
+                pattern.SetHitStepIndex ( stepWasHit.Id, rythmPosition );
 
-                if ( pattern.StepStatuses[tickWasHit.Id] != PatternStepStatus.Waiting && tickWasHit.Id != 0 )
+                if ( pattern.StepStatuses[stepWasHit.Id] != PatternStepStatus.Waiting && stepWasHit.Id != 0 )
                 {
-                    // This tick has already been set. Exit.
+                    // This step has already been set. Exit.
                     return;
                 }
-                var patternAction = pattern.Steps[tickWasHit.Id].Action;
+                var patternAction = pattern.Steps[stepWasHit.Id].Action;
                 var result = PatternStepStatus.Failed;
                 switch ( patternAction )
                 {
                     case PatternStepAction.None:
-                        //     Debug.Log ( $"Pattern has failed at tick {tickWasHit.Id} because *{patternAction.ToString ()}* was expected but tick *HIT*" );
+                        //     Debug.Log ( $"Pattern has failed at step {stepWasHit.Id} because *{patternAction.ToString ()}* was expected but step *HIT*" );
                         result = PatternStepStatus.Failed;
                         break;
                     case PatternStepAction.Hit:
@@ -113,7 +113,7 @@ namespace SuperstarDJ.Audio.PatternDetection
                     default:
                         break;
                 }
-                pattern.SetStatusOfStep ( tickWasHit.Id, result );
+                pattern.SetStatusOfStep ( stepWasHit.Id, result );
             }
         }
     }
