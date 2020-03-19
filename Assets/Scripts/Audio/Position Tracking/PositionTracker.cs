@@ -27,7 +27,6 @@ namespace SuperstarDJ.Audio.PositionTracking
                 }
                 return 0;
             } }
-
         RythmPosition currentPosition;
         public RythmPosition CurrentPosition
         {
@@ -36,12 +35,10 @@ namespace SuperstarDJ.Audio.PositionTracking
                 return currentPosition;
             }
         }
-
         public float PositionInPercentage()
         {
             return ( float )( CurrentPosition.RawPosition / trackDuration ) * 100;
         }
-
         public PositionTracker( int measuresPerLoop, int beatsPerMeasure, int stepsPerBeat, double _trackDuration )
         {
             var amountOfSteps = measuresPerLoop * beatsPerMeasure * stepsPerBeat;
@@ -105,16 +102,7 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-        private void DebugLogSteps()
-        {
-            var builder = new StringBuilder ();
-            foreach ( var step in steps )
-            {
-                builder.AppendLine ( $"{step.ToString ()}" );
-            }
-
-            this.DebugLog ( builder.ToString () );
-        }
+   
         internal void CreateHitRangeTable()
         {
             var builder = new StringBuilder ();
@@ -133,8 +121,9 @@ namespace SuperstarDJ.Audio.PositionTracking
 
             this.DebugLog ( builder.ToString () );
         }
-        internal RythmPosition CheckIfStepWasHit( double position )
+        internal DjAct CheckIfStepWasHit( double position )
         {
+            var newDjaAct = new DjAct ( position );
             var inputLagPadding = RythmManager.Settings.PatternDetectionInputLagPadding;
             var matchPosition = position - inputLagPadding;
 
