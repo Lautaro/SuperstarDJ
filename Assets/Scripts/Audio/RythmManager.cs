@@ -16,9 +16,6 @@ namespace SuperstarDJ.Audio
 {
     public class RythmManager : MonoBehaviour
     {
-
-
-
         #region Static Methods
         public static RythmManager instance;
         public static void PlayTrack( string track )
@@ -39,7 +36,7 @@ namespace SuperstarDJ.Audio
         }
         public static void BeatNow()
         {
-            instance.CheckForBeatHit ();
+            instance.EvaluateDjAct ();
 
         }
         public static string[] TracksPlaying()
@@ -58,7 +55,7 @@ namespace SuperstarDJ.Audio
         PositionTracker rythmPositionTracker;
         PatternDetector patternDetector;
 
-        public static List<double> GetAllMissedHits()
+        public static List<DjAct> DjActs()
         {
             var allMissed = instance?.rythmPositionTracker?.AllMissedHits;
             if ( allMissed == null )
@@ -131,12 +128,13 @@ namespace SuperstarDJ.Audio
 
         public float PositionInPercentage() => ( float )( RythmPosition.RawPosition / trackManager.Duration );
 
-        void CheckForBeatHit()
+        void EvaluateDjAct()
         {
             var currentPosition = trackManager.GetCurrentSamplePosition ();
-            var hitStep = rythmPositionTracker.CheckIfStepWasHit ( currentPosition );
+           
+            var newDjAct = rythmPositionTracker.CheckIfStepWasHit ( currentPosition );
 
-            if ( hitStep.RawPosition >= 0 )
+            if ( newDjAct.Position.RawPosition >= 0 )
             {
                 Debug.Log ( $"(!!! {hitStep.Step.Id})Was hit:  {hitStep.RawPosition}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
