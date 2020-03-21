@@ -132,7 +132,7 @@ namespace SuperstarDJ.Audio
         {
             var currentPosition = trackManager.GetCurrentSamplePosition ();
            
-            var newDjAct = rythmPositionTracker.CheckIfStepWasHit ( currentPosition );
+            var newDjAct = rythmPositionTracker.CheckDjActResult ( currentPosition );
 
             if ( newDjAct.Position.RawPosition >= 0 )
             {

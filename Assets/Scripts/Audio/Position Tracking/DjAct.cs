@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace SuperstarDJ.Audio.PositionTracking
     class DjAct
     {
         internal RythmPosition Position;
-        internal Step Hit;
+        internal int? IndexOfHitStep; // null if missed 
     }
 }

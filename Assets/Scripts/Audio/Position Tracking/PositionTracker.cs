@@ -20,13 +20,17 @@ namespace SuperstarDJ.Audio.PositionTracking
         internal double stepDuration;
         internal double paddingMultiplier;
         internal double paddingDuration;
-        int paddingInPercentage { get {
+        int paddingInPercentage
+        {
+            get
+            {
                 if ( RythmManager.Settings != null )
                 {
                     return RythmManager.Settings.HitRangePaddingInPercentage;
                 }
                 return 0;
-            } }
+            }
+        }
         RythmPosition currentPosition;
         public RythmPosition CurrentPosition
         {
@@ -44,8 +48,8 @@ namespace SuperstarDJ.Audio.PositionTracking
             var amountOfSteps = measuresPerLoop * beatsPerMeasure * stepsPerBeat;
             trackDuration = _trackDuration;
             stepDuration = _trackDuration / amountOfSteps;
-             paddingMultiplier = ( double )paddingInPercentage / 100;
-            paddingDuration = (stepDuration * paddingMultiplier);
+            paddingMultiplier = ( double )paddingInPercentage / 100;
+            paddingDuration = ( stepDuration * paddingMultiplier );
             steps = new Step[amountOfSteps];
 
             var stepCounter = 0;
@@ -102,7 +106,7 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-   
+
         internal void CreateHitRangeTable()
         {
             var builder = new StringBuilder ();
@@ -114,62 +118,52 @@ namespace SuperstarDJ.Audio.PositionTracking
 
                 foreach ( var hitRange in hitRanges )
                 {
-                    builder.AppendLine ( $"Step[{step.Id.ToString("D2")}]  @({step.StepStartsAt.ToString("N0")})  --- " +
+                    builder.AppendLine ( $"Step[{step.Id.ToString ( "D2" )}]  @({step.StepStartsAt.ToString ( "N0" )})  --- " +
                         $"Hit Range:  { hitRange.x.ToString ( "N0" )} - {hitRange.y.ToString ( "N0" )} " );
                 }
             }
 
             this.DebugLog ( builder.ToString () );
         }
-        internal DjAct CheckIfStepWasHit( double position )
+        internal DjAct CheckDjActResult( double position )
         {
-            var newDjaAct = new DjAct ( position );
             var inputLagPadding = RythmManager.Settings.PatternDetectionInputLagPadding;
             var matchPosition = position - inputLagPadding;
 
-            // Get index of hit step. Vector X is hit range start and Y is hit range end
-            List<int> positionWithinRange = new List<int> ();
+            int stepThatWashit = -1;
+
             foreach ( var hitrange in HitRanges )
             {
                 var start = hitrange.Key.x;
-                var end= hitrange.Key.y;
+                var end = hitrange.Key.y;
                 if ( start <= matchPosition & end >= matchPosition )
                 {
-                    positionWithinRange.Add (hitrange.Value);
+                    stepThatWashit = hitrange.Value;
                 }
 
-                // Sanity check!
-                if ( positionWithinRange.Distinct ().Count () > 1 )
+                if ( stepThatWashit >= 0 )
                 {
-                    Debug.LogError ("There are more than one step marked as hit. Something is wrong!");
+                    return new DjAct ()
+                    {
+                        Position = new RythmPosition ( currentPosition.Step, position, matchPosition ),
+                        IndexOfHitStep = stepThatWashit
+                    };
                 }
             }
-            //      var isWithinHitRange = HitRanges.Where ( kvp => kvp.Key.x <= position && kvp.Key.y >= position );
-
-            if ( positionWithinRange.Count () > 0 )
+            return new DjAct ()
             {
-                //     var hitRangeStepIndex = HitRanges.First ( kvp => kvp.Key.x <= position && kvp.Key.y >= position ).Value;
-                var hitStep = steps[positionWithinRange[0]];
-                return new RythmPosition ( hitStep, position,matchPosition,false  );
-            }
-            else
-            {
-                AllMissedHits.Add ( position );
-                WasHitButMissedThisFrame = true;
-                return new RythmPosition ( new Step ( -1, -1, -1,-1, -1, -1 ), position,true ); // No hit
-            }
+                Position = new RythmPosition ( currentPosition.Step, position, matchPosition ),
+                IndexOfHitStep = null
+            };
         }
+
         internal void UpdateCurrentRythmPosition( double currentPositionInClip )
         {
-  
             var step = steps.First ( t => t.StepStartsAt <= currentPositionInClip && t.StepEndsAt >= currentPositionInClip );
-            var positionWasHit = AllMissedHits.Contains ( currentPositionInClip );
-            currentPosition = new RythmPosition ( step, currentPositionInClip, positionWasHit );
+            currentPosition = new RythmPosition ( step, currentPositionInClip );
 
             MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
-            //     Debug.Log ( $"[{currentPosition.Step.Measure}][{currentPosition.Step.Beat}][{currentPosition.Step.Index}]" );
 
-            //            if ( currentPosition.Step.Id == steps.Length && step.Id == 0 )
             if ( step.Id == 0 )
             {
                 // new loop. Reset.

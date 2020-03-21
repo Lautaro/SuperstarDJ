@@ -8,23 +8,26 @@ namespace SuperstarDJ.Audio
         public readonly Step Step;
         public readonly Double RawPosition;
         public readonly Double PaddedPosition;
-        public readonly bool WasHitButMissed;
 
-        public RythmPosition( Step step, double rawPosition, double paddedPosition, bool wasHitButMissed )
+        /// <summary>
+        /// RythmPosition is an exact position within the loop. It has no information om whether it represents a successfull DjAct hit.  
+        /// If the position is a succesfull hit the actual hit Step might be the next one. 
+        /// </summary>
+        /// <param name="step">The Step the position is within</param>
+        /// <param name="rawPosition">The actual position</param>
+        /// <param name="paddedPosition">The posiiton used for calculation. Rawposition modified for lag.</param>
+        public RythmPosition( Step step, double rawPosition, double paddedPosition)
         {
             Step = step;
             RawPosition = rawPosition;
             PaddedPosition = paddedPosition;
-            WasHitButMissed = wasHitButMissed;
         }
 
-
-        public RythmPosition( Step step, double rawPosition,  bool wasHit )
+        public RythmPosition( Step step, double rawPosition)
         {
             Step = step;
             RawPosition = rawPosition;
             PaddedPosition = rawPosition;
-            WasHitButMissed = wasHit;
         }
         public override string ToString()
         {
