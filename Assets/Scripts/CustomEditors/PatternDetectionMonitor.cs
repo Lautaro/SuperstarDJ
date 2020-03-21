@@ -83,10 +83,10 @@ public class PatternDetectionMonitor : EditorWindow
                 GUI.Label ( new Rect ( x - 8, y + 5, 20, 15 ), i.ToString ( "00" ) );
             }
 
-            if ( RythmManager.WasHitButMissedThisFrame())
-            {
-                GUI.Label ( new Rect ( x - 8, y + 15, 20, 15 ), i.ToString ( "X" ) );
-            }
+            //if ( RythmManager.WasHitButMissedThisFrame())
+            //{
+            //    GUI.Label ( new Rect ( x - 8, y + 15, 20, 15 ), i.ToString ( "X" ) );
+            //}
         }
     }
 

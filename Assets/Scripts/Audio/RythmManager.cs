@@ -77,11 +77,6 @@ namespace SuperstarDJ.Audio
                 return gameSettings;
             }
         }
-        public static bool WasHitButMissedThisFrame()
-        {
-            var  wasHit = instance?.rythmPositionTracker?.WasHitButMissedThisFrame;
-            return wasHit.HasValue == true ? wasHit.Value :  false;
-        }
         static public RythmPosition RythmPosition
         {
             get
