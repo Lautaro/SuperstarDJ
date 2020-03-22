@@ -10,9 +10,6 @@ namespace SuperstarDJ.Audio.PositionTracking
 {
     class PositionTracker
     {
-
-        internal List<double> AllMissedHits = new List<double> ();
-        public bool WasHitButMissedThisFrame;
         Step[] steps;
         Dictionary<Vector2, int> HitRanges = new Dictionary<Vector2, int> (); // KEY: HitRange (x = start, y = end)  VALUE: stepIndex
         static public bool DebugEnabled = false;
@@ -20,6 +17,7 @@ namespace SuperstarDJ.Audio.PositionTracking
         internal double stepDuration;
         internal double paddingMultiplier;
         internal double paddingDuration;
+        int indexOfLastStepEvaluated;
         int paddingInPercentage
         {
             get
@@ -106,7 +104,7 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-
+        
         internal void CreateHitRangeTable()
         {
             var builder = new StringBuilder ();
@@ -164,13 +162,24 @@ namespace SuperstarDJ.Audio.PositionTracking
 
             MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
 
-            if ( step.Id == 0 )
+            var hitRange = -1;
+            hitRange = HitRanges.FirstOrDefault ( hr => hr.Key.x <= currentPositionInClip || hr.Key.y >= currentPositionInClip ).Value;
+
+            if ( hitRange == -1 )
+            {// has left hitRange
+                if ( indexOfLastStepEvaluated != step.Id )
+                {
+                    MessageHub.PublishNews<Step> ( MessageTopics.HitRangePassed_Step,step );
+                    indexOfLastStepEvaluated = step.Id;
+                }
+            }
+
+            if ( step.Id ==  steps.Length -1)
             {
                 // new loop. Reset.
-                MessageHub.PublishNews<string> ( MessageTopics.TrackStartsFromZero_string, "Track start from zero" );
-                AllMissedHits.Clear ();
+                MessageHub.PublishNews<string> ( MessageTopics.ResetRythmLoop, "Track start from zero" );
+      
             }
-            WasHitButMissedThisFrame = false;
         }
     }
 }

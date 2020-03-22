@@ -20,13 +20,18 @@ namespace SuperstarDJ.Audio.PatternDetection
 
             MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentStep );
             MessageHub.Subscribe ( MessageTopics.StepHit_Step, CheckHitStepForSuccess );
-            MessageHub.Subscribe ( MessageTopics.TrackStartsFromZero_string, ResetPatterns );
+            MessageHub.Subscribe ( MessageTopics.ResetRythmLoop, ResetPatterns );
             MessageHub.Subscribe ( MessageTopics.SongStarted_string, ResetPatterns );
         }
         void ResetPatterns( Message message )
         {
             foreach ( var pattern in patterns )
             {
+                if ( pattern.StepStatuses[pattern.StepStatuses.Length-1] == PatternStepStatus.Waiting)
+                {
+                    pattern.StepStatuses[pattern.StepStatuses.Length - 1] = PatternStepStatus.Sucess;
+                }
+
                 if ( pattern.StepStatuses.Any ( ss => ss == PatternStepStatus.Waiting ) )
                     Debug.LogError ( "Patterns cant reset while there is still a step that has not been evaluated" );
                 pattern.ResetStepStatus ();

@@ -55,16 +55,6 @@ namespace SuperstarDJ.Audio
         PositionTracker rythmPositionTracker;
         PatternDetector patternDetector;
 
-        public static List<DjAct> DjActs()
-        {
-            var allMissed = instance?.rythmPositionTracker?.AllMissedHits;
-            if ( allMissed == null )
-            {
-                allMissed = new List<double> ();
-            }
-            return allMissed;
-        }
-
         static GameSettings gameSettings;
         public static GameSettings Settings
         {

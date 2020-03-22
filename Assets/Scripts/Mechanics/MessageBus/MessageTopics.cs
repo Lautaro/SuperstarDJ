@@ -11,7 +11,9 @@ namespace SuperstarDJ.MessageSystem
         TrackStarted_Track = 1 << 40,
         TrackStopped_Track = 1 << 50,
         StepHit_Step = 1 << 60,
-        HitMissed_Step = 1 << 60,
-        TrackStartsFromZero_string = 1 << 70
+        HitMissed_Step = 1 << 70,
+        ResetRythmLoop = 1 << 80,
+        HitRangePassed_Step = 1<<90
+
     }
 }
