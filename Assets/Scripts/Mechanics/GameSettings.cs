@@ -13,10 +13,21 @@ namespace SuperstarDJ
     public class GameSettings : SerializedScriptableObject
     {
         #region internal UI Settings
-       const float d = 30f; // Distance between regions
+        const float d = 30f; // Distance between regions
         #endregion
+        static GameSettings instance;
 
-        public static GameSettings instance;
+        public static GameSettings Instance
+        {
+            get
+            {
+                return instance;
+            }
+            set
+            {
+                instance = value;
+            }
+        }
 
         private void OnEnable()
         {
@@ -35,7 +46,7 @@ namespace SuperstarDJ
         [PropertySpace ( d, 0 )]
         [Title ( "Pattern Detection" )]
 
-        [Range ( 0, 50000 ), LabelText ( "Input Padding" ), PropertyOrder ( 1 )]
+        [Range ( -10000, 10000 ), LabelText ( "Input Padding" ), PropertyOrder ( 1 )]
         public double PatternDetectionInputLagPadding;
 
         [Button, PropertyOrder ( 1 )]
@@ -44,7 +55,7 @@ namespace SuperstarDJ
             RythmManager.CreateHitRangeTable ();
         }
 
-        [Range ( 0, 49 ),LabelText ( "Hit Range Padding" ), PropertyOrder ( 1 )]
+        [Range ( 0, 49 ), LabelText ( "Hit Range Padding" ), PropertyOrder ( 1 )]
         public int HitRangePaddingInPercentage = 20; //15 = 15%  Amount of padding to make it more forgiving to hit a steps HitArea
 
 
@@ -67,17 +78,17 @@ namespace SuperstarDJ
         [ListDrawerSettings ( Expanded = true, IsReadOnly = true )]
         List<string> PositionTrackingInfo = new List<string> ();
 
- 
+
         #endregion
 
         #region MESSAGE LOGGING
         [PropertySpace ( d, 0 )]
-        [Title ( "MESSAGE LOGGING" ), ]
-        
-        [Title ( "Muted Topics", horizontalLine: false ), EnumToggleButtons, HideLabel, PropertyOrder ( 10 )]
-         public MessageTopics MutedTopics;
+        [Title ( "MESSAGE LOGGING" ),]
 
-        [Button ( ButtonSizes.Large, Name = "Clear" ), GUIColor ( 1f, 0.6f, 0.6f ), PropertyOrder(10)]
+        [Title ( "Muted Topics", horizontalLine: false ), EnumToggleButtons, HideLabel, PropertyOrder ( 10 )]
+        public MessageTopics MutedTopics;
+
+        [Button ( ButtonSizes.Large, Name = "Clear" ), GUIColor ( 1f, 0.6f, 0.6f ), PropertyOrder ( 10 )]
         public void ClearMuted()
         {
             MutedTopics = 0;
@@ -98,9 +109,9 @@ namespace SuperstarDJ
         #region Rythm Settings
 
         [IncludeMyAttributes, LabelWidth ( 200 ), DisplayAsString, PropertyOrder ( 50 ), ShowInInspector]
-         class RythmSettingsAttributesAttribute : Attribute { }
+        class RythmSettingsAttributesAttribute : Attribute { }
 
-        [Title ( "Rythm Settings" ), PropertySpace (d ,0 ), RythmSettingsAttributes]
+        [Title ( "Rythm Settings" ), PropertySpace ( d, 0 ), RythmSettingsAttributes]
         public readonly int StepsInPattern = 64;
         [RythmSettingsAttributes]
         public double PatternLengthInSamples;
@@ -111,14 +122,15 @@ namespace SuperstarDJ
         [RythmSettingsAttributes]
         public readonly int TICKS_PER_BEATS = 4;
 
-        [RythmSettingsAttributes, LabelText("Position in %")]
+        [RythmSettingsAttributes, LabelText ( "Position in %" )]
         public string PositionInPercentage
         {
-            get {
+            get
+            {
                 if ( RythmManager.instance == null ) return "N/A";
-                return $"{ ( ( float )( RythmManager.instance.PositionInPercentage () * 100 ) ).ToString ( "N0" )}"; 
+                return $"{ ( ( float )( RythmManager.instance.PositionInPercentage () * 100 ) ).ToString ( "N0" )}";
             }
-            set { return;  }
+            set { return; }
         }
         #endregion
     }

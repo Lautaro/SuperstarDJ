@@ -1,6 +1,8 @@
 ﻿using SuperstarDJ.Audio;
 using SuperstarDJ.Audio.PatternDetection;
+using SuperstarDJ.Audio.PositionTracking;
 using SuperstarDJ.MessageSystem;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,7 +18,7 @@ public class PatternDetectionMonitor : EditorWindow
     }
 
     Pattern[] patterns;
-
+    List<DjAct> djActs;
     #region DrawArea
     float drawAreaWidth;
     float drawAreaheight;

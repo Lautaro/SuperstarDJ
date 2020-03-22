@@ -9,7 +9,7 @@ namespace SuperstarDJ.Audio.PositionTracking
 {
     class DjAct
     {
-        internal RythmPosition Position;
-        internal int? IndexOfHitStep; // null if missed 
+        internal RythmPosition ActualPosition;
+        internal Step? StepThatWastHit; // null if missed 
     }
 }

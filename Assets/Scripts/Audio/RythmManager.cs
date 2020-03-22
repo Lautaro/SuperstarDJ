@@ -54,20 +54,20 @@ namespace SuperstarDJ.Audio
         public DOTweenAnimation BeatMark;
         PositionTracker rythmPositionTracker;
         PatternDetector patternDetector;
-
+        List<DjAct> allDjActs = new List<DjAct> ();
         static GameSettings gameSettings;
         public static GameSettings Settings
         {
             get
             {
-                if ( gameSettings == null )
+                if ( GameSettings.Instance == null )
                 {
-                    gameSettings = GameSettings.instance;
+                    GameSettings.Instance = Resources.Load<GameSettings> ( "Settings/GameSettings" );
                 }
-                return gameSettings;
+                return GameSettings.Instance;
             }
         }
-        static public RythmPosition RythmPosition
+        static public RythmPosition CurrentPosition
         {
             get
             {
@@ -78,6 +78,19 @@ namespace SuperstarDJ.Audio
                 return new RythmPosition ();
             }
         }
+
+        //static public List<DjAct> DjActs
+        //{
+        //    get
+        //    {
+        //        if ( instance != null )
+        //        {
+        //            return instance.rythmPositionTracker.CurrentPosition;
+        //        }
+        //        return new RythmPosition ();
+        //    }
+        //}
+
 
         [ShowInInspector]
         public bool MuteAudio { get => RythmManager.Settings.MuteAudio; set => RythmManager.Settings.MuteAudio = value; }
@@ -98,6 +111,14 @@ namespace SuperstarDJ.Audio
             }
         }
 
+        void Start()
+        {
+            MessageHub.Subscribe ( MessageTopics.ResetLoop,OnResetLoop  );
+        }
+        private void OnResetLoop(Message message)
+        {
+            allDjActs.Clear ();
+        }
         private void InitializePatternDetector()
         {
             var patterns = AudioLoading.LoadAllPatterns ( PathToPatterns );
@@ -111,25 +132,26 @@ namespace SuperstarDJ.Audio
             rythmPositionTracker = new PositionTracker ( settings.MEASURES_PER_LOOP, settings.BEATS_PER_MEASURE, settings.TICKS_PER_BEATS, trackDuration );
         }
 
-        public float PositionInPercentage() => ( float )( RythmPosition.RawPosition / trackManager.Duration );
+        public float PositionInPercentage() => ( float )( CurrentPosition.RawPosition / trackManager.Duration );
 
         void EvaluateDjAct()
         {
             var currentPosition = trackManager.GetCurrentSamplePosition ();
-           
             var newDjAct = rythmPositionTracker.CheckDjActResult ( currentPosition );
 
-            if ( newDjAct.Position.RawPosition >= 0 )
+            if ( newDjAct.StepThatWastHit != null )
             {
-                Debug.Log ( $"(!!! {hitStep.Step.Id})Was hit:  {hitStep.RawPosition}  " );
+                Debug.Log ( $"(!!! {newDjAct.StepThatWastHit?.Id})Was hit:  {newDjAct.ActualPosition.RawPosition}  " );
                 MessageHub.PublishNews<string> ( MessageTopics.DisplayUI_FX_string, UI_FXs.FX_Star );
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.StepHit_Step, hitStep );
+                MessageHub.PublishNews<DjAct> ( MessageTopics.DjActHit_DjAct, newDjAct );
             }
             else
             {
-                MessageHub.PublishNews<RythmPosition> ( MessageTopics.HitMissed_Step, hitStep );
-                Debug.LogWarning ( $"No steps hitrange was hit Position:  {hitStep.RawPosition}" );
+                MessageHub.PublishNews<DjAct> ( MessageTopics.DjActMissed_DjAct, newDjAct );
+                Debug.Log ( $"No steps hitrange was hit Position:  {newDjAct.ActualPosition.RawPosition}" );
             }
+
+            allDjActs.Add (newDjAct);
         }
         private void LoadTracksAndSpawnRecords()
         {
@@ -145,7 +167,6 @@ namespace SuperstarDJ.Audio
                 AudioListener.volume = MuteAudio == true ? 0f : 1f;
 
                 rythmPositionTracker.UpdateCurrentRythmPosition ( trackManager.GetCurrentSamplePosition () );
-
             }
         }
 

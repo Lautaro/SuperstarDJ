@@ -23,7 +23,7 @@ MonoBehaviour:
     SerializationNodes: []
   MuteAudio: 0
   PatternDetectionInputLagPadding: 0
-  HitRangePaddingInPercentage: 49
-  MutedTopics: 0
+  HitRangePaddingInPercentage: 25
+  MutedTopics: 68419840
   SoloTopics: 32
   PatternLengthInSamples: 368140

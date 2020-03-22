@@ -25,7 +25,7 @@ public class VisualMetronome : MonoBehaviour
         text.text = "";
 
         blips.ForEach ( t => t.localScale = blipDefaultSize );
-        rythmPosition = RythmManager.RythmPosition;
+        rythmPosition = RythmManager.CurrentPosition;
         text.text = $"[{rythmPosition.Step.Measure}] - {rythmPosition.Step.Beat}";
         var index = rythmPosition.Step.Beat;
         blips[index].localScale *= 2;

@@ -17,6 +17,7 @@ namespace SuperstarDJ.Audio.PositionTracking
         internal double stepDuration;
         internal double paddingMultiplier;
         internal double paddingDuration;
+        bool thisLoopHasReset = true;
         int indexOfLastStepEvaluated;
         int paddingInPercentage
         {
@@ -104,7 +105,7 @@ namespace SuperstarDJ.Audio.PositionTracking
 
 
         }
-        
+
         internal void CreateHitRangeTable()
         {
             var builder = new StringBuilder ();
@@ -126,7 +127,7 @@ namespace SuperstarDJ.Audio.PositionTracking
         internal DjAct CheckDjActResult( double position )
         {
             var inputLagPadding = RythmManager.Settings.PatternDetectionInputLagPadding;
-            var matchPosition = position - inputLagPadding;
+            var matchPosition = position + inputLagPadding;
 
             int stepThatWashit = -1;
 
@@ -143,42 +144,51 @@ namespace SuperstarDJ.Audio.PositionTracking
                 {
                     return new DjAct ()
                     {
-                        Position = new RythmPosition ( currentPosition.Step, position, matchPosition ),
-                        IndexOfHitStep = stepThatWashit
+                        ActualPosition = new RythmPosition ( currentPosition.Step, position, matchPosition ),
+                        StepThatWastHit = steps[stepThatWashit]
                     };
                 }
             }
             return new DjAct ()
             {
-                Position = new RythmPosition ( currentPosition.Step, position, matchPosition ),
-                IndexOfHitStep = null
+                ActualPosition = new RythmPosition ( currentPosition.Step, position, matchPosition ),
+                StepThatWastHit = null
             };
         }
 
         internal void UpdateCurrentRythmPosition( double currentPositionInClip )
         {
-            var step = steps.First ( t => t.StepStartsAt <= currentPositionInClip && t.StepEndsAt >= currentPositionInClip );
-            currentPosition = new RythmPosition ( step, currentPositionInClip );
+            if ( currentPositionInClip == 0 )
+            {
+                Debug.Log ("CLIP STARTED");
+            }
+            var currentStep = steps.First ( t => t.StepStartsAt <= currentPositionInClip && t.StepEndsAt >= currentPositionInClip );
+            currentPosition = new RythmPosition ( currentStep, currentPositionInClip );
+
+            if ( currentStep.Id == 0 && thisLoopHasReset )
+            {
+                thisLoopHasReset = false;
+            }
 
             MessageHub.PublishNews<RythmPosition> ( MessageTopics.NewRythmPosition, currentPosition );
 
-            var hitRange = -1;
-            hitRange = HitRanges.FirstOrDefault ( hr => hr.Key.x <= currentPositionInClip || hr.Key.y >= currentPositionInClip ).Value;
-
-            if ( hitRange == -1 )
-            {// has left hitRange
-                if ( indexOfLastStepEvaluated != step.Id )
+            var inAHitRange = HitRanges.Where ( hr => hr.Key.x <= currentPositionInClip && hr.Key.y >= currentPositionInClip ).ToArray();
+      
+            if ( inAHitRange.Count () == 0 || inAHitRange.ToArray ()[0].Value != indexOfLastStepEvaluated )
+            {
+                if ( indexOfLastStepEvaluated != currentStep.Id )
                 {
-                    MessageHub.PublishNews<Step> ( MessageTopics.HitRangePassed_Step,step );
-                    indexOfLastStepEvaluated = step.Id;
+                    MessageHub.PublishNews<Step> ( MessageTopics.HitRangePassed_Step, currentStep );
+                    indexOfLastStepEvaluated = currentStep.Id;
                 }
             }
 
-            if ( step.Id ==  steps.Length -1)
+            if ( currentStep.Id == steps.Length - 1  && thisLoopHasReset == false)
             {
                 // new loop. Reset.
-                MessageHub.PublishNews<string> ( MessageTopics.ResetRythmLoop, "Track start from zero" );
-      
+                MessageHub.PublishNews<string> ( MessageTopics.ResetLoop, "Reset loop" );
+                indexOfLastStepEvaluated = steps.Length - 1;
+                thisLoopHasReset = true;
             }
         }
     }

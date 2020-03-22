@@ -1,4 +1,5 @@
 ﻿using SuperstarDJ.Audio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,6 +23,11 @@ namespace SuperstarDJ.MessageSystem
 
         public void AddSubscriber( string subscriberId, UnityAction<Message> subscriber )
         {
+            if ( Subscribers.ContainsKey(subscriberId) )
+            {
+                subscriberId = Guid.NewGuid ().ToString();
+
+            }
             Subscribers.Add ( subscriberId, subscriber );
             Debug.Log ( $"Added subscriber ID {subscriberId}. Total subscribers: {Subscribers.Count ()}" );
         }
@@ -62,15 +68,17 @@ namespace SuperstarDJ.MessageSystem
                {
                    sub.Invoke ( callbackMessage );
                } );
+
+
             var gameSettings = RythmManager.Settings;
-            // exit if solo list has any && if current topic is not included
-            if ( gameSettings.SoloTopics > 0 
-                && !gameSettings.SoloTopics.HasFlag ( callbackMessage.Topic ) )
-                return;
+            //// exit if solo list has any && if current topic is not included
+            //if ( gameSettings.SoloTopics > 0
+            //    && !gameSettings.SoloTopics.HasFlag ( callbackMessage.Topic ) )
+            //    return;
 
             //Log if not muted OR  on solo list
             if ( !gameSettings.MutedTopics.HasFlag ( callbackMessage.Topic )
-                ||gameSettings.SoloTopics.HasFlag(callbackMessage.Topic)) 
+                || gameSettings.SoloTopics.HasFlag ( callbackMessage.Topic ) )
                 Debug.Log ( $"*** Message posted: {callbackMessage.Topic.ToString ()} to  {Subscribers.Count} subs" );
         }
     }

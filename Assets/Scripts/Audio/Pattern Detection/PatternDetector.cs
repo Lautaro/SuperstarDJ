@@ -11,59 +11,94 @@ namespace SuperstarDJ.Audio.PatternDetection
     {
         List<Pattern> patterns = new List<Pattern> ();
         //    Dictionary<string, SuccesState[]> successTrackers = new Dictionary<string, SuccesState[]> ();
-   
+
         public PatternDetector( List<Pattern> patterns_ )
         {
             patterns = patterns_;
 
             //  Debug.Log ( $"Loaded {patterns.Count} patterns : {string.Join ( " * ", patterns.Select ( p => p.PatternName ).ToArray () ) }" );
 
-            MessageHub.Subscribe ( MessageTopics.NewRythmPosition, EvaluatePreviousStepForSilentStep );
-            MessageHub.Subscribe ( MessageTopics.StepHit_Step, CheckHitStepForSuccess );
-            MessageHub.Subscribe ( MessageTopics.ResetRythmLoop, ResetPatterns );
-            MessageHub.Subscribe ( MessageTopics.SongStarted_string, ResetPatterns );
+            MessageHub.Subscribe ( MessageTopics.HitRangePassed_Step, OnHitRangePassed );
+            MessageHub.Subscribe ( MessageTopics.DjActHit_DjAct, CheckDjAct );
+            //       MessageHub.Subscribe ( MessageTopics.ResetLoop, OnResetLoop );
+            MessageHub.Subscribe ( MessageTopics.ResetLoop, EvaluatePatternSuccessAtEndOfLoop );
+            MessageHub.Subscribe ( MessageTopics.SongStarted_string, OnSongStarted );
         }
-        void ResetPatterns( Message message )
+        void ResetPatterns()
         {
             foreach ( var pattern in patterns )
             {
-                if ( pattern.StepStatuses[pattern.StepStatuses.Length-1] == PatternStepStatus.Waiting)
-                {
-                    pattern.StepStatuses[pattern.StepStatuses.Length - 1] = PatternStepStatus.Sucess;
-                }
-
-                if ( pattern.StepStatuses.Any ( ss => ss == PatternStepStatus.Waiting ) )
-                    Debug.LogError ( "Patterns cant reset while there is still a step that has not been evaluated" );
                 pattern.ResetStepStatus ();
             }
-
-            DebugPatternSuccessAtEndOfLoop ();
         }
-        private void DebugPatternSuccessAtEndOfLoop()
+
+        void OnEndOfLoop()
+        {
+            if ( patterns.Any ( p => p.StepStatuses.Any ( ss => ss == PatternStepStatus.Waiting ) ) )
+            {
+                var ids = new List<int> ();
+                foreach ( var pattern in patterns )
+                {
+                    for ( int i = 0; i < pattern.StepStatuses.Length; i++ )
+                    {
+                        var ss = pattern.StepStatuses[i];
+                        if ( ss == PatternStepStatus.Waiting )
+                        {
+                            ids.Add ( i );
+                        }
+                    }
+                    Debug.LogError ( $"Pattern {pattern.PatternName} has StepStatus still set to Waiting at end of loop. Steps = [{string.Join ( ",", ids )}]" );
+                    ids.Clear ();
+                }
+            }
+
+            ResetPatterns ();
+        }
+
+        void OnSongStarted( Message message )
+        {
+            ResetPatterns ();
+            EvaluateSuccessOfPassedStep ( new Step () ); // Make sure first step is evaluated as well
+        }
+
+        private void EvaluatePatternSuccessAtEndOfLoop( Message lastHitRangeOfLoopPassed )
         {
             foreach ( var pattern in patterns )
             {
                 var successStates = pattern.Steps;
 
                 var builder = new StringBuilder ();
-                builder.AppendLine ( $"   *** PATTERN REPORT " );
+
+                var wasSuccess = pattern.StepStatuses.Any ( ss => ss != PatternStepStatus.Sucess ) == true ? "Failed" : "SUCCESS!";
+                builder.AppendLine ( $"   *** PATTERN REPORT ({wasSuccess}) " );
                 builder.AppendLine ( $"   {pattern.PatternName} " );
 
 
                 for ( int i = 0; i < successStates.Length; i++ )
                 {
                     var step = successStates[i];
-                    builder.AppendLine ( $"[{i}] State: {step.Status.ToString ()}" );
+                    if ( step.Status != PatternStepStatus.Sucess )
+                    {
+                        builder.AppendLine ( $"[{i}] State: {step.Status.ToString ()}" );
+                    }
                 }
                 Debug.Log ( builder.ToString () );
                 builder.AppendLine ( $" " );
             }
+
+            OnEndOfLoop ();
         }
-        void EvaluatePreviousStepForSilentStep( Message rythmPositionMessage )
+
+        void OnHitRangePassed( Message stepMessage )
         {
-            var newPosition = rythmPositionMessage.Open<RythmPosition> ();
-            var newId = newPosition.Step.Id;
-            var index = newId > 0 ? newId - 1 : 63;
+            var newStep = stepMessage.Open<Step> ();
+            EvaluateSuccessOfPassedStep ( newStep );
+        }
+
+        void EvaluateSuccessOfPassedStep( Step newStep )
+        {
+            var newId = newStep.Id;
+            var index = newId;
             patterns.ForEach ( p => p.SetCurrentStepIndex ( newId ) );
 
             foreach ( var pattern in patterns )
@@ -86,21 +121,23 @@ namespace SuperstarDJ.Audio.PatternDetection
                 }
             }
         }
-        public void CheckHitStepForSuccess( Message rythmPositionOfHitStep )
+        public void CheckDjAct( Message djActMessage )
         {
-            var rythmPosition = rythmPositionOfHitStep.Open<RythmPosition> ();
-            var stepWasHit = rythmPosition.Step;
+            var djAct = djActMessage.Open<DjAct> ();
+            var rythmPosition = djAct.ActualPosition;
+            var stepThatWasHit = djAct.StepThatWastHit.Value;
 
             foreach ( var pattern in patterns )
             {
-                pattern.SetHitStepIndex ( stepWasHit.Id, rythmPosition );
+                pattern.SetHitStepIndex ( stepThatWasHit.Id, rythmPosition );
 
-                if ( pattern.StepStatuses[stepWasHit.Id] != PatternStepStatus.Waiting && stepWasHit.Id != 0 )
+                if ( pattern.StepStatuses[stepThatWasHit.Id] != PatternStepStatus.Waiting && stepThatWasHit.Id != 0 )
                 {
+                    Debug.LogWarning ( "WARNING! This step has already been set." );
                     // This step has already been set. Exit.
                     return;
                 }
-                var patternAction = pattern.Steps[stepWasHit.Id].Action;
+                var patternAction = pattern.Steps[stepThatWasHit.Id].Action;
                 var result = PatternStepStatus.Failed;
                 switch ( patternAction )
                 {
@@ -118,7 +155,7 @@ namespace SuperstarDJ.Audio.PatternDetection
                     default:
                         break;
                 }
-                pattern.SetStatusOfStep ( stepWasHit.Id, result );
+                pattern.SetStatusOfStep ( stepThatWasHit.Id, result );
             }
         }
     }
