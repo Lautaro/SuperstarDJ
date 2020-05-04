@@ -1,130 +1,178 @@
-﻿using SuperstarDJ.Audio;
+﻿using SuperstarDJ;
+using SuperstarDJ.Audio;
 using SuperstarDJ.Audio.PatternDetection;
 using SuperstarDJ.Audio.PositionTracking;
 using SuperstarDJ.MessageSystem;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 public class PatternDetectionMonitor : EditorWindow
 {
-    [MenuItem ( "SuperStarDJ/Pattern Detection Monitor " )]
+    Color drawAreaColor, borderColor, hitColor, trackerRed, successColor, failColor;
+
+    [MenuItem("SuperStarDJ/Pattern Detection Monitor")]
     static void Init()
     {
-        PatternDetectionMonitor window =
-            ( PatternDetectionMonitor )EditorWindow.GetWindow ( typeof ( PatternDetectionMonitor ) );
-        window.patterns = Resources.LoadAll<Pattern> ( "RythmPatterns/" );
-        //RythmManager.OnFrameUpdate += window.MyUpdate;
+        PatternDetectionMonitor window = (PatternDetectionMonitor)EditorWindow.GetWindow<PatternDetectionMonitor>();
+        window.LoadPatterns();
+        window.SetColors();
+    }
+
+    private void SetColors()
+    {
+        drawAreaColor = new Color(0.3f, 0.3f, 0.3f, 1f);
+
+        borderColor = new Color(0.6f, 0.6f, 0.8f);
+
+        successColor = new Color(0.3f, 1, 0.3f);
+        failColor = new Color(1, 0.3f, 0.3f);
+        hitColor = new Color(1, 1, 0, 1f);
+        trackerRed = new Color(1, 0.3f, 0.3f, 1f);
+    }
+
+
+    private void LoadPatterns()
+    {
+        patterns = Resources.LoadAll<Pattern>("RythmPatterns/");
+        gameSettings = Resources.Load<GameSettings>("Settings/GameSettings");
     }
 
     Pattern[] patterns;
     List<DjAct> djActs;
     #region DrawArea
-    float drawAreaWidth;
-    float drawAreaheight;
-    float drawAreaXpadding = 30f;
-    float drawAreaYpadding = 100;
-    float timeLineHeight = 50f;
-    Rect rect;
+    float drawAreaXpadding = 30;
+    float drawAreaYpadding = 50;
+    float timelineSpacing = 50;
+    float timeLineHeight = 30f;
+    Rect drawArea;
     #endregion
 
     float lineLength;
-    float amountOfSteps = (RythmManager.Settings?.StepsInPattern) ?? 64;
+    float amountOfSteps = 64;
     float stepLength;
+
+    GameSettings gameSettings;
 
     private void OnGUI()
     {
-        drawAreaWidth = position.width - ( drawAreaXpadding * 2 );
-        drawAreaheight = position.height - ( drawAreaYpadding * 2 );
-        var y = position.height - drawAreaYpadding;
-        rect = new Rect ( 0 + drawAreaXpadding, y, drawAreaWidth - ( drawAreaXpadding * 2 ), 50 );
-        lineLength = rect.xMax - rect.xMin;
+        if (patterns == null || patterns.Length == 0) return;
+
+        #region SETUP
+        GUI.color = drawAreaColor;
+        GUI.Box(new Rect(0, 0, position.width, position.height), "");
+
+        SetColors();
+
+        var drawAreaTop = drawAreaYpadding;
+        var drawAreaBottom = position.height - drawAreaYpadding;
+        var drawAreaLeft = 0 + drawAreaXpadding;
+        var drawAreaRight = position.width - drawAreaXpadding;
+
+        drawArea = new Rect(drawAreaLeft, drawAreaTop, drawAreaRight - drawAreaLeft, drawAreaBottom - drawAreaTop);
+
+        lineLength = this.drawArea.xMax - this.drawArea.xMin;
         stepLength = lineLength / amountOfSteps;
+        #endregion
 
-        //   DrawDrawingAreaBox ();
-        
-        for ( int i = 0; i < patterns.Length; i++ )
+
+        // DRAWAREA BG
+        GUI.color = drawAreaColor;
+        GUI.Box(drawArea, "");
+
+        for (int patternIndex = 0; patternIndex < patterns.Length; patternIndex++)
         {
-            DrawTimeLine ( i );
-        }
+            var pattern = patterns[patternIndex];
+            var currentStepIndex = Array.FindIndex(pattern.Steps, p => p.IsCurrent);
 
-        UpdateTracker ();
+            var y = drawArea.yMax - (timeLineHeight * patternIndex) - (timelineSpacing * patternIndex);
+
+            DrawSteps(patternIndex, y);
+            DrawTimeLines(y, pattern);
+        }
     }
 
-    private void DrawSteps( int patternIndex )
+
+
+    void DrawTimeLines(float y, Pattern pattern)
     {
-        for ( int i = 0; i < amountOfSteps; i++ )
+        GUI.color = borderColor;
+        GUI.Box(new Rect(drawArea.xMin, y - 5, drawArea.width, 5), "");
+
+        foreach (var hitPosition in pattern.HitPositions)
         {
-            var x = rect.xMin + ( i * stepLength );
-            var y = rect.yMax - ( timeLineHeight * patternIndex );
+            var positionInPercentage = RythmManager.instance?.CalculatePositionInPercentage(hitPosition.RawPosition) ?? 0;
+            var trackerX = positionInPercentage * drawArea.width;
+            DrawTracker(trackerX, y, Color.yellow);
+        }
+        var currentPositionInPercentage = RythmManager.instance?.CurrentPositionInPercentage() ?? 0;
+        var currentTrackerX = currentPositionInPercentage * drawArea.width;
+        DrawTracker(currentTrackerX, y, Color.red);
+
+    }
+
+    // Updates the player head tracker line that shows current position
+    void DrawTracker(float x, float y, Color color)
+    {
+        GUI.color = color;
+        GUI.Box(new Rect(drawArea.xMin + x, y-5, 2, -(timeLineHeight * 2)), "");
+    }
+
+    private void DrawSteps(int patternIndex, float y)
+    {
+        var hitrangePercentage = (float)gameSettings.HitRangePaddingInPercentage;
+        float halfHitRangeWidth = (stepLength * (hitrangePercentage / 100)) / 2;
+
+        for (int i = 0; i < amountOfSteps; i++)
+        {
+            // SETUP
+            var x = drawArea.xMin + (i * stepLength);
             var pattern = patterns[patternIndex];
             var step = pattern.Steps[i];
             PatternStepAction stepAction = step.Action;
+            PatternStepStatus stepStatus = step.Status;
 
-            GUI.color = Color.black;
-            var thickness = 2;
+            var startY = y - 5;
 
-            if ( stepAction == PatternStepAction.Hit )
+            // SET COLOR
+            Color hitareaColor = borderColor;
+            if (stepAction == PatternStepAction.Hit) hitareaColor = hitColor;
+            if (stepStatus == PatternStepStatus.Sucess && stepAction == PatternStepAction.Hit) hitareaColor = successColor;
+            if (stepStatus == PatternStepStatus.Failed) hitareaColor = failColor;
+            if (step.IsCurrent) hitareaColor = Color.white;
+
+            GUI.color = hitareaColor;
+
+            // DRAW HIT AREA
+            GUI.Box(new Rect(x - halfHitRangeWidth, startY, halfHitRangeWidth, -timeLineHeight), "");
+            GUI.Box(new Rect(x, startY, halfHitRangeWidth, -timeLineHeight), "");
+
+
+            // DRAW MARKER
+
+            var thickness = 6;
+            x -= thickness / 2;
+            GUI.Box(new Rect(x, y, thickness, 8), "");
+
+            // DRAW STEP NR
+            if (i % 4 == 0)
             {
-                GUI.color = new Color ( 0, 0, 256 );
-                thickness = 4;
-                x -= 2;
+                var labelStyle = new GUIStyle();
+                labelStyle.normal.textColor = hitareaColor;
+                labelStyle.fontSize = 14;
+
+                GUI.Label(new Rect(x - 8, y + 10, 20, 15), i.ToString("00"), labelStyle);
             }
-
-            if ( step.IsCurrent )
-            {
-                GUI.color = new Color ( 50, 100, 256 );
-                thickness = 6;
-                x -= 3;
-            }
-
-            GUI.Box ( new Rect ( x, y, thickness, 5 ), "" );
-
-            if ( i % 4 == 0 )
-            {
-                GUI.Label ( new Rect ( x - 8, y + 5, 20, 15 ), i.ToString ( "00" ) );
-            }
-
-            //if ( RythmManager.WasHitButMissedThisFrame())
-            //{
-            //    GUI.Label ( new Rect ( x - 8, y + 15, 20, 15 ), i.ToString ( "X" ) );
-            //}
         }
     }
 
-    //private void DrawDrawingAreaBox()
-    //{
-    //    // Draw draw area box
-    //    rect = new Rect ( drawAreaXpadding, drawAreaYpadding, drawAreaWidth, drawAreaheight + drawAreaYpadding );
-    //    Handles.color = Color.gray;
-    //    Handles.DrawLine ( new Vector3 ( rect.xMin, rect.yMin ), new Vector3 ( rect.xMax, rect.yMin ) );
-    //    Handles.DrawLine ( new Vector3 ( rect.xMin, rect.yMin ), new Vector3 ( rect.xMin, rect.yMax ) );
-    //}
 
-    void DrawTimeLine( int index )
+
+    public void Update()
     {
-        var y = index * timeLineHeight;
-        Handles.color = Color.white;
-        //Timeline
-        Handles.DrawLine ( new Vector3 ( rect.xMin, rect.yMax - y ), new Vector3 ( rect.xMax, rect.yMax - y ) );
-
-        DrawSteps ( index );
+        // This is necessary to make the framerate normal for the editor window.
+        Repaint();
     }
-
-    void UpdateTracker()
-    {
-        GUI.color = Color.yellow;
-        var percentage = (RythmManager.instance?.PositionInPercentage ()) ?? 0;
-        var trackerPosition = percentage * drawAreaWidth; 
-        //       var trackerPosition = ( ( float )DateTime.Now.Second / 60 ) * drawAreaWidth;
-        GUI.Box ( new Rect ( rect.xMin + trackerPosition, rect.yMax, 2, -( patterns.Length + 1 ) * timeLineHeight ), "" );
-    }
-
-    void Update()
-    {
-        this.Repaint ();
-    }
-
-   
-
 }

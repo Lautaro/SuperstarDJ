@@ -1,5 +1,11 @@
-﻿Pattern Detection 
+﻿PATTERN MONITORING
 
-1. Load Patterns
-2. Create PatternAnalyzer that holds Patterns
-3. PA also has dictioary key: patternName Value
+1. Show colored horizontal bar of the area of the current step
+
+2. Show colored horizontal bars of all steps alternating colors
+
+3. Show hitranges
+	Get hitrange percentage
+	Convert percentage to GUI distance
+	Draw half hit range box at start of step
+	Draw half hit range box at end of step

@@ -107,12 +107,6 @@ public class GuestManager : MonoBehaviour
                 }
             }
 
-            // IF NOTHING IS PLAYING MOD SHOULD BE NEGATIVE
-            if ( RythmManager.TracksPlaying ().Length == 0 )
-            {
-                satisfactionMod = -SatisfactionDamage;
-            }
-
             // APPLY SATISFACTION MOD
             guest.Satisfaction += satisfactionMod;
 

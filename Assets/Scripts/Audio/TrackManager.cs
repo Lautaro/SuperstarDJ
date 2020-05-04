@@ -10,13 +10,7 @@ namespace SuperstarDJ.Audio.DynamicTracks
     {
 
         List<Track> Tracks;
-        public bool IsPlaying
-        {
-            get
-            {
-                return Tracks.Any ( t => t.IsPlaying );
-            }
-        }
+
         static double paddingTime = 0.01;
         public double Duration
         {
@@ -27,7 +21,10 @@ namespace SuperstarDJ.Audio.DynamicTracks
         }
         internal double ScheduledToStartAt { get; private set; }
         //  internal double EndsPlayingDspTime { get; set; }
-        public TrackManager( List<Track> tracks ) => Tracks = tracks; //CTOR
+        public TrackManager(List<Track> tracks) { 
+            Tracks = tracks;
+         //   MessageHub.Subscribe(MessageTopics.StartLoop, ResetSong);
+        }
         void StartSong( List<string> playsAtStart )
         {
             var dspTime = GetDspTime () + paddingTime;
@@ -55,9 +52,6 @@ namespace SuperstarDJ.Audio.DynamicTracks
             track.Source ().timeSamples = startFromSamplePosition;
             track.Source ().volume = track.VolumeModification;
             track.Source ().PlayScheduled ( GetDspTime ( true ) );
-
-            MessageHub.PublishNews<Track> ( MessageTopics.TrackStarted_Track, track );
-
         }
         void StopSong()
         {
@@ -66,42 +60,40 @@ namespace SuperstarDJ.Audio.DynamicTracks
                 track.Source ().Stop ();
             }
         }
-        public string[] TracksPlaying()
+
+        void ResetSong(Message message)
         {
-            return Tracks.Where ( t => t.Source ().isPlaying && t.Source ().volume > 0f ).Select ( t => t.TrackName ).ToArray ();
+            Debug.Log("HOLLAAAAA!!!!");
+            foreach (var track in TrackNamesPlaying())
+            {
+                StartTrack(track);
+            }
+        }
+        public List<Track> TrackNamesPlaying()
+        {
+            return Tracks.Where(t => t.Source().isPlaying && t.Source().volume > 0f).ToList();
 
         }
         public int GetCurrentSamplePosition()
         {
-            var referenceTrack = Tracks.First ( t => t.IsPlaying == true );
+            var referenceTrack = Tracks.FirstOrDefault ( t => t.IsPlaying == true );
 
             if ( referenceTrack == null ) { return 0; }
             return referenceTrack.Source ().timeSamples;
         }
-        //public double GetCurrentSamplePositionOfSong()
-        //{
-        //    var referenceTrack = Tracks.First ( t => t.IsPlaying == true );
 
-        //    if ( referenceTrack == null ) { return 0; }
-
-        //    var timeSamples = ( double )referenceTrack.Source ().timeSamples;
-        //    var frequency = referenceTrack.Source ().clip.frequency;
-        //    var currentPosition = timeSamples / frequency;
-
-        //    return currentPosition;
-        //}
         public bool IsTrackPlaying( string trackName )
         {
             return Tracks.Any ( t => t.TrackName == trackName && t.IsPlaying );
         }
-        public void DebugSound( string trackName, int playAtSample = 0, float volume = 1f )
-        {
-            var track = GetTrackByName ( trackName );
-            track.Source ().timeSamples = 100000;
-            track.Source ().volume = track.VolumeModification;
-            track.Source ().PlayScheduled ( GetDspTime () + paddingTime );
+        //public void DebugSound( string trackName, int playAtSample = 0, float volume = 1f )
+        //{
+        //    var track = GetTrackByName ( trackName );
+        //    track.Source ().timeSamples = 100000;
+        //    track.Source ().volume = track.VolumeModification;
+        //    track.Source ().PlayScheduled ( GetDspTime () + paddingTime );
 
-        }
+        //}
         public List<Track> GetPlayingTracks()
         {
             return Tracks.Where ( t => t.IsPlaying == true ).ToList ();

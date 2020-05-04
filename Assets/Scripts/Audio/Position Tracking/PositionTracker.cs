@@ -18,6 +18,7 @@ namespace SuperstarDJ.Audio.PositionTracking
         internal double paddingMultiplier;
         internal double paddingDuration;
         bool thisLoopHasReset = true;
+        bool thisLoopHasStarted;
         int indexOfLastStepEvaluated;
         int paddingInPercentage
         {
@@ -161,7 +162,14 @@ namespace SuperstarDJ.Audio.PositionTracking
             if ( currentPositionInClip == 0 )
             {
                 Debug.Log ("CLIP STARTED");
+                //if (thisLoopHasStarted == false)
+                //{
+                //    MessageHub.PublishNews<string>(MessageTopics.StartLoop, "Start loop");
+                //    thisLoopHasStarted = true;
+
+                //}
             }
+
             var currentStep = steps.First ( t => t.StepStartsAt <= currentPositionInClip && t.StepEndsAt >= currentPositionInClip );
             currentPosition = new RythmPosition ( currentStep, currentPositionInClip );
 
@@ -186,10 +194,11 @@ namespace SuperstarDJ.Audio.PositionTracking
             if ( currentStep.Id == steps.Length - 1  && thisLoopHasReset == false)
             {
                 // new loop. Reset.
-                MessageHub.PublishNews<string> ( MessageTopics.ResetLoop, "Reset loop" );
+                MessageHub.PublishNews<string> ( MessageTopics.ResetPatternStatuses, "Reset loop" );
                 indexOfLastStepEvaluated = steps.Length - 1;
                 thisLoopHasReset = true;
             }
         }
+
     }
 }

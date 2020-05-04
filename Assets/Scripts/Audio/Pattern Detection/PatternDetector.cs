@@ -21,14 +21,14 @@ namespace SuperstarDJ.Audio.PatternDetection
             MessageHub.Subscribe ( MessageTopics.HitRangePassed_Step, OnHitRangePassed );
             MessageHub.Subscribe ( MessageTopics.DjActHit_DjAct, CheckDjAct );
             //       MessageHub.Subscribe ( MessageTopics.ResetLoop, OnResetLoop );
-            MessageHub.Subscribe ( MessageTopics.ResetLoop, EvaluatePatternSuccessAtEndOfLoop );
+            MessageHub.Subscribe ( MessageTopics.ResetPatternStatuses, EvaluatePatternSuccessAtEndOfLoop );
             MessageHub.Subscribe ( MessageTopics.SongStarted_string, OnSongStarted );
         }
         void ResetPatterns()
         {
             foreach ( var pattern in patterns )
             {
-                pattern.ResetStepStatus ();
+                pattern.Reset ();
             }
         }
 

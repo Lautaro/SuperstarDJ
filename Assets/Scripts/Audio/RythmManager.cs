@@ -39,11 +39,6 @@ namespace SuperstarDJ.Audio
             instance.EvaluateDjAct ();
 
         }
-        public static string[] TracksPlaying()
-        {
-            return instance.trackManager.TracksPlaying ();
-        }
-
         #endregion
 
         #region Instance
@@ -113,7 +108,7 @@ namespace SuperstarDJ.Audio
 
         void Start()
         {
-            MessageHub.Subscribe ( MessageTopics.ResetLoop,OnResetLoop  );
+            MessageHub.Subscribe ( MessageTopics.ResetPatternStatuses,OnResetLoop  );
         }
         private void OnResetLoop(Message message)
         {
@@ -132,7 +127,8 @@ namespace SuperstarDJ.Audio
             rythmPositionTracker = new PositionTracker ( settings.MEASURES_PER_LOOP, settings.BEATS_PER_MEASURE, settings.TICKS_PER_BEATS, trackDuration );
         }
 
-        public float PositionInPercentage() => ( float )( CurrentPosition.RawPosition / trackManager.Duration );
+        public float CurrentPositionInPercentage() => ( float )( CurrentPosition.RawPosition / trackManager.Duration );
+        public float CalculatePositionInPercentage(double position) => (float)(position / trackManager.Duration);
 
         void EvaluateDjAct()
         {

@@ -13,7 +13,8 @@ namespace SuperstarDJ.MessageSystem
         DjActHit_DjAct = 1 << 60,
         DjActMissed_DjAct = 1 << 70,
         LastHitRangeOfLoopPassed = 1 << 79,
-        ResetLoop = 1 << 80,
+        ResetPatternStatuses = 1 << 80,
+        StartLoop = 1 << 84,
         HitRangePassed_Step = 1<<90
 
     }

@@ -1,4 +1,4 @@
-﻿namespace SuperstarDJ.Audio.PositionTracking
+﻿namespace SuperstarDJ.Audio.PatternDetection
 {
     public enum PatternStepStatus
     {

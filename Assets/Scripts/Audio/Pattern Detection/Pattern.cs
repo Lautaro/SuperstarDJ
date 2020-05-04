@@ -1,5 +1,5 @@
 ﻿using Sirenix.OdinInspector;
-using SuperstarDJ.Audio.PositionTracking;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,6 +8,7 @@ namespace SuperstarDJ.Audio.PatternDetection
     [CreateAssetMenu ( menuName = "SUPERSTAR_DJ/RythmPattern" )]
     public class Pattern : SerializedScriptableObject
     {
+
         [BoxGroup ( ShowLabel = false )]
         [Title ( "NAME" )]
         [HideLabel]
@@ -25,13 +26,17 @@ namespace SuperstarDJ.Audio.PatternDetection
             NumberOfItemsPerPage = 64,
             ShowIndexLabels = true )]
         public PatternStep[] Steps { get; set; } = new PatternStep[64];
-        public void ResetStepStatus()
+
+        public  List<RythmPosition> HitPositions = new List<RythmPosition>();
+        public void Reset()
         {
             for ( int i = 0; i < Steps.Length; i++ )
             {
                 Steps[i].Status = PatternStepStatus.Waiting;
                 Steps[i].StepWasHit = false;
             }
+
+            HitPositions.Clear();
         }
         public PatternStepStatus[] StepStatuses
         {
@@ -49,6 +54,8 @@ namespace SuperstarDJ.Audio.PatternDetection
             }
         }
 
+
+
         /// <summary>
         /// register hit for easier debugging in editor window
         /// </summary>
@@ -56,6 +63,8 @@ namespace SuperstarDJ.Audio.PatternDetection
         {
             Steps[index].StepWasHit = true;
             Steps[index].HitAtPosition = position;
+
+            HitPositions.Add(position);
         }
 
 

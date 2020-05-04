@@ -55,7 +55,7 @@ namespace SuperstarDJ
             RythmManager.CreateHitRangeTable ();
         }
 
-        [Range ( 0, 49 ), LabelText ( "Hit Range Padding" ), PropertyOrder ( 1 )]
+        [Range ( 0, 100 ), LabelText ( "Hit Range Padding" ), PropertyOrder ( 1 )]
         public int HitRangePaddingInPercentage = 20; //15 = 15%  Amount of padding to make it more forgiving to hit a steps HitArea
 
 
@@ -128,7 +128,7 @@ namespace SuperstarDJ
             get
             {
                 if ( RythmManager.instance == null ) return "N/A";
-                return $"{ ( ( float )( RythmManager.instance.PositionInPercentage () * 100 ) ).ToString ( "N0" )}";
+                return $"{ ( ( float )( RythmManager.instance.CurrentPositionInPercentage () * 100 ) ).ToString ( "N0" )}";
             }
             set { return; }
         }

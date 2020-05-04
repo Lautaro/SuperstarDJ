@@ -103,11 +103,19 @@ public class Player_Interactions : MonoBehaviour
 
         #region BeatMixing
 
-        if ( Input.GetKeyDown ( KeyCode.Space ) || Input.GetKeyDown ( KeyCode.Mouse1 ) )
+        if ( Input.GetKeyDown ( KeyCode.Space ) 
+            || Input.GetKeyDown ( KeyCode.Mouse1)
+            || Input.GetKeyDown("joystick 1 button 0")) 
         {
             BeatMixingIsActive = true;
             ToggleBeatMixing ( true );
-            RythmManager.BeatNow ();
+          
+
+            var audioPlayer = GetComponent<AudioSource>();
+            audioPlayer.loop = false;
+            audioPlayer.Play();
+
+            RythmManager.BeatNow();
         }
 
         if ( Input.GetKeyUp ( KeyCode.Space ) )
